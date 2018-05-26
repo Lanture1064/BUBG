@@ -28,11 +28,6 @@ bool HelloWorld::init()
     auto visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	//the size of the font used on this scene
-	const auto BUTTON_SIZE = visibleSize.width / 15;
-	const auto TITLE_SIZE = visibleSize.width / 10;
-	const std::string FONT_DIRECTORY = "font\Marker Felt.ttf";
-
 	//create background layer
 	Sprite *bg = Sprite::create("menu/background.png");
 	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
@@ -49,11 +44,11 @@ bool HelloWorld::init()
 
 	startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 300)));
 
-	//create setting button
+	//create help button
 	MenuItemImage *settingMenuItem = MenuItemImage::create(
 		"menu/help01.png",
 		"menu/help02.png",
-		CC_CALLBACK_1(HelloWorld::getSettingScene, this));
+		CC_CALLBACK_1(HelloWorld::getHelpScene, this));
 
 	settingMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 450)));
 
@@ -79,7 +74,7 @@ void HelloWorld::getGameScene(cocos2d::Object *pSender)
 
 }
 
-void HelloWorld::getSettingScene(cocos2d::Object *pSender)
+void HelloWorld::getHelpScene(cocos2d::Object *pSender)
 {
 
 }

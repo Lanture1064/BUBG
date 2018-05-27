@@ -18,6 +18,7 @@ public:
 	int getScore() const;
 	double getSize() const;
 	bool isUsed() const;
+	void changeUsedState();
 protected:
 	int score_;
 	double size_;

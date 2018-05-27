@@ -1,7 +1,9 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
+
+//remove these annotation to load the ball_test scene;
 //#define BALL_TEST
-#include"Ball\BallTest.h"
+//#include"Ball\BallTest.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1

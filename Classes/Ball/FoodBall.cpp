@@ -49,6 +49,11 @@ bool FoodBall::isUsed() const
 	return is_used_;
 }
 
+void FoodBall::changeUsedState()
+{
+	is_used_ = 1 - is_used_;
+}
+
 FoodBall::~FoodBall()
 {
 	

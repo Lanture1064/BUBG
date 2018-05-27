@@ -36,6 +36,7 @@ FoodBall * FoodBallManager::getNewFoodBall()
 	{
 		if (!food_ball_container_[i]->isUsed())
 		{
+			food_ball_container_[i]->changeUsedState();
 			index_ = i + 1;
 			return food_ball_container_[i];
 		}
@@ -44,6 +45,7 @@ FoodBall * FoodBallManager::getNewFoodBall()
 	{
 		if (!food_ball_container_[i]->isUsed())
 		{
+			food_ball_container_[i]->changeUsedState();
 			index_ = i + 1;
 			return food_ball_container_[i];
 		}
@@ -64,12 +66,12 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 		{
 			++count;
 			temp_container.push_back(food_ball_container_[i]);
+			food_ball_container_[i]->changeUsedState();
 			if (count == food_ball_number)
 			{
 				index_ = i + 1;
 				return temp_container;
 			}
-			
 		}
 	}
 	for (auto i = 0; i < index_; ++i)
@@ -78,6 +80,7 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 		{
 			++count;
 			temp_container.push_back(food_ball_container_[i]);
+			food_ball_container_[i]->changeUsedState();
 			if (count == food_ball_number)
 			{
 				index_ = i + 1;

@@ -11,14 +11,16 @@ class FoodBall : public cocos2d::Sprite
 public:
 	CREATE_FUNC(FoodBall);
 	FoodBall() = default;
-	FoodBall* createFoodBall();
+	~FoodBall();
+	static FoodBall* createFoodBall();
 	virtual bool init();
 	int getScore() const;
 	double getSize() const;
-
+	bool isUsed() const;
 protected:
 	int score_;
 	double size_;
+	bool is_used_;
 };
 
-#endif // !FOOD_BALL_
+#endif // !BUBG_CLASSES_BALL_FOOD_BALL_H_

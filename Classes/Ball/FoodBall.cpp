@@ -29,6 +29,7 @@ bool FoodBall::init()
 	this->initWithFile("ball/gray_ball.png");
 	score_ = kInitScore;
 	size_ = ScoreToSize(score_);
+	is_used_ = false;
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	this->setScale(size_ / visible_size.width);
 	return true;
@@ -42,4 +43,14 @@ int FoodBall::getScore() const
 double FoodBall::getSize() const
 {
 	return size_;
+}
+
+bool FoodBall::isUsed() const
+{
+	return is_used_;
+}
+
+FoodBall::~FoodBall()
+{
+
 }

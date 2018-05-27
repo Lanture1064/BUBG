@@ -12,7 +12,7 @@ public:
     
 	//the menu button
 	void getGameScene(cocos2d::Object *pSender);
-	void getSettingScene(cocos2d::Object *pSender);
+	void getHelpScene(cocos2d::Object *pSender);
 	void quitGame(cocos2d::Object *pSender);
 
     // implement the "static create()" method manually

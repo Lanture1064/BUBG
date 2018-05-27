@@ -4,7 +4,7 @@ USING_NS_CC;
 
 inline double ScoreToSize(unsigned int score)
 {
-	return sqrt(score);
+	return sqrt(score) + 100;
 }
 
 FoodBall* FoodBall::createFoodBall()
@@ -12,7 +12,6 @@ FoodBall* FoodBall::createFoodBall()
 	FoodBall* food_ball = new FoodBall();
 	if (food_ball&&food_ball->init())
 	{
-		food_ball->autorelease();
 		return food_ball;
 	}
 	CC_SAFE_DELETE(food_ball);
@@ -52,5 +51,5 @@ bool FoodBall::isUsed() const
 
 FoodBall::~FoodBall()
 {
-
+	
 }

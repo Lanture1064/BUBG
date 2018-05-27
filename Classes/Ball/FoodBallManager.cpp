@@ -1,30 +1,51 @@
 #include "FoodBallManager.h"
 USING_NS_CC;
 
-
-FoodBallManager::FoodBallManager(unsigned int size) :size_(size), index_(0), food_ball_container(size, FoodBall::createFoodBall())
+FoodBallManager * FoodBallManager::createManager(unsigned int size)
 {
-
+	auto manager = new FoodBallManager();
+	if (manager&&manager->init())
+	{
+		manager->initManager(size);
+		manager->autorelease();
+		return manager;
+	}
+	CC_SAFE_DELETE(manager);
+	return nullptr;
 }
 
+bool FoodBallManager::init()
+{
+	return Node::init();
+}
 
+void FoodBallManager::initManager(unsigned int size)
+{
+	size_ = size;
+	for (auto i = 0; i < size; ++i)
+	{
+		auto temp = FoodBall::createFoodBall();
+		food_ball_container_.push_back(temp);
+	}
+	index_ = 0;
+}
 FoodBall * FoodBallManager::getNewFoodBall()
 {
 	//this operator is used to save time when get food for mapInit;
 	for (auto i = index_; i < size_; ++i)
 	{
-		if (!food_ball_container[i]->isUsed())
+		if (!food_ball_container_[i]->isUsed())
 		{
 			index_ = i + 1;
-			return food_ball_container[i];
+			return food_ball_container_[i];
 		}
 	}
 	for (auto i = 0; i < index_; ++i)
 	{
-		if (!food_ball_container[i]->isUsed())
+		if (!food_ball_container_[i]->isUsed())
 		{
 			index_ = i + 1;
-			return food_ball_container[i];
+			return food_ball_container_[i];
 		}
 	}
 	index_ = 0;
@@ -39,10 +60,10 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 	int count = 0;
 	for (auto i = index_; i < size_; ++i)
 	{
-		if (!food_ball_container[i]->isUsed())
+		if (!food_ball_container_[i]->isUsed())
 		{
 			++count;
-			temp_container.push_back(food_ball_container[i]);
+			temp_container.push_back(food_ball_container_[i]);
 			if (count == food_ball_number)
 			{
 				index_ = i + 1;
@@ -53,10 +74,10 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 	}
 	for (auto i = 0; i < index_; ++i)
 	{
-		if (!food_ball_container[i]->isUsed())
+		if (!food_ball_container_[i]->isUsed())
 		{
 			++count;
-			temp_container.push_back(food_ball_container[i]);
+			temp_container.push_back(food_ball_container_[i]);
 			if (count == food_ball_number)
 			{
 				index_ = i + 1;
@@ -70,5 +91,9 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 
 FoodBallManager::~FoodBallManager()
 {
-
+	for (auto i = food_ball_container_.begin(); i != food_ball_container_.end(); ++i)
+	{
+		delete *i;
+		*i = nullptr;
+	}
 }

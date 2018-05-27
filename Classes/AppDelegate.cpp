@@ -1,5 +1,7 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
+//#define BALL_TEST
+#include"Ball\BallTest.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -99,9 +101,16 @@ bool AppDelegate::applicationDidFinishLaunching() {
 
     register_all_packages();
 
+#ifdef BALL_TEST
+	auto scene = BallTestScene::createScene();
+	
+#else
+
+
     // create a scene. it's an autorelease object
     auto scene = HelloWorld::createScene();
 
+#endif
     // run
     director->runWithScene(scene);
 

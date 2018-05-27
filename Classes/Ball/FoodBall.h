@@ -6,6 +6,7 @@
 //it's used to transform the score to the size of the ball;
 double ScoreToSize(unsigned int score);
 
+//Please use class FoodBallManager to get new food;
 class FoodBall : public cocos2d::Sprite
 {
 public:

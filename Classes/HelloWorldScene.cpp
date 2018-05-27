@@ -44,24 +44,24 @@ bool HelloWorld::init()
 
 	startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 300)));
 
-	//create help button
+	//create setting button
 	MenuItemImage *settingMenuItem = MenuItemImage::create(
-		"menu/help01.png",
-		"menu/help02.png",
-		CC_CALLBACK_1(HelloWorld::getHelpScene, this));
+		"menu/setting01.png",
+		"menu/setting02.png",
+		CC_CALLBACK_1(HelloWorld::getSettingScene, this));
 
 	settingMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 450)));
 
 	//create quit button
-	MenuItemImage *helpMenuItem = MenuItemImage::create(
+	MenuItemImage *quitMenuItem = MenuItemImage::create(
 		"menu/quit01.png",
 		"menu/quit02.png",
 		CC_CALLBACK_1(HelloWorld::quitGame, this));
 
-	helpMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 600)));
+	quitMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 600)));
 
     //create button layer
-	Menu* mu = Menu::create(startMenuItem, settingMenuItem, helpMenuItem, NULL);
+	Menu* mu = Menu::create(startMenuItem, settingMenuItem, quitMenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
 
@@ -69,14 +69,14 @@ bool HelloWorld::init()
     return true;
 }
 
-vvoid HelloWorld::getGameScene(cocos2d::Object *pSender)
+void HelloWorld::getGameScene(cocos2d::Object *pSender)
 {
 	auto sc2 = Game::createScene();
 	//change Scene from HelloWorld to setting
 	Director::getInstance()->replaceScene(sc2);
 }
 
-void HelloWorld::getHelpScene(cocos2d::Object *pSender)
+void HelloWorld::getSettingScene(cocos2d::Object *pSender)
 {
 	auto sc = Setting::createScene();
 	//change Scene from HelloWorld to setting

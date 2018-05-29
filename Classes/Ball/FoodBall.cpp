@@ -1,11 +1,6 @@
 #include "FoodBall.h"
-#include<cmath>
 USING_NS_CC;
 
-inline double ScoreToSize(unsigned int score)
-{
-	return sqrt(score) + 100;
-}
 
 FoodBall* FoodBall::createFoodBall()
 {
@@ -34,15 +29,6 @@ bool FoodBall::init()
 	return true;
 }
 
-int FoodBall::getScore() const
-{
-	return score_;
-}
-
-double FoodBall::getSize() const
-{
-	return size_;
-}
 
 bool FoodBall::isUsed() const
 {

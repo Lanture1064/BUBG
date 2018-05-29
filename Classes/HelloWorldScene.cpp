@@ -1,6 +1,7 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include<string>
+#include"Ball/BallTest.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -44,24 +45,24 @@ bool HelloWorld::init()
 
 	startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 300)));
 
-	//create help button
+	//create setting button
 	MenuItemImage *settingMenuItem = MenuItemImage::create(
-		"menu/help01.png",
-		"menu/help02.png",
-		CC_CALLBACK_1(HelloWorld::getHelpScene, this));
+		"menu/setting01.png",
+		"menu/setting02.png",
+		CC_CALLBACK_1(HelloWorld::getSettingScene, this));
 
 	settingMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 450)));
 
 	//create quit button
-	MenuItemImage *helpMenuItem = MenuItemImage::create(
+	MenuItemImage *quitMenuItem = MenuItemImage::create(
 		"menu/quit01.png",
 		"menu/quit02.png",
 		CC_CALLBACK_1(HelloWorld::quitGame, this));
 
-	helpMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 600)));
+	quitMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(700, 600)));
 
     //create button layer
-	Menu* mu = Menu::create(startMenuItem, settingMenuItem, helpMenuItem, NULL);
+	Menu* mu = Menu::create(startMenuItem, settingMenuItem, quitMenuItem, NULL);
 	mu->setPosition(Vec2::ZERO);
 	this->addChild(mu);
 
@@ -71,27 +72,31 @@ bool HelloWorld::init()
 
 void HelloWorld::getGameScene(cocos2d::Object *pSender)
 {
-
+	auto sc2 = BallTestScene::createScene();
+	//change Scene from HelloWorld to setting
+	Director::getInstance()->replaceScene(sc2);
 }
 
-void HelloWorld::getHelpScene(cocos2d::Object *pSender)
+void HelloWorld::getSettingScene(cocos2d::Object *pSender)
 {
-
+	auto sc = Setting::createScene();
+	//change Scene from HelloWorld to setting
+	Director::getInstance()->pushScene(sc);
 }
 
 void HelloWorld::quitGame(Object *pSender)
 {
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
+	//Close the cocos2d-x game scene and quit the application
+	Director::getInstance()->end();
 
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
 #endif
 
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
+	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
 
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
+	//EventCustom customEndEvent("game_scene_close_event");
+	//_eventDispatcher->dispatchEvent(&customEndEvent);
 
 
 }

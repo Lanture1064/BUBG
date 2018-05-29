@@ -1,4 +1,5 @@
 #include "FoodBall.h"
+#include "BaseBall.h"
 USING_NS_CC;
 
 
@@ -15,7 +16,7 @@ FoodBall* FoodBall::createFoodBall()
 
 bool FoodBall::init()
 {
-	if (!Sprite::init())
+	if (!BaseBall::init())
 	{
 		return false;
 	}

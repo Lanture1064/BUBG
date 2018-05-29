@@ -1,8 +1,8 @@
 #ifndef BUBG_CLASSES_BALL_BALL_TEXT_H_
 #define BUBG_CLASSES_BALL_BALL_TEXT_H_
 
-#include"cocos2d.h"
-#include"FoodBallManager.h"
+#include "cocos2d.h"
+#include "FoodBallManager.h"
 
 class BallTestScene : public cocos2d::Scene
 {

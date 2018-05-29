@@ -1,11 +1,11 @@
 #include "BaseBall.h"
-#include<cmath>
+#include <cmath>
 USING_NS_CC;
 
 
-inline double ScoreToSize(unsigned int score)
+double ScoreToSize(unsigned int score)
 {
-	return sqrt(score) + 100;
+	return Director::getInstance()->getVisibleSize().width / 50 * std::sqrt(score);
 }
 
 BaseBall::BaseBall()

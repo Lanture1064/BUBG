@@ -2,7 +2,7 @@
 #define BUBG_CLASSES_BALL_FOOD_BALL_H_
 
 #include"cocos2d.h"
-#include"Ball\BaseBall.h"
+#include"BaseBall.h"
 
 //Please use class FoodBallManager to get new food;
 class FoodBall : public BaseBall

@@ -27,6 +27,7 @@ bool ControledBall::init()
 	this->initWithFile("ball/gray_ball.png");
 	score_ = kInitScore;
 	size_ = ScoreToSize(score_);
+	speed_ = ScoreToSpeed(score_);
 	manager_ = nullptr;
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	this->setScale(size_ / visible_size.width);
@@ -89,6 +90,9 @@ void ControledBall::updateState()
 		score_ += (*i)->getScore();
 	}
 	size_ = ScoreToSize(score_);
+	speed_ = ScoreToSpeed(score_);
+	auto visible_size = Director::getInstance()->getVisibleSize();
+	this->setScale(size_ / visible_size.width);
 	this->setZOrder(score_);
 	temp_ball_storage_.clear();
 }
@@ -96,4 +100,9 @@ void ControledBall::updateState()
 double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 {
 	return (i.x - j.x)*(i.x - j.x) + (i.y - j.y)*(i.y - j.y);
+}
+
+double ScoreToSpeed(int score)
+{
+	return 0.0;
 }

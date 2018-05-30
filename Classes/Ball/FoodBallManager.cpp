@@ -1,4 +1,5 @@
 #include "FoodBallManager.h"
+#include "FoodBall.h"
 USING_NS_CC;
 
 FoodBallManager * FoodBallManager::createManager(unsigned int size)

@@ -1,10 +1,11 @@
 #ifndef BUBG_CLASSES_BALL_FOOD_BALL_MANAGER_H_
 #define BUBG_CLASSES_BALL_FOOD_BALL_MANAGER_H_
 
-#include"FoodBall.h"
 #include"cocos2d.h"
 #include<list>
 #include<vector>
+
+class FoodBall;
 
 class FoodBallManager : public cocos2d::Node
 {

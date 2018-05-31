@@ -19,6 +19,11 @@ bool BallTestScene::init()
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
 
+	Sprite *bg = Sprite::create("menu/background.png");
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
+	this->addChild(bg);
+
 	auto food_ball_manager = FoodBallManager::createManager();
 	this->addChild(food_ball_manager);
 	food_ball_manager->setTag(g_kManagerFlag);

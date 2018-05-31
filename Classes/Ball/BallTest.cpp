@@ -1,4 +1,6 @@
 #include "BallTest.h"
+#include "FoodBallManager.h"
+#include "FoodBall.h"
 USING_NS_CC;
 
 const int g_kFoodFlag = 0;

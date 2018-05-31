@@ -71,7 +71,7 @@ void ControledBallManager::divideBall(cocos2d::Vec2 target)
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
 		(*i)->divide();
-		auto ball = ControledBall::createControledBall((*i)->getScore, color_directory_);
+		auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
 		append_list.push_back(ball);
 		auto x_rate = (*i)->getSpeed()*std::cos(angle)*5;
 		auto y_rate = (*i)->getSpeed()*std::sin(angle)*5;

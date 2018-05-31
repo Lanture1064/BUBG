@@ -1,6 +1,7 @@
 #include "ControledBall.h"
 #include "FoodBall.h"
 #include "BaseBall.h"
+#include <string>
 #include <cmath>
 USING_NS_CC;
 
@@ -12,27 +13,50 @@ ControledBall::~ControledBall()
 
 ControledBall * ControledBall::createControledBall()
 {
+	std::string color_directory = "ball/gray_ball.png";
+	return createControledBall(color_directory);
+}
+
+ControledBall * ControledBall::createControledBall(int score, std::string color_directory)
+{
 	ControledBall* controled_ball = new ControledBall();
 	if (controled_ball&&controled_ball->init())
 	{
+		controled_ball->initControledBall(score, color_directory);
 		return controled_ball;
 	}
 	CC_SAFE_DELETE(controled_ball);
 	return nullptr;
 }
 
-bool ControledBall::init()
+ControledBall * ControledBall::createControledBall(std::string color_directory)
 {
 	const unsigned int kInitScore = 100;
-	this->initWithFile("ball/gray_ball.png");
-	score_ = kInitScore;
+	return createControledBall(kInitScore, color_directory);
+}
+
+
+bool ControledBall::init()
+{
+	if (!BaseBall::init())
+	{
+		return false;
+	}
+	return true;
+}
+
+void ControledBall::initControledBall(int score,std::string color_directory)
+{
+	this->initWithFile(color_directory);
+	color_directory_ = color_directory;
+	score_ = score;
 	size_ = ScoreToSize(score_);
 	speed_ = ScoreToSpeed(score_);
 	manager_ = nullptr;
+	is_delete_ = false;
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	this->setScale(size_ / visible_size.width);
 	this->setZOrder(score_);
-	return true;
 }
 
 
@@ -68,6 +92,7 @@ std::list<ControledBall*> ControledBall::checkoutSwallowBall(const std::list<Con
 		{
 			result_list.push_back(*i);
 			temp_ball_storage_.push_back(*i);
+			(*i)->is_delete_ = true;
 		}
 	}
 	return result_list;
@@ -83,6 +108,12 @@ void ControledBall::setManager(ControledBallManager * manager)
 	manager_ = manager;
 }
 
+void ControledBall::divide()
+{
+	score_ /= 2;
+	this->updateState();
+}
+
 void ControledBall::updateState()
 {
 	for (auto i = temp_ball_storage_.begin(); i != temp_ball_storage_.end(); ++i)
@@ -95,6 +126,16 @@ void ControledBall::updateState()
 	this->setScale(size_ / visible_size.width);
 	this->setZOrder(score_);
 	temp_ball_storage_.clear();
+}
+
+bool ControledBall::isDelete() const
+{
+	return is_delete_;
+}
+
+std::string ControledBall::getColorDirectory() const
+{
+	return color_directory_;
 }
 
 double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)

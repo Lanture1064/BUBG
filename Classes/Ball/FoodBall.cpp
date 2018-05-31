@@ -1,5 +1,6 @@
 #include "FoodBall.h"
 #include "BaseBall.h"
+#include <string>
 USING_NS_CC;
 
 
@@ -21,7 +22,8 @@ bool FoodBall::init()
 		return false;
 	}
 	const unsigned int kInitScore = 20;
-	this->initWithFile("ball/gray_ball.png");
+	auto color_index = rand() % kColorNumber;
+	this->initWithFile(BaseBall::kColorDirectoryVec[color_index]);
 	score_ = kInitScore;
 	size_ = ScoreToSize(score_);
 	is_used_ = false;

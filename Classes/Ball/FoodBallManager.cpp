@@ -23,6 +23,7 @@ bool FoodBallManager::init()
 void FoodBallManager::initManager(unsigned int size)
 {
 	size_ = size;
+	srand(time(NULL));
 	for (auto i = 0; i < size; ++i)
 	{
 		auto temp = FoodBall::createFoodBall();

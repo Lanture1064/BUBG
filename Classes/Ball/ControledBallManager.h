@@ -4,12 +4,14 @@
 #include "cocos2d.h"
 #include <string>
 #include <list>
+#include <vector>
 
 class ControledBall;
 
 class ControledBallManager : public cocos2d::Node
 {
 protected:
+	static std::vector<bool> kUsedColor;
 	std::list<ControledBall*> controled_ball_list_;
 	double speed_;
 	cocos2d::Node* father_;

@@ -3,6 +3,8 @@
 #include <cmath>
 USING_NS_CC;
 
+std::vector<bool> ControledBallManager::kUsedColor(kColorNumber, false);
+
 void ControledBallManager::addFatherScene(cocos2d::Node * father)
 {
 	father_ = father;
@@ -88,7 +90,15 @@ bool ControledBallManager::isDead()
 
 ControledBallManager * ControledBallManager::createManager()
 {
-	auto color_directory = "ball/gray_ball.png";
+	std::string color_directory;
+	for (auto i = 0; i != kUsedColor.size(); ++i)
+	{
+		if (!kUsedColor[i])
+		{
+			kUsedColor[i] = true;
+			color_directory = BaseBall::kColorDirectoryVec[i];
+		}
+	}
 	return createManager(color_directory);
 }
 

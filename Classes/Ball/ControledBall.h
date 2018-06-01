@@ -37,6 +37,10 @@ public:
 	void updateState();
 	bool isDelete() const;
 	std::string getColorDirectory() const;
+	void changeDividedState();
+	bool isDivided() const;
+	int count();
+	void resetTimeCount();
 protected:
 	ControledBallManager * manager_;
 	double speed_;
@@ -44,6 +48,8 @@ protected:
 	std::list<BaseBall*> temp_ball_storage_;
 	bool is_delete_;
 	std::string color_directory_;
+	bool is_divided_;
+	int time_count_;
 };
 #endif // !BUBG_CLASSES_BALL_CONTROLED_BALL_H_
 

@@ -3,7 +3,7 @@
 #include "FoodBall.h"
 #include "ControledBallManager.h"
 #include "ControledBall.h"
-#include <Windows.h>
+#include "LocalControler.h"
 USING_NS_CC;
 #define SIMPLE_GAME_TEST
 const int g_kFoodFlag = 0;
@@ -13,7 +13,7 @@ const int g_kControledManagerFlag = 3;
 auto food_ball_number = 0;
 BallTestScene::~BallTestScene()
 {
-
+	
 }
 
 bool BallTestScene::init()
@@ -36,7 +36,7 @@ bool BallTestScene::init()
 	food_layer->setTag(g_kFoodFlag);
 	mouse_position_ = Vec2::ZERO;
 #ifdef SIMPLE_GAME_TEST
-	auto mouse_listener = EventListenerMouse::create();
+
 
 	auto temp = food_ball_manager->getNewFoodBall(100);
 	food_container_.insert(food_container_.end(), temp.begin(), temp.end());
@@ -47,17 +47,13 @@ bool BallTestScene::init()
 	}
 
 	auto controled_ball_manager = ControledBallManager::createManager();
+	auto ball_list = new std::list<ControledBall*>();
+	auto temp_list = controled_ball_manager->getBallList();
+	ball_list->insert(ball_list->end(), temp_list.begin(), temp_list.end());
 	controled_ball_manager->addFatherScene(this);
 	controled_ball_manager->setTag(g_kControledManagerFlag);
-
-	mouse_listener->onMouseMove = [=](Event* mouse_event) {
-		EventMouse* e = static_cast<EventMouse*> (mouse_event);
-		mouse_position_ = e->getLocation();
-		auto position = controled_ball_manager->getPosition();
-	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouse_listener, this);
-
-	this->scheduleUpdate();
+	auto layer = LocalControler::createControler(controled_ball_manager, ball_list);
+	this->addChild(layer);
 #else
 	Sprite *bg = Sprite::create("menu/background.png");
 	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
@@ -150,10 +146,4 @@ inline double getDoubleRand(unsigned int range)
 	double x = rand() / static_cast<double>(RAND_MAX);
 	double y = rand() % range;
 	return x + y;
-}
-void BallTestScene::update(float dt)
-{
-	auto controled_ball = static_cast<ControledBallManager*>(this->getChildByTag(g_kControledManagerFlag));
-	controled_ball->moveTo(Director::getInstance()->getDeltaTime(),Director::getInstance()->convertToGL(mouse_position_));
-	controled_ball->updateState();
 }

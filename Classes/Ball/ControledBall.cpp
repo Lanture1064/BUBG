@@ -54,6 +54,8 @@ void ControledBall::initControledBall(int score,std::string color_directory)
 	speed_ = ScoreToSpeed(score_);
 	manager_ = nullptr;
 	is_delete_ = false;
+	is_divided_ = false;
+	time_count_ = 0;
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	this->setScale(size_ / visible_size.width);
 	this->setZOrder(score_);
@@ -136,6 +138,28 @@ bool ControledBall::isDelete() const
 std::string ControledBall::getColorDirectory() const
 {
 	return color_directory_;
+}
+
+void ControledBall::changeDividedState()
+{
+	is_divided_ = 1 - is_divided_;
+}
+
+bool ControledBall::isDivided() const
+{
+	return is_divided_;
+}
+
+
+int ControledBall::count()
+{
+	++time_count_;
+	return time_count_;
+}
+
+void ControledBall::resetTimeCount()
+{
+	time_count_ = 0;
 }
 
 double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)

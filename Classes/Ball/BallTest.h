@@ -15,7 +15,6 @@ public:
 	void createOneFood(cocos2d::Object* pSender);
 	void createTenFood(cocos2d::Object* pSender);
 	void returnMenu(cocos2d::Object* pSender);
-	void update(float dt);
 protected:
 	std::vector<FoodBall*> food_container_;
 	cocos2d::Vec2 mouse_position_;

@@ -71,27 +71,50 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		auto x_rate = speed_ * cos_val;
 		auto y_rate = speed_ * sin_val;
 
-		auto move = MoveBy::create(time, Vec2(x_rate*time, y_rate*time));
-		(*i)->runAction(move);
+		//the ball move normolly;
+		auto move_1 = MoveBy::create(time, Vec2(x_rate*time, y_rate*time));
+
+		//the ball dash when ball divided;
+		auto move_2= MoveBy::create(time, Vec2(x_rate*time*3, y_rate*time*3));
+		if ((*i)->isDivided())
+		{
+			(*i)->runAction(move_2);
+			if ((*i)->count()==30)
+			{
+				(*i)->changeDividedState();
+				(*i)->resetTimeCount();
+			}
+		}
+		else
+		{
+			(*i)->runAction(move_1);
+		}
 	}
 }
 
-void ControledBallManager::divideBall(cocos2d::Vec2 target)
+std::list<ControledBall*> ControledBallManager::divideBall(cocos2d::Vec2 target)
 {
 	auto position = this->getPosition();
-	auto angle = std::atan((target.x - position.x) / (target.y - position.y));
 	std::list<ControledBall*> append_list;
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
-		(*i)->divide();
-		auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
-		append_list.push_back(ball);
-		auto x_rate = (*i)->getSpeed()*std::cos(angle)*5;
-		auto y_rate = (*i)->getSpeed()*std::sin(angle)*5;
-		auto move = MoveBy::create(1.0f, Vec2(x_rate, y_rate));
-		ball->runAction(move);
+		if ((*i)->getScore() > 400)
+		{
+			(*i)->divide();
+			auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
+			ball->changeDividedState();
+			father_->addChild(ball);
+			ball->setPosition((*i)->getPosition());
+			append_list.push_back(ball);
+		}
 	}
 	controled_ball_list_.insert(controled_ball_list_.end(),append_list.begin(),append_list.end());
+	return append_list;
+}
+
+const std::list<ControledBall*> &ControledBallManager::getBallList() const
+{
+	return controled_ball_list_;
 }
 
 bool ControledBallManager::isDead()

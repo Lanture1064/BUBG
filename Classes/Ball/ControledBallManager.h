@@ -26,7 +26,8 @@ public:
 	void updateState();
 	//the function is used to make the controled balls run toward target;
 	void moveTo(double time,cocos2d::Vec2 target);
-	void divideBall(cocos2d::Vec2 target);
+	std::list<ControledBall*> divideBall(cocos2d::Vec2 target);
+	const std::list<ControledBall*> &getBallList() const;
 	bool isDead();
 	static ControledBallManager* createManager();
 	static ControledBallManager* createManager(std::string color_directory);

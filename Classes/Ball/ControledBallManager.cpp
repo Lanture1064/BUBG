@@ -117,9 +117,41 @@ const std::list<ControledBall*> &ControledBallManager::getBallList() const
 	return controled_ball_list_;
 }
 
+std::list<ControledBall*> ControledBallManager::checkSwallowBall(std::list<ControledBall*> ball_list)
+{
+	std::list<ControledBall*> result;
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i)->isDelete())
+		{
+			auto temp = (*i)->checkSwallowBall(ball_list);
+			result.insert(result.end(), temp.begin(), temp.end());
+		}
+	}
+	return result;
+}
+std::list<FoodBall*> ControledBallManager::checkSwallowBall(std::list<FoodBall*> ball_list)
+{
+	std::list<FoodBall*> result;
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i)->isDelete())
+		{
+			auto temp = (*i)->checkSwallowBall(ball_list);
+			result.insert(result.end(), temp.begin(), temp.end());
+		}
+	}
+	return result;
+}
+
 bool ControledBallManager::isDead()
 {
 	return is_dead_;
+}
+
+void ControledBallManager::die()
+{
+	is_dead_ = true;
 }
 
 ControledBallManager * ControledBallManager::createManager()

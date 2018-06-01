@@ -83,7 +83,7 @@ std::list<FoodBall*> ControledBall::checkSwallowBall(const std::list<FoodBall*> 
 	return result_list;
 }
 
-std::list<ControledBall*> ControledBall::checkoutSwallowBall(const std::list<ControledBall*> &controled_ball_list)
+std::list<ControledBall*> ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_ball_list)
 {
 	std::list<ControledBall*> result_list;
 	auto position = this->getPosition();

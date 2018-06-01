@@ -1,9 +1,5 @@
 #include "BallTest.h"
-#include "FoodBallManager.h"
-#include "FoodBall.h"
-#include "ControledBallManager.h"
-#include "ControledBall.h"
-#include "LocalControler.h"
+#include "Ball.h"
 USING_NS_CC;
 #define SIMPLE_GAME_TEST
 const int g_kFoodFlag = 0;

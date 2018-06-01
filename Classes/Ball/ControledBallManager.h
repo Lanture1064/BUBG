@@ -7,6 +7,7 @@
 #include <vector>
 
 class ControledBall;
+class FoodBall;
 
 class ControledBallManager : public cocos2d::Node
 {
@@ -28,7 +29,10 @@ public:
 	void moveTo(double time,cocos2d::Vec2 target);
 	std::list<ControledBall*> divideBall(cocos2d::Vec2 target);
 	const std::list<ControledBall*> &getBallList() const;
+	std::list<ControledBall*> checkSwallowBall(std::list<ControledBall*> ball_list);
+	std::list<FoodBall*> checkSwallowBall(std::list<FoodBall*> ball_list);
 	bool isDead();
+	void die();
 	static ControledBallManager* createManager();
 	static ControledBallManager* createManager(std::string color_directory);
 	CREATE_FUNC(ControledBallManager);

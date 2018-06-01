@@ -54,12 +54,23 @@ void ControledBallManager::updateState()
 
 void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 {	
-	auto position = this->getPosition();
-	auto angle = std::atan((target.x - position.x) / (target.y - position.y));
-	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	//auto position = this->getPosition();
+	
+	 for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
-		auto x_rate = (*i)->getSpeed()*std::cos(angle);
-		auto y_rate = (*i)->getSpeed()*std::sin(angle);
+		auto position = (*i)->getPosition();
+		double cos_val, sin_val;
+		double distence = pow(calDistence(position, target), 0.5);
+		if (distence == 0)
+		{
+			return;
+		}
+		cos_val = (target.x - position.x) / distence;
+		sin_val = (target.y - position.y) / distence;
+
+		auto x_rate = speed_ * cos_val;
+		auto y_rate = speed_ * sin_val;
+
 		auto move = MoveBy::create(time, Vec2(x_rate*time, y_rate*time));
 		(*i)->runAction(move);
 	}

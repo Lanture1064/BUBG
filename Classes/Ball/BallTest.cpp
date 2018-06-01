@@ -1,11 +1,15 @@
 #include "BallTest.h"
 #include "FoodBallManager.h"
 #include "FoodBall.h"
+#include "ControledBallManager.h"
+#include "ControledBall.h"
+#include <Windows.h>
 USING_NS_CC;
-
+#define SIMPLE_GAME_TEST
 const int g_kFoodFlag = 0;
 const int g_kNumberFlag = 1;
-const int g_kManagerFlag = 2;
+const int g_kFoodManagerFlag = 2;
+const int g_kControledManagerFlag = 3;
 auto food_ball_number = 0;
 BallTestScene::~BallTestScene()
 {
@@ -21,27 +25,51 @@ bool BallTestScene::init()
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
 
-	Sprite *bg = Sprite::create("menu/background.png");
-	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
-		origin.y + visible_size.height / 2));
-	this->addChild(bg);
-
 	auto food_ball_manager = FoodBallManager::createManager();
 	this->addChild(food_ball_manager);
-	food_ball_manager->setTag(g_kManagerFlag);
+	food_ball_manager->setTag(g_kFoodManagerFlag);
 
 	auto food_layer = Layer::create();
 	food_layer->setAnchorPoint(Vec2::ZERO);
 	food_layer->setPosition(Vec2(origin.x, origin.y));
 	this->addChild(food_layer);
 	food_layer->setTag(g_kFoodFlag);
+	mouse_position_ = Vec2::ZERO;
+#ifdef SIMPLE_GAME_TEST
+	auto mouse_listener = EventListenerMouse::create();
+
+	auto temp = food_ball_manager->getNewFoodBall(100);
+	food_container_.insert(food_container_.end(), temp.begin(), temp.end());
+	for (auto i = food_container_.begin(); i != food_container_.end(); ++i)
+	{
+		(*i)->setPosition(Vec2(origin.x + getDoubleRand(visible_size.width), origin.y + getDoubleRand(visible_size.height)));
+		food_layer->addChild(*i);
+	}
+
+	auto controled_ball_manager = ControledBallManager::createManager();
+	controled_ball_manager->addFatherScene(this);
+	controled_ball_manager->setTag(g_kControledManagerFlag);
+
+	mouse_listener->onMouseMove = [=](Event* mouse_event) {
+		EventMouse* e = static_cast<EventMouse*> (mouse_event);
+		mouse_position_ = e->getLocation();
+		auto position = controled_ball_manager->getPosition();
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(mouse_listener, this);
+
+	this->scheduleUpdate();
+#else
+	Sprite *bg = Sprite::create("menu/background.png");
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
+	this->addChild(bg);
 
 	auto button_layer = Layer::create();
 	button_layer->setAnchorPoint(Vec2::ZERO);
 	button_layer->setPosition(Vec2(origin.x, origin.y));
 
 	auto create_one_food_label = Label::create("Create one", "Arial", 20);
-	auto pCreate_one_food_label = MenuItemLabel::create(create_one_food_label,this, menu_selector(BallTestScene::createOneFood));
+	auto pCreate_one_food_label = MenuItemLabel::create(create_one_food_label, this, menu_selector(BallTestScene::createOneFood));
 	auto create_one_food_button = Menu::create(pCreate_one_food_label, NULL);
 
 	auto create_ten_food_label = Label::create("Create ten", "Arial", 20);
@@ -64,6 +92,7 @@ bool BallTestScene::init()
 	number_label->setPosition(Vec2(origin.x + visible_size.width / 5, origin.y + visible_size.height / 5 * 4));
 	this->addChild(number_label);
 	number_label->setTag(g_kNumberFlag);
+#endif // SIMPLE_GAME_TEST
 	return true;
 }
 
@@ -72,11 +101,12 @@ cocos2d::Scene * BallTestScene::createScene()
 	return BallTestScene::create();
 }
 
+#ifndef SIMPLE_GAME_TEST
 void BallTestScene::createOneFood(cocos2d::Object * pSender)
 {
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
-	auto food_ball_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kManagerFlag));
+	auto food_ball_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 	auto temp = food_ball_manager->getNewFoodBall();
 	if (temp)
 	{
@@ -93,7 +123,7 @@ void BallTestScene::createTenFood(cocos2d::Object * pSender)
 {
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
-	auto food_ball_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kManagerFlag));
+	auto food_ball_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 	auto temp = food_ball_manager->getNewFoodBall(10);
 
 	food_ball_number += temp.size();
@@ -108,6 +138,9 @@ void BallTestScene::createTenFood(cocos2d::Object * pSender)
 	}
 }
 
+#endif // !SIMPLE_GAME_TEST
+
+
 void BallTestScene::returnMenu(cocos2d::Object * pSender)
 {
 	Director::getInstance()->end();
@@ -117,4 +150,10 @@ inline double getDoubleRand(unsigned int range)
 	double x = rand() / static_cast<double>(RAND_MAX);
 	double y = rand() % range;
 	return x + y;
+}
+void BallTestScene::update(float dt)
+{
+	auto controled_ball = static_cast<ControledBallManager*>(this->getChildByTag(g_kControledManagerFlag));
+	controled_ball->moveTo(Director::getInstance()->getDeltaTime(),Director::getInstance()->convertToGL(mouse_position_));
+	controled_ball->updateState();
 }

@@ -25,7 +25,7 @@ public:
 	void removeBall();
 	void updateState();
 	//the function is used to make the controled balls run toward target;
-	void moveTo(double time, cocos2d::Vec2 target);
+	void moveTo(double time,cocos2d::Vec2 target);
 	void divideBall(cocos2d::Vec2 target);
 	bool isDead();
 	static ControledBallManager* createManager();

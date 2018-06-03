@@ -77,9 +77,12 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		auto position = (*i)->getPosition();
 		double cos_val, sin_val;
 		double distence = pow(calDistence(position, target), 0.5);
-		if (distence == 0)
+
+		double ratio = 1.0;
+
+		if (distence <(*i)->getSize())
 		{
-			return;
+			ratio = distence / (*i)->getSize();
 		}
 		cos_val = (target.x - position.x) / distence;
 		sin_val = (target.y - position.y) / distence;
@@ -87,24 +90,19 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		auto x_rate = speed_ * cos_val;
 		auto y_rate = speed_ * sin_val;
 
-		//the ball move normolly;
-		auto move_1 = MoveBy::create(time, Vec2(x_rate*time, y_rate*time));
-
-		//the ball dash when ball divided;
-		auto move_2= MoveBy::create(time, Vec2(x_rate*time*3, y_rate*time*3));
 		if ((*i)->isDivided())
 		{
-			(*i)->runAction(move_2);
-			if ((*i)->count()==30)
+			//the ball dash when ball divided;
+			ratio = 4.0 - 3.0 * (*i)->count() / 60.0;
+
+			if ((*i)->count()==60)
 			{
 				(*i)->changeDividedState();
 				(*i)->resetTimeCount();
 			}
 		}
-		else
-		{
-			(*i)->runAction(move_1);
-		}
+		auto move = MoveBy::create(time, Vec2(x_rate*time * ratio, y_rate*time * ratio));
+		(*i)->runAction(move);
 	}
 }
 

@@ -31,6 +31,7 @@ bool BallTestScene::init()
 	this->addChild(food_layer);
 	food_layer->setTag(g_kFoodFlag);
 	mouse_position_ = Vec2::ZERO;
+	food_layer->setZOrder(2);
 #ifdef SIMPLE_GAME_TEST
 
 
@@ -44,11 +45,18 @@ bool BallTestScene::init()
 
 	auto controled_ball_manager = ControledBallManager::createManager(&ball_container_);
 	controled_ball_manager->addFatherScene(this);
+
 	controled_ball_manager->setTag(g_kControledManagerFlag);
+	
 	auto layer = LocalControler::createControler(controled_ball_manager, &ball_container_);
+	controled_ball_manager->setZOrder(3);
 	this->addChild(layer);
 	this->scheduleUpdate();
-
+	Sprite *bg = Sprite::create("menu/background.png");
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
+	bg->setZOrder(1);
+	this->addChild(bg);
 #else
 	auto button_layer = Layer::create();
 	button_layer->setAnchorPoint(Vec2::ZERO);

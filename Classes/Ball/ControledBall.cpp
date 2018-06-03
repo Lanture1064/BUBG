@@ -74,9 +74,10 @@ void ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
 		if ((*i)->isUsed())
 		{
 			auto food_position = (*i)->getPosition();
-			if (calDistence(position, food_position) < size_*size_)
+			if (calDistence(position, food_position) < size_*size_/4)
 			{
 				(*i)->changeUsedState();
+				auto k=(*i)->getAnchorPoint();
 				temp_ball_storage_.push_back(*i);
 			}
 		}
@@ -89,7 +90,7 @@ void ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_
 	for (auto i = controled_ball_list.begin(); i != controled_ball_list.end(); ++i)
 	{
 		auto ball_position = (*i)->getPosition();
-		if (std::sqrt(calDistence(position, ball_position))+(*i)->size_ < size_)
+		if (std::sqrt(calDistence(position, ball_position))+((*i)->size_)/2 < size_/2)
 		{
 			temp_ball_storage_.push_back(*i);
 			(*i)->is_delete_ = true;
@@ -165,5 +166,5 @@ double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 
 double ScoreToSpeed(int score)
 {
-	return 3000/std::sqrt(score);
+	return 2000/std::pow(score,0.3);
 }

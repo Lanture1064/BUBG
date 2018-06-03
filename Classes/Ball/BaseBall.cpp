@@ -6,7 +6,7 @@ const std::vector<std::string>BaseBall::kColorDirectoryVec = { "ball/blue_ball.p
 															 "ball/red_ball.png" ,"ball/yellow_ball.png" };
 double ScoreToSize(unsigned int score)
 {
-	return Director::getInstance()->getVisibleSize().width / 250 * std::sqrt(score);
+	return Director::getInstance()->getVisibleSize().width / 300 * std::sqrt(score);
 }
 
 BaseBall::BaseBall()

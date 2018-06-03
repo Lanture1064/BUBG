@@ -165,5 +165,5 @@ double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 
 double ScoreToSpeed(int score)
 {
-	return 10000/std::sqrt(score);
+	return 3000/std::sqrt(score);
 }

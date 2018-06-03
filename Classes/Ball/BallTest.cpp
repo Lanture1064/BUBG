@@ -48,12 +48,8 @@ bool BallTestScene::init()
 	auto layer = LocalControler::createControler(controled_ball_manager, &ball_container_);
 	this->addChild(layer);
 	this->scheduleUpdate();
-#else
-	Sprite *bg = Sprite::create("menu/background.png");
-	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
-		origin.y + visible_size.height / 2));
-	this->addChild(bg);
 
+#else
 	auto button_layer = Layer::create();
 	button_layer->setAnchorPoint(Vec2::ZERO);
 	button_layer->setPosition(Vec2(origin.x, origin.y));

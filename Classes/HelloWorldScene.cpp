@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include"inputfield.h"
 #include<string>
 #include"Ball/BallTest.h"
 USING_NS_CC;
@@ -72,7 +73,7 @@ bool HelloWorld::init()
 
 void HelloWorld::getGameScene(cocos2d::Object *pSender)
 {
-	auto sc2 = BallTestScene::createScene();
+	auto sc2 = Inputfield::createScene();
 	//change Scene from HelloWorld to setting
 	Director::getInstance()->replaceScene(sc2);
 }

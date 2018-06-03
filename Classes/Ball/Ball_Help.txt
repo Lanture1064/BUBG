@@ -12,11 +12,7 @@ ControledBallManager
 2.将该类添加为子节点时，需使用自身的函数addFatherScene来添加。
 3.令球移动时，可调用函数moveTo，参数time为移动所花时间，参数target为目的地坐标，
 移动方式”为在time时间内向目的地方向移动“。
-3.判断吞噬操作时，应按如下操作进行（注：此套操作还未进行测试)：
-分别以场景中的FoodBall，ControledBall调用函数checkSwallowBall，返回值为被吞噬的球的列表；
-调用函数updateState更新球的状态；
-移除返回的FoodBall；
-再对所有的ControledBallManager调用函数removeBall移除所有被吞噬的ControledBall；
+3.执行吞噬操作时调用函数swallow，参数为储存食物和控制球的列表。
 
 LocalControler
 1.使用函数createControler创建，参数manager为玩家所操控的ControledBallManager，

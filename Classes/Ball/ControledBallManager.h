@@ -12,32 +12,39 @@ class FoodBall;
 class ControledBallManager : public cocos2d::Node
 {
 protected:
+	std::list<ControledBall*>* all_controled_ball_list_;
 	static std::vector<bool> kUsedColor;
 	std::list<ControledBall*> controled_ball_list_;
 	double speed_;
 	cocos2d::Node* father_;
 	bool is_dead_;
 	std::string color_directory_;
+	std::string name_;
 public:
 	//please use it to add child to the scene;
 	//Notice: the function only can be used once;
 	void addFatherScene(cocos2d::Node* father);
 	//the function is used to remove and delete the ball which is uselee;
 	void removeBall();
+	void removeBall(ControledBall* ball);
 	void updateState();
 	//the function is used to make the controled balls run toward target;
 	void moveTo(double time,cocos2d::Vec2 target);
-	std::list<ControledBall*> divideBall(cocos2d::Vec2 target);
+	void divideBall(cocos2d::Vec2 target);
 	const std::list<ControledBall*> &getBallList() const;
-	std::list<ControledBall*> checkSwallowBall(std::list<ControledBall*> ball_list);
-	std::list<FoodBall*> checkSwallowBall(std::list<FoodBall*> ball_list);
+	void swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list);
+	void checkSwallowBall(const std::list<ControledBall*> &ball_list);
+	void checkSwallowBall(const std::list<FoodBall*> &ball_list);
 	bool isDead();
 	void die();
-	static ControledBallManager* createManager();
-	static ControledBallManager* createManager(std::string color_directory);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position,
+		                                       std::string name, std::string color_directory);
 	CREATE_FUNC(ControledBallManager);
 	virtual bool init();
-	void initManager(std::string color_directory);
+	void initManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name,std::string color_directory);
 	~ControledBallManager();
 	ControledBallManager() = default;
 };

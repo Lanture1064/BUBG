@@ -1,5 +1,6 @@
 #include "ControledBallManager.h"
 #include "ControledBall.h"
+#include "FoodBall.h"
 #include <cmath>
 USING_NS_CC;
 
@@ -28,6 +29,21 @@ void ControledBallManager::removeBall()
 			continue;
 		}
 		++i;
+	}
+}
+
+void ControledBallManager::removeBall(ControledBall * ball)
+{
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i) == ball)
+		{
+			(*i)->removeFromParent();
+			delete (*i);
+			*i = nullptr;
+			i = controled_ball_list_.erase(i);
+			return;
+		}
 	}
 }
 
@@ -92,7 +108,7 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 	}
 }
 
-std::list<ControledBall*> ControledBallManager::divideBall(cocos2d::Vec2 target)
+void ControledBallManager::divideBall(cocos2d::Vec2 target)
 {
 	auto position = this->getPosition();
 	std::list<ControledBall*> append_list;
@@ -102,6 +118,7 @@ std::list<ControledBall*> ControledBallManager::divideBall(cocos2d::Vec2 target)
 		{
 			(*i)->divide();
 			auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
+			ball->setManager(this);
 			ball->changeDividedState();
 			father_->addChild(ball);
 			ball->setPosition((*i)->getPosition());
@@ -109,7 +126,7 @@ std::list<ControledBall*> ControledBallManager::divideBall(cocos2d::Vec2 target)
 		}
 	}
 	controled_ball_list_.insert(controled_ball_list_.end(),append_list.begin(),append_list.end());
-	return append_list;
+	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
 }
 
 const std::list<ControledBall*> &ControledBallManager::getBallList() const
@@ -117,31 +134,54 @@ const std::list<ControledBall*> &ControledBallManager::getBallList() const
 	return controled_ball_list_;
 }
 
-std::list<ControledBall*> ControledBallManager::checkSwallowBall(std::list<ControledBall*> ball_list)
+void ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list)
 {
-	std::list<ControledBall*> result;
-	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	checkSwallowBall(food_ball_list);
+	checkSwallowBall(controled_ball_list);
+	this->updateState();
+	for (auto i = food_ball_list.begin(); i != food_ball_list.end();)
+	{
+		if (!(*i)->isUsed())
+		{
+			(*i)->removeFromParent();
+			(*i) = nullptr;
+			i = food_ball_list.erase(i);
+			continue;
+		}
+		++i;
+	}
+	for (auto i = controled_ball_list.begin(); i != controled_ball_list.end();)
 	{
 		if ((*i)->isDelete())
 		{
-			auto temp = (*i)->checkSwallowBall(ball_list);
-			result.insert(result.end(), temp.begin(), temp.end());
+			(*i)->getManager()->removeBall(*i);
+			(*i) = nullptr;
+			i = controled_ball_list.erase(i);
+			continue;
 		}
+		++i;
 	}
-	return result;
 }
-std::list<FoodBall*> ControledBallManager::checkSwallowBall(std::list<FoodBall*> ball_list)
+
+void ControledBallManager::checkSwallowBall(const std::list<ControledBall*> &ball_list)
 {
-	std::list<FoodBall*> result;
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
-		if ((*i)->isDelete())
+		if (!(*i)->isDelete())
 		{
-			auto temp = (*i)->checkSwallowBall(ball_list);
-			result.insert(result.end(), temp.begin(), temp.end());
+			(*i)->checkSwallowBall(ball_list);
 		}
 	}
-	return result;
+}
+void ControledBallManager::checkSwallowBall(const std::list<FoodBall*> &ball_list)
+{
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if (!(*i)->isDelete())
+		{
+			(*i)->checkSwallowBall(ball_list);
+		}
+	}
 }
 
 bool ControledBallManager::isDead()
@@ -154,7 +194,17 @@ void ControledBallManager::die()
 	is_dead_ = true;
 }
 
-ControledBallManager * ControledBallManager::createManager()
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list)
+{
+	return createManager(all_controled_ball_list, Vec2::ZERO);
+}
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position)
+{
+	std::string name = "guest";
+	return createManager(all_controled_ball_list, position, name);
+}
+
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position, std::string name)
 {
 	std::string color_directory;
 	for (auto i = 0; i != kUsedColor.size(); ++i)
@@ -165,17 +215,18 @@ ControledBallManager * ControledBallManager::createManager()
 			color_directory = BaseBall::kColorDirectoryVec[i];
 		}
 	}
-	return createManager(color_directory);
+	return createManager(all_controled_ball_list, position, name,color_directory);
 }
 
 
-ControledBallManager * ControledBallManager::createManager(std::string color_directory)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position,
+														   std::string name,std::string color_directory)
 {
 	auto manager = new ControledBallManager();
 
 	if (manager&&manager->init())
 	{
-		manager->initManager(color_directory);
+		manager->initManager(all_controled_ball_list,position, name, color_directory);
 		manager->autorelease();
 		return manager;
 	}
@@ -193,10 +244,17 @@ bool ControledBallManager::init()
 	return true;
 }
 
-void ControledBallManager::initManager(std::string color_directory)
+void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position,
+									   std::string name, std::string color_directory)
 {
 	auto ball = ControledBall::createControledBall(color_directory);
+	ball->setPosition(position);
+	this->setPosition(position);
+	name_ = name;
+	ball->setManager(this);
 	controled_ball_list_.push_back(ball);
+	all_controled_ball_list_ = all_controled_ball_list;
+	all_controled_ball_list_->push_back(ball);
 	speed_ = ball->getSpeed();
 	color_directory_ = color_directory;
 	is_dead_ = false;
@@ -210,3 +268,4 @@ ControledBallManager::~ControledBallManager()
 		(*i) = nullptr;
 	}
 }
+

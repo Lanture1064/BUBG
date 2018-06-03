@@ -28,7 +28,7 @@ bool FoodBall::init()
 	size_ = ScoreToSize(score_);
 	is_used_ = false;
 	auto visible_size = Director::getInstance()->getVisibleSize();
-	this->setScale(size_ / visible_size.width);
+	this->setScale(size_ / this->getContentSize().width);
 	return true;
 }
 

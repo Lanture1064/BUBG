@@ -27,10 +27,10 @@ public:
 	double getSpeed() const;
 	//the function return the list of the food which would be swallowed
 	//but it does not operate on the food;
-	std::list<FoodBall*> checkSwallowBall(const std::list<FoodBall*> &food_ball_list);
+	void checkSwallowBall(const std::list<FoodBall*> &food_ball_list);
 	//the function return the list of the controled ball which would be swallowed
 	//but it does not operate on these ball;
-	std::list<ControledBall*> checkSwallowBall(const std::list<ControledBall*> &controled_ball_list);
+	void checkSwallowBall(const std::list<ControledBall*> &controled_ball_list);
 	ControledBallManager* getManager() const;
 	void setManager(ControledBallManager* manager);
 	void divide();

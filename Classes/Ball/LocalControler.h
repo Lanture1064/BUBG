@@ -11,8 +11,8 @@ class LocalControler : public cocos2d::Layer
 {
 public:
 	virtual bool init();
-	void initControler(ControledBallManager* manager, std::list<ControledBall*>* ball_list);
-	static LocalControler* createControler(ControledBallManager* manager, std::list<ControledBall*>* ball_list);
+	void initControler(ControledBallManager* manager, std::list<ControledBall*> *ball_list);
+	static LocalControler* createControler(ControledBallManager* manager, std::list<ControledBall*> *ball_list);
 	CREATE_FUNC(LocalControler);
 	LocalControler() = default;
 	~LocalControler();

@@ -42,14 +42,12 @@ bool BallTestScene::init()
 		food_layer->addChild(*i);
 	}
 
-	auto controled_ball_manager = ControledBallManager::createManager();
-	auto ball_list = new std::list<ControledBall*>();
-	auto temp_list = controled_ball_manager->getBallList();
-	ball_list->insert(ball_list->end(), temp_list.begin(), temp_list.end());
+	auto controled_ball_manager = ControledBallManager::createManager(&ball_container_);
 	controled_ball_manager->addFatherScene(this);
 	controled_ball_manager->setTag(g_kControledManagerFlag);
-	auto layer = LocalControler::createControler(controled_ball_manager, ball_list);
+	auto layer = LocalControler::createControler(controled_ball_manager, &ball_container_);
 	this->addChild(layer);
+	this->scheduleUpdate();
 #else
 	Sprite *bg = Sprite::create("menu/background.png");
 	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
@@ -136,6 +134,11 @@ void BallTestScene::createTenFood(cocos2d::Object * pSender)
 void BallTestScene::returnMenu(cocos2d::Object * pSender)
 {
 	Director::getInstance()->end();
+}
+void BallTestScene::update(float dt)
+{
+	auto manager = static_cast<ControledBallManager*>(this->getChildByTag(g_kControledManagerFlag));
+	manager->swallow(food_container_,ball_container_);
 }
 inline double getDoubleRand(unsigned int range)
 {

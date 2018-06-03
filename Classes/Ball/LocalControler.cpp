@@ -12,7 +12,7 @@ bool LocalControler::init()
 	return true;
 }
 
-void LocalControler::initControler(ControledBallManager * manager, std::list<ControledBall*>* ball_list)
+void LocalControler::initControler(ControledBallManager * manager, std::list<ControledBall*> *ball_list)
 {
 	manager_ = manager;
 	ball_list_ = ball_list;
@@ -30,8 +30,7 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 		switch (key_code)
 		{
 		case EventKeyboard::KeyCode::KEY_SPACE:
-			temp = manager_->divideBall(mouse_position_);
-			ball_list_->insert(ball_list_->end(), temp.begin(), temp.end());
+			manager_->divideBall(mouse_position_);
 			break;
 		default:
 			break;
@@ -42,7 +41,7 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 	this->scheduleUpdate();
 }
 
-LocalControler * LocalControler::createControler(ControledBallManager * manager, std::list<ControledBall*>* ball_list)
+LocalControler * LocalControler::createControler(ControledBallManager * manager, std::list<ControledBall*> *ball_list)
 {
 	auto controler = new LocalControler();
 	if (controler&&controler->init())
@@ -55,8 +54,11 @@ LocalControler * LocalControler::createControler(ControledBallManager * manager,
 	return nullptr;
 }
 
+
 LocalControler::~LocalControler()
-{}
+{
+
+}
 
 void LocalControler::update(float dt)
 {

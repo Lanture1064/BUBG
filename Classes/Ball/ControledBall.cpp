@@ -56,8 +56,7 @@ void ControledBall::initControledBall(int score,std::string color_directory)
 	is_delete_ = false;
 	is_divided_ = false;
 	time_count_ = 0;
-	auto visible_size = Director::getInstance()->getVisibleSize();
-	this->setScale(size_ / visible_size.width);
+	this->setScale(size_ / this->getContentSize().width);
 	this->setZOrder(score_);
 }
 
@@ -67,37 +66,35 @@ double ControledBall::getSpeed() const
 	return speed_;
 }
 
-std::list<FoodBall*> ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
+void ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
 {
-	std::list<FoodBall*> result_list;
 	auto position = this->getPosition();
 	for (auto i = food_ball_list.begin(); i != food_ball_list.end(); ++i)
 	{
-		auto food_position = (*i)->getPosition();
-		if (calDistence(position, food_position) < size_*size_)
+		if ((*i)->isUsed())
 		{
-			result_list.push_back(*i);
-			temp_ball_storage_.push_back(*i);
+			auto food_position = (*i)->getPosition();
+			if (calDistence(position, food_position) < size_*size_)
+			{
+				(*i)->changeUsedState();
+				temp_ball_storage_.push_back(*i);
+			}
 		}
 	}
-	return result_list;
 }
 
-std::list<ControledBall*> ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_ball_list)
+void ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_ball_list)
 {
-	std::list<ControledBall*> result_list;
 	auto position = this->getPosition();
 	for (auto i = controled_ball_list.begin(); i != controled_ball_list.end(); ++i)
 	{
 		auto ball_position = (*i)->getPosition();
 		if (std::sqrt(calDistence(position, ball_position))+(*i)->size_ < size_)
 		{
-			result_list.push_back(*i);
 			temp_ball_storage_.push_back(*i);
 			(*i)->is_delete_ = true;
 		}
 	}
-	return result_list;
 }
 
 ControledBallManager * ControledBall::getManager() const
@@ -124,8 +121,7 @@ void ControledBall::updateState()
 	}
 	size_ = ScoreToSize(score_);
 	speed_ = ScoreToSpeed(score_);
-	auto visible_size = Director::getInstance()->getVisibleSize();
-	this->setScale(size_ / visible_size.width);
+	this->setScale(size_ / this->getContentSize().width);
 	this->setZOrder(score_);
 	temp_ball_storage_.clear();
 }
@@ -169,5 +165,5 @@ double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 
 double ScoreToSpeed(int score)
 {
-	return 10000/score;
+	return 10000/std::sqrt(score);
 }

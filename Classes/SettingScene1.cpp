@@ -27,14 +27,14 @@ bool Setting::init()
 		return false;
 	}
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Size visible_size = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Sprite *bg = Sprite::create("menu/background.png");
+	Sprite *bg = Sprite::create("menu/background_setting.jpg");
 
 	// position the label on the center of the screen
-	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-		origin.y + visibleSize.height / 2));
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
 	this->addChild(bg);
 
 	//“Ù–ß

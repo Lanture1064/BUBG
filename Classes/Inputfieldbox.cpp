@@ -1,4 +1,4 @@
-#include "inputfield.h"
+#include "Inputfieldbox.h"
 #include "extensions\cocos-ext.h"  
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -31,7 +31,7 @@ bool Inputfield::init()
 	Size visible_size = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	Sprite *bg = Sprite::create("menu/background.png");
+	Sprite *bg = Sprite::create("menu/background_box.jpg");
 
 	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
@@ -44,17 +44,17 @@ bool Inputfield::init()
 		"menu/ok-up.png",
 		CC_CALLBACK_1(Inputfield::menuOkCallback, this));
 
-	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 510)));
+	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(640, 560)));
 
 	//输入框
 	//输入框背景  
-	auto inputBox = Sprite::create("inputfield.png");
+	auto inputBox = Sprite::create("inputfield.jpg");
 	
 
     //输入框设置
 	auto editBox = EditBox::create(Size(inputBox->getContentSize().width, inputBox->getContentSize().height), Scale9Sprite::create("inputfield.png"));
 	//输入框的位置
-	editBox->setPosition(Director::getInstance()->convertToGL(Vec2(600, 300)));
+	editBox->setPosition(Director::getInstance()->convertToGL(Vec2(640, 400)));
 	//输入框所接受字符的最大数 
 	editBox->setMaxLength(15);  
 	//初始化文字 
@@ -62,7 +62,7 @@ bool Inputfield::init()
 	//文字颜色  
 	editBox->setFontColor(Color3B(255, 255, 255)); 
 	//设置文字的大小  
-	editBox->setFontSize(20);   
+	editBox->setFontSize(27);   
 	bg->addChild(editBox);
 
 

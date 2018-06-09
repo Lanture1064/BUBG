@@ -80,5 +80,3 @@ void Inputfield::menuOkCallback(Ref* pSender)
 	//change Scene from inputfield scene to balltestscene
 	Director::getInstance()->replaceScene(sc);
 }
-
-

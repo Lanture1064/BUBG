@@ -116,6 +116,11 @@ bool AppDelegate::applicationDidFinishLaunching() {
     // run
     director->runWithScene(scene);
 
+	//背景音乐初始化
+	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/music.mp3");
+	//音效初始化
+	SimpleAudioEngine::getInstance()->preloadEffect("sound/bubble.mp3");
+
     return true;
 }
 

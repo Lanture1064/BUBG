@@ -75,7 +75,7 @@ void ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
 		if ((*i)->isUsed())
 		{
 			auto food_position = (*i)->getPosition();
-			if (calDistence(position, food_position) < size_*size_/4)
+			if (calDistence(position, food_position) < 0.9*size_*size_/4)
 			{
 				(*i)->changeUsedState();
 				auto k=(*i)->getAnchorPoint();
@@ -173,6 +173,7 @@ void ControledBall::setDivideDirection(cocos2d::Vec2 direction)
 {
 	divide_direction_ = direction;
 }
+
 
 double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 {

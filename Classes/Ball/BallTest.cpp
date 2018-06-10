@@ -143,7 +143,8 @@ void BallTestScene::update(float dt)
 {
 	auto manager = static_cast<ControledBallManager*>(this->getChildByTag(g_kControledManagerFlag));
 	auto temp=manager->swallow(food_container_,ball_container_);
-	for (auto i = 0; i != temp.first; ++i) {
+	for (auto i = 0; i != temp.first; ++i)
+	{
 		auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 		auto food = food_manager->getNewFoodBall();
 		auto visible_size = Director::getInstance()->getVisibleSize();

@@ -93,18 +93,22 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		if ((*i)->isDivided())
 		{
 			//the ball dash when ball divided;
-			ratio = 4.0 - 3.0 * (*i)->getTimeCount() / 60.0;
-			if ((*i)->getTimeCount() == 0) {
+			ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60.0;
+			if ((*i)->getTimeCount() == 0)
+			{
 				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
 			}
 			auto direction = (*i)->getDivideDirection();
 			x_rate = speed_ * direction.x;
 			y_rate = speed_ * direction.y;
-			(*i)->countTime();
 			if ((*i)->getTimeCount() == 30)
 			{
 				(*i)->changeDividedState();
 				(*i)->resetTimeCount();
+			}
+			else
+			{
+				(*i)->countTime();
 			}
 		}
 		auto move = MoveBy::create(time, Vec2(x_rate*time * ratio, y_rate*time * ratio));

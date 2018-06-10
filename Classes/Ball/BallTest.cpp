@@ -52,7 +52,7 @@ bool BallTestScene::init()
 	controled_ball_manager->setZOrder(3);
 	this->addChild(layer);
 	this->scheduleUpdate();
-	Sprite *bg = Sprite::create("menu/background.png");
+	Sprite *bg = Sprite::create("menu/background_game.png");
 	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
 		origin.y + visible_size.height / 2));
 	bg->setZOrder(1);

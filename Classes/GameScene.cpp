@@ -17,8 +17,6 @@ Scene* Game::createScene()
 	return scene;
 }
 
-
-
 // on "init" you need to initialize your instance
 bool Game::init()
 {
@@ -29,18 +27,15 @@ bool Game::init()
 		return false;
 	}
 
-	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Size visible_size = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	Sprite *bg = Sprite::create("menu/background.png");
 
 	// position the label on the center of the screen
-	bg->setPosition(Vec2(origin.x + visibleSize.width / 2,
-		origin.y + visibleSize.height / 2));
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
 	this->addChild(bg);
-
-
-
 
 	return true;
 }

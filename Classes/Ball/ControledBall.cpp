@@ -56,6 +56,7 @@ void ControledBall::initControledBall(int score,std::string color_directory)
 	is_delete_ = false;
 	is_divided_ = false;
 	time_count_ = 0;
+	divide_direction_ = Vec2::ZERO;
 	this->setScale(size_ / this->getContentSize().width);
 	this->setZOrder(score_);
 }
@@ -148,15 +149,29 @@ bool ControledBall::isDivided() const
 }
 
 
-int ControledBall::count()
+void ControledBall::countTime()
 {
 	++time_count_;
+}
+
+int ControledBall::getTimeCount() const
+{
 	return time_count_;
 }
 
 void ControledBall::resetTimeCount()
 {
 	time_count_ = 0;
+}
+
+cocos2d::Vec2 ControledBall::getDivideDirection() const
+{
+	return divide_direction_;
+}
+
+void ControledBall::setDivideDirection(cocos2d::Vec2 direction)
+{
+	divide_direction_ = direction;
 }
 
 double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)

@@ -93,9 +93,15 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		if ((*i)->isDivided())
 		{
 			//the ball dash when ball divided;
-			ratio = 4.0 - 3.0 * (*i)->count() / 60.0;
-
-			if ((*i)->count()==60)
+			ratio = 4.0 - 3.0 * (*i)->getTimeCount() / 60.0;
+			if ((*i)->getTimeCount() == 0) {
+				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+			}
+			auto direction = (*i)->getDivideDirection();
+			x_rate = speed_ * direction.x;
+			y_rate = speed_ * direction.y;
+			(*i)->countTime();
+			if ((*i)->getTimeCount() == 30)
 			{
 				(*i)->changeDividedState();
 				(*i)->resetTimeCount();
@@ -132,11 +138,12 @@ const std::list<ControledBall*> &ControledBallManager::getBallList() const
 	return controled_ball_list_;
 }
 
-void ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list)
+std::pair<unsigned int,unsigned int> ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list)
 {
 	checkSwallowBall(food_ball_list);
 	checkSwallowBall(controled_ball_list);
 	this->updateState();
+	std::pair<unsigned int, unsigned int> result = std::make_pair<unsigned int, unsigned>(0, 0);
 	for (auto i = food_ball_list.begin(); i != food_ball_list.end();)
 	{
 		if (!(*i)->isUsed())
@@ -144,6 +151,7 @@ void ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::li
 			(*i)->removeFromParent();
 			(*i) = nullptr;
 			i = food_ball_list.erase(i);
+			result.first++;
 			continue;
 		}
 		++i;
@@ -155,10 +163,12 @@ void ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::li
 			(*i)->getManager()->removeBall(*i);
 			(*i) = nullptr;
 			i = controled_ball_list.erase(i);
+			result.second++;
 			continue;
 		}
 		++i;
 	}
+	return result;
 }
 
 void ControledBallManager::checkSwallowBall(const std::list<ControledBall*> &ball_list)
@@ -182,15 +192,11 @@ void ControledBallManager::checkSwallowBall(const std::list<FoodBall*> &ball_lis
 	}
 }
 
-bool ControledBallManager::isDead()
+unsigned int ControledBallManager::isDead()
 {
-	return is_dead_;
+	return controled_ball_list_.size();
 }
 
-void ControledBallManager::die()
-{
-	is_dead_ = true;
-}
 
 ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list)
 {
@@ -255,7 +261,6 @@ void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_
 	all_controled_ball_list_->push_back(ball);
 	speed_ = ball->getSpeed();
 	color_directory_ = color_directory;
-	is_dead_ = false;
 }
 
 ControledBallManager::~ControledBallManager()

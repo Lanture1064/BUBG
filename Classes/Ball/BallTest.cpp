@@ -142,7 +142,17 @@ void BallTestScene::returnMenu(cocos2d::Object * pSender)
 void BallTestScene::update(float dt)
 {
 	auto manager = static_cast<ControledBallManager*>(this->getChildByTag(g_kControledManagerFlag));
-	manager->swallow(food_container_,ball_container_);
+	auto temp=manager->swallow(food_container_,ball_container_);
+	for (auto i = 0; i != temp.first; ++i) {
+		auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
+		auto food = food_manager->getNewFoodBall();
+		auto visible_size = Director::getInstance()->getVisibleSize();
+		auto origin = Director::getInstance()->getVisibleOrigin();
+		food->setPosition(Vec2(origin.x + getDoubleRand(visible_size.width), origin.y + getDoubleRand(visible_size.height)));
+		food_container_.push_back(food);
+		auto layer = static_cast<Layer*>(this->getChildByTag(g_kFoodFlag));
+		layer->addChild(food);
+	}
 }
 inline double getDoubleRand(unsigned int range)
 {

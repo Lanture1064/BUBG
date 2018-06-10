@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <vector>
+#include <utility>
 
 class ControledBall;
 class FoodBall;
@@ -17,7 +18,6 @@ protected:
 	std::list<ControledBall*> controled_ball_list_;
 	double speed_;
 	cocos2d::Node* father_;
-	bool is_dead_;
 	std::string color_directory_;
 	std::string name_;
 public:
@@ -32,11 +32,12 @@ public:
 	void moveTo(double time,cocos2d::Vec2 target);
 	void divideBall(cocos2d::Vec2 target);
 	const std::list<ControledBall*> &getBallList() const;
-	void swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list);
+	//the first value return is the number of the food swallowed,
+	//the second value is the number of the controled ball swallowed;
+	std::pair<unsigned int,unsigned int> swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list);
 	void checkSwallowBall(const std::list<ControledBall*> &ball_list);
 	void checkSwallowBall(const std::list<FoodBall*> &ball_list);
-	bool isDead();
-	void die();
+	unsigned int isDead();
 	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list);
 	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position);
 	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name);

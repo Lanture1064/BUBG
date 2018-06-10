@@ -39,8 +39,12 @@ public:
 	std::string getColorDirectory() const;
 	void changeDividedState();
 	bool isDivided() const;
-	int count();
+	void countTime();
+	int getTimeCount() const;
 	void resetTimeCount();
+	//the function is used to get the direction of the ball which is divided;
+	cocos2d::Vec2 getDivideDirection() const;
+	void setDivideDirection(cocos2d::Vec2 direction);
 protected:
 	ControledBallManager * manager_;
 	double speed_;
@@ -50,6 +54,7 @@ protected:
 	std::string color_directory_;
 	bool is_divided_;
 	int time_count_;
+	cocos2d::Vec2 divide_direction_;
 };
 #endif // !BUBG_CLASSES_BALL_CONTROLED_BALL_H_
 

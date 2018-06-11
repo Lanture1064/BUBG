@@ -13,7 +13,6 @@ class FoodBall;
 class ControledBallManager : public cocos2d::Node
 {
 protected:
-	static int new_id;
 	int id_;
 	std::list<ControledBall*>* all_controled_ball_list_;
 	static std::vector<bool> kUsedColor;
@@ -24,6 +23,7 @@ protected:
 	std::string name_;
 public:
 	int getId() const;
+	void setId(int id);
 	//please use it to add child to the scene;
 	//Notice: the function only can be used once;
 	void addFatherScene(cocos2d::Node* father);

@@ -5,11 +5,15 @@
 USING_NS_CC;
 
 std::vector<bool> ControledBallManager::kUsedColor(kColorNumber, false);
-int ControledBallManager::new_id = 0x0000;
 
 int ControledBallManager::getId() const
 {
 	return id_;
+}
+
+void ControledBallManager::setId(int id)
+{
+	id_ = id;
 }
 
 void ControledBallManager::addFatherScene(cocos2d::Node * father)
@@ -271,8 +275,7 @@ void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_
 	all_controled_ball_list_->push_back(ball);
 	speed_ = ball->getSpeed();
 	color_directory_ = color_directory;
-	id_ = new_id;
-	new_id++;
+	id_ = -1;
 }
 
 ControledBallManager::~ControledBallManager()

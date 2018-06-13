@@ -1,10 +1,10 @@
 #ifndef BUBU_CLASSES_NET_NETDATA_H_
 #define BUBU_CLASSES_NET_NETDATA_H_
 
-#include "Boost\asio.hpp"
+#include <Boost/asio.hpp>
+#include <memory>
 
 #define PORT 2018
-
 //the command means the server end the game;
 #define EXIT 0x0000
 
@@ -24,8 +24,14 @@
 //the command is used to return the id to the new player;
 #define REPLAY_NEW_PLAYER 0x0006
 
+#define END_GAME 0x0007
+
+#define COMMAND_END 0x0008
+
+#define WAITTING 0x0009
 struct CommandImformation
 {
+	CommandImformation() :command(-1), id(0), x(0), y(0){ }
 	int command;
 	int id;
 	float x;
@@ -33,9 +39,9 @@ struct CommandImformation
 };
 struct Player
 {
-	typedef boost::asio::ip::address address;
+	typedef boost::asio::ip::tcp::socket socket;
 	int id;
-	address ip;
+	std::shared_ptr<socket> sock;
 };
 #endif // !BUBU_CLASSES_NET_NETDATA_H_
 

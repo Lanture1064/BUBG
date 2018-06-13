@@ -2,7 +2,6 @@
 #define BUBG_CLASSES_NET_SERVER_H_
 
 #include <vector>
-#include <string>
 #include "NetData.h"
 #include <Boost/asio.hpp>
 class Server
@@ -24,7 +23,7 @@ public:
 protected:
 	Server();
 	~Server();
-	Server& operator=(Server& )=delete;
+	Server& operator=(const Server& )=delete;
 	static int new_id;
 	bool is_wait_;
 	std::vector<Player> players_data_;

@@ -40,6 +40,7 @@ struct CommandImformation
 struct Player
 {
 	typedef boost::asio::ip::tcp::socket socket;
+	Player():id(-1),sock(nullptr) { }
 	int id;
 	std::shared_ptr<socket> sock;
 };

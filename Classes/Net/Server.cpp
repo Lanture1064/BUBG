@@ -85,12 +85,8 @@ void Server::replayCommand()
 					replay.command = REPLAY_NEW_PLAYER;
 					replay.id = j->id;
 					buf.push_back(replay);
+					break;
 				}
-				else
-				{
-					buf.push_back(*i);
-				}
-				j->sock->send(boost::asio::buffer(buf));
 			}
 			player_data_lock_.unlock();
 			break;

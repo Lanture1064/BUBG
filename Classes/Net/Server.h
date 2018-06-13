@@ -2,6 +2,7 @@
 #define BUBG_CLASSES_NET_SERVER_H_
 
 #include <vector>
+#include <string>
 #include "NetData.h"
 #include <Boost/asio.hpp>
 class Server

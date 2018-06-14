@@ -2,7 +2,6 @@
 #define  _APP_DELEGATE_H_
 
 #include "cocos2d.h"
-
 #include "SimpleAudioEngine.h"
 
 using namespace CocosDenshion;

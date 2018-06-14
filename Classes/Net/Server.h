@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include <thread>
 #include "NetData.h"
 #include <Boost/asio.hpp>
 class Server
@@ -11,9 +12,13 @@ class Server
 	typedef boost::asio::ip::tcp::endpoint endpoint;
 public:
 	static Server* getInstance();
+	//clear the data when game end;
 	void claer();
+	//get connect with the clients and add to players_data;
 	void connect();
+	//get the command from other client;
 	void getCommand();
+	//send command to client;
 	void replayCommand();
 	void beginWait();
 	void endWait();

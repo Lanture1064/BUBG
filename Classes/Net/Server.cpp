@@ -68,45 +68,50 @@ void Server::getCommand()
 
 void Server::replayCommand()
 {
-	net_command_lock_.lock();
-	for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
+	for (;;)
 	{
-		switch (i->command)
+
+		net_command_lock_.lock();
+		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
 		{
-		case NEW_PLAYER:
-			player_data_lock_.lock();
-			for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
+			switch (i->command)
 			{
-				std::vector<CommandImformation> buf;
-				buf.clear();
-				if (j->id == i->id)
+			case NEW_PLAYER:
+				player_data_lock_.lock();
+				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
-					CommandImformation replay;
-					replay.command = REPLAY_NEW_PLAYER;
-					replay.id = j->id;
-					buf.push_back(replay);
-					break;
+					std::vector<CommandImformation> buf;
+					buf.clear();
+					if (j->id == i->id)
+					{
+						CommandImformation replay;
+						replay.command = REPLAY_NEW_PLAYER;
+						replay.id = j->id;
+						buf.push_back(replay);
+						break;
+					}
 				}
-			}
-			player_data_lock_.unlock();
-			break;
-		case DIRECTION:
-			player_data_lock_.lock();
-			for (auto j = players_data_.begin(); j = players_data_.end(); ++j)
-			{
-				std::vector<CommandImformation> buf;
-				buf.clear();
-				if (j->id != i->id)
+				player_data_lock_.unlock();
+				break;
+			case DIRECTION:
+				player_data_lock_.lock();
+				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
-					buf.push_back(*i);
-					j->sock->send(boost::asio::buffer(buf));
+					std::vector<CommandImformation> buf;
+					buf.clear();
+					if (j->id != i->id)
+					{
+						buf.push_back(*i);
+						j->sock->send(boost::asio::buffer(buf));
+					}
 				}
+				player_data_lock_.unlock();
+				break;
+			default:
+				break;
 			}
-			player_data_lock_.unlock();
-			break;
-		default:
-			break;
 		}
+		net_command_lock_.unlock();
 	}
 }
 

@@ -4,6 +4,8 @@
 #include <cmath>
 USING_NS_CC;
 
+using namespace CocosDenshion;
+
 std::vector<bool> ControledBallManager::kUsedColor(kColorNumber, false);
 
 void ControledBallManager::addFatherScene(cocos2d::Node * father)
@@ -135,6 +137,9 @@ void ControledBallManager::divideBall(cocos2d::Vec2 target)
 	}
 	controled_ball_list_.insert(controled_ball_list_.end(),append_list.begin(),append_list.end());
 	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
+	}
 }
 
 const std::list<ControledBall*> &ControledBallManager::getBallList() const

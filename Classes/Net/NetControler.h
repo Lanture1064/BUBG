@@ -5,7 +5,7 @@
 #include <thread>
 #include <vector>
 
-class CommandImformation;
+struct CommandImformation;
 class ControledBallManager;
 
 class NetControler : public cocos2d::Layer

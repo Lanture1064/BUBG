@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 #include <utility>
-#include "SettingHeader.h"
+#include "../SettingHeader.h"
 
 class ControledBall;
 class FoodBall;

@@ -1,3 +1,5 @@
+#include "SimpleAudioEngine.h"
+#include "../SettingHeader.h"
 #include "ControledBallManager.h"
 #include "ControledBall.h"
 #include "FoodBall.h"

@@ -1,12 +1,12 @@
 #ifndef BUBG_CLASSES_NET_NET_CONTROLER_H_
 #define BUBG_CLASSES_NET_NET_CONTROLER_H_
 
-#include "Client.h"
-#include "Server.h"
 #include "cocos2d.h"
-#include "../Ball/Ball.h"
 #include <thread>
 #include <vector>
+
+class CommandImformation;
+class ControledBallManager;
 
 class NetControler : public cocos2d::Layer
 {

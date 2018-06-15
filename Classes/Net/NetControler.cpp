@@ -1,4 +1,6 @@
 #include "NetControler.h"
+#include "../Ball/ControledBallManager.h"
+#include "NetData.h"
 
 USING_NS_CC;
 

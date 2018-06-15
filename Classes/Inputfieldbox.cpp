@@ -3,6 +3,8 @@
 USING_NS_CC_EXT;
 USING_NS_CC;
 
+using namespace CocosDenshion;
+
 Scene* Inputfield::createScene()
 {
 	// 'scene' is an autorelease object
@@ -79,4 +81,8 @@ void Inputfield::menuOkCallback(Ref* pSender)
 	auto sc = BallTestScene::createScene();
 	//change Scene from inputfield scene to balltestscene
 	Director::getInstance()->replaceScene(sc);
+
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }

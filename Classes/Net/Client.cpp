@@ -23,9 +23,11 @@ Client * Client::getInstance()
 
 void Client::addNetCommand(CommandImformation command)
 {
-	net_command_lock_.lock();
-	net_command_buffer_.push_back(command);
-	net_command_lock_.unlock();
+	if (net_command_lock_.try_lock())
+	{
+		net_command_buffer_.push_back(command);
+		net_command_lock_.unlock();
+	}
 }
 
 std::vector<CommandImformation> Client::getLocalCommand()
@@ -86,15 +88,18 @@ void Client::getCommand()
 
 void Client::replayCommand()
 {
-	net_command_lock_.lock();
-	for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
+	for (;;)
 	{
-		std::vector<CommandImformation> buf;
-		buf.push_back(*i);
-		player_.sock->send(boost::asio::buffer(buf));
+		net_command_lock_.lock();
+		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
+		{
+			std::vector<CommandImformation> buf;
+			buf.push_back(*i);
+			player_.sock->send(boost::asio::buffer(buf));
+		}
+		net_command_buffer_.clear();
+		net_command_lock_.unlock();
 	}
-	net_command_buffer_.clear();
-	net_command_lock_.unlock();
 }
 
 void Client::setServerIp(std::string ip)

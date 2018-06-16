@@ -11,9 +11,9 @@ Server * Server::getInstance()
 void Server::claer()
 {
 	is_wait_ = false;
-	player_data_lock_.lock();
+	new_id = 0x0001;
 	players_data_.clear();
-	player_data_lock_.unlock();
+	Player server_player;
 	net_command_lock_.lock();
 	net_command_buffer_.clear();
 	local_command_lock_.lock();
@@ -30,23 +30,50 @@ void Server::connect()
 	{
 		sock = std::make_shared<Player::socket>(service_);
 		aceptor.accept(*sock);
+		auto buf = std::vector<CommandImformation>(1);
+		sock->receive(boost::asio::buffer(buf));
 		new_player.id = new_id;
 		new_id++;
 		new_player.sock = sock;
-		if (is_wait_)
+		if (is_wait_&&buf.begin()->command==NEW_PLAYER)
 		{
-			player_data_lock_.lock();
+			buf.clear();
+			CommandImformation temp;
+			temp.command = REPLAY_NEW_PLAYER;
+			temp.id = new_player.id;
+			buf.push_back(temp);
+			new_player.sock->send(boost::asio::buffer(buf));
+			buf.clear();
+			temp.command = NEW_PLAYER;
+
+			//send the server player imformation;
+			temp.id = 0x0000;
+			buf.push_back(temp);
+			new_player.sock->send(boost::asio::buffer(buf));
+			buf.clear();
+
+			for (auto player = players_data_.begin(); player != players_data_.end(); ++player)
+			{
+				//send the imformation of the player who was connected;
+				temp.id = player->id;
+				buf.push_back(temp);
+				new_player.sock->send(boost::asio::buffer(buf));
+				buf.clear();
+				//send the new player imformation;
+				temp.id = new_player.id;
+				buf.push_back(temp);
+				player->sock->send(boost::asio::buffer(buf));
+				buf.clear();
+			}
 			players_data_.push_back(new_player);
-			player_data_lock_.unlock();
 		}
 	}
 }
 
 void Server::getCommand()
 {
-	while (is_wait_)
+	while (true)
 	{
-		player_data_lock_.lock();
 		for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 		{
 			if ((*i).sock->available())
@@ -62,7 +89,6 @@ void Server::getCommand()
 				}
 			}
 		}
-		player_data_lock_.unlock();
 	}
 }
 
@@ -77,7 +103,6 @@ void Server::replayCommand()
 			switch (i->command)
 			{
 			case NEW_PLAYER:
-				player_data_lock_.lock();
 				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
 					std::vector<CommandImformation> buf;
@@ -91,10 +116,8 @@ void Server::replayCommand()
 						break;
 					}
 				}
-				player_data_lock_.unlock();
 				break;
 			case DIRECTION:
-				player_data_lock_.lock();
 				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
 					std::vector<CommandImformation> buf;
@@ -105,7 +128,6 @@ void Server::replayCommand()
 						j->sock->send(boost::asio::buffer(buf));
 					}
 				}
-				player_data_lock_.unlock();
 				break;
 			default:
 				break;
@@ -117,16 +139,11 @@ void Server::replayCommand()
 
 void Server::beginWait()
 {
-	player_data_lock_.lock();
 	is_wait_ = true;
-	player_data_lock_.unlock();
 }
-
 void Server::endWait()
 {
-	player_data_lock_.lock();
 	is_wait_ = false;
-	player_data_lock_.unlock();
 }
 
 
@@ -148,11 +165,14 @@ bool Server::excuteCommand(CommandImformation command)
 
 std::vector<CommandImformation> Server::getLocalCommand()
 {
-	local_command_lock_.lock();
-	auto temp = local_command_buffer_;
-	local_command_buffer_.clear();
-	local_command_lock_.unlock();
-	return temp;
+	if (local_command_buffer_.size())
+	{
+		local_command_lock_.lock();
+		auto temp = local_command_buffer_;
+		local_command_buffer_.clear();
+		local_command_lock_.unlock();
+		return temp;
+	}
 }
 
 void Server::addNetCommand(CommandImformation command)
@@ -169,10 +189,15 @@ void Server::addNetCommand(std::vector<CommandImformation> command)
 	net_command_lock_.unlock();
 }
 
-Server::Server():is_wait_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),
-                 net_command_lock_(),local_command_lock_(), player_data_lock_(),service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),log_()
+const std::vector<Player>& Server::getPlayer() const
 {
-	
+	return players_data_;
+}
+
+Server::Server():is_wait_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),
+                 net_command_lock_(),local_command_lock_(), service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),log_()
+{
+
 }
 
 Server::~Server()

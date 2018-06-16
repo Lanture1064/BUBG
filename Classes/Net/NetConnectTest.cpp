@@ -5,6 +5,7 @@
 #include "Server.h"
 #include "NetData.h"
 
+
 int main()
 {
 	int temp;
@@ -14,6 +15,14 @@ int main()
 		Server::getInstance()->beginWait();
 		std::thread t1(&Server::connect, (Server::getInstance()));
 		t1.detach();
+		for (;;)
+		{
+			if (Server::getInstance()->getPlayer().size())
+			{
+				Server::getInstance()->endWait();
+				break;
+			}
+		}
 		std::thread t2(&Server::getCommand, (Server::getInstance()));
 		std::thread t3(&Server::replayCommand,(Server::getInstance()));
 		t2.detach();
@@ -30,9 +39,9 @@ int main()
 	else if (temp == 2)
 	{
 		Client::getInstance()->connect();
-		std::thread t1(&Client::getCommand,(Client::getInstance()));
+		//std::thread t1(&Client::getCommand,(Client::getInstance()));
 		std::thread t2(&Client::replayCommand,(Client::getInstance()));
-		t1.detach();
+		//t1.detach();
 		t2.detach();
 		for (;;)
 		{
@@ -46,5 +55,7 @@ int main()
 
 			Client::getInstance()->addNetCommand(command);
 		}
+		int l = 0;
 	}
+	return 0;
 }

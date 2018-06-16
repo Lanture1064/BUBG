@@ -26,6 +26,7 @@ public:
 	std::vector<CommandImformation> getLocalCommand();
 	void addNetCommand(CommandImformation coammand);
 	void addNetCommand(std::vector<CommandImformation> command);
+	const std::vector<Player>& getPlayer() const;
 protected:
 	Server();
 	~Server();
@@ -38,7 +39,6 @@ protected:
 	std::string log_;
 	std::mutex net_command_lock_;
 	std::mutex local_command_lock_;
-	std::mutex player_data_lock_;
 	io_service service_;
 	endpoint endpoint_;
 };

@@ -152,3 +152,8 @@ void Client::clear()
 
 	this->setServerIp("127.0.0.1");
 }
+
+int Client::getId() const
+{
+	return player_.id;
+}

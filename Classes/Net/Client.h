@@ -27,6 +27,7 @@ public:
 	void setServerIp(std::string ip);
 	bool excuteCommand(CommandImformation command);
 	void clear();
+	int getId() const;
 protected:
 	bool is_in_game_;
 	service service_;

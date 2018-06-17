@@ -110,11 +110,15 @@ void GameControler::initWithServer()
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
+		local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
+		this->addChild(local_controler_);
 		for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
 		{
 			Server::getInstance()->addNetCommand(command);
 		}
 	}
+	net_controler_ = NetControler::createControler();
+	this->addChild(net_controler_);
 	for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
 	{
 		command.id = player->id;
@@ -124,6 +128,7 @@ void GameControler::initWithServer()
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
+		net_controler_->addManager(manager);
 		for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
 		{
 			Server::getInstance()->addNetCommand(command);
@@ -157,6 +162,8 @@ void GameControler::initWithClient()
 	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
 
+	net_controler_ = NetControler::createControler();
+	this->addChild(net_controler_);
 	for (;;)
 	{
 		auto command_vec = Client::getInstance()->getLocalCommand();
@@ -175,6 +182,15 @@ void GameControler::initWithClient()
 				manager->setId(command->id);
 				manager->addFatherScene(controled_ball_layer);
 				manager_container_.push_back(manager);
+				if (manager->getId() == Client::getInstance()->getId())
+				{
+					local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
+					this->addChild(local_controler_);
+				}
+				else
+				{
+					net_controler_->addManager(manager);
+				}
 				break;
 			case INIT_END:
 				return;

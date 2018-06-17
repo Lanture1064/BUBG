@@ -3,7 +3,7 @@
 #include "ControledBallManager.h"
 #include "ControledBall.h"
 #include "FoodBall.h"
-#include <cmath>
+#include "../Tool/MathTool.h"
 USING_NS_CC;
 
 using namespace CocosDenshion;

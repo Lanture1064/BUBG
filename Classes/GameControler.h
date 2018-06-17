@@ -11,6 +11,8 @@
 class ControledBallManager;
 class ControledBall;
 class FoodBall;
+class LocalControler;
+class NetControler;
 
 //this class anchorpoint is Vec2::ZERO
 class GameControler : public cocos2d::Layer
@@ -25,7 +27,7 @@ public:
 	void initWithServer();
 	//when start game as client,call this function to init;
 	void initWithClient();
-	GameControler* createControler(bool state);
+	static GameControler* createControler(bool state);
 	CREATE_FUNC(GameControler);
 	
 	void update(float dt);
@@ -38,6 +40,8 @@ protected:
 	std::list<FoodBall*> food_list_;
 	std::list<ControledBall*> controled_ball_list_;
 	int state_;
+	LocalControler* local_controler_;
+	NetControler* net_controler_;
 };
 #endif // !BUBG_CLASSES_GAME_CONTROLER_H_
 

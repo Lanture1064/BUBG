@@ -226,3 +226,72 @@ void GameControler::update(float dt)
 		this->updateWithClient();
 	}
 }
+
+void GameControler::updateWithServer()
+{
+	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
+	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
+	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
+
+	CommandImformation command;
+	auto background_size = background->getBoundingBox().size;
+	command.command = NEW_FOOD;
+
+	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+	{
+		auto temp = (*manager)->swallow(food_list_, controled_ball_list_);
+		for (auto i = 0; i < temp.first; ++i)
+		{
+			auto food = food_manager->getNewFoodBall();
+			if (food)
+			{
+				food_list_.push_back(food);
+				food_layer->addChild(food);
+				auto x = getDoubleRand(background_size.width);
+				auto y = getDoubleRand(background_size.height);
+				food->setPosition(Vec2(x, y));
+				command.x = x;
+				command.y = y;
+				Server::getInstance()->addNetCommand(command);
+			}
+		}
+	}
+	int time = 0;
+	if (time=local_controler_->getDivideCount())
+	{
+		command.command = DIVIDE;
+		command.id = 0x0000;
+		Server::getInstance()->addNetCommand(command);
+	}
+	command.command = DIRECTION;
+	command.id = 0x0000;
+	auto position = local_controler_->getMousePosition();
+	command.x = position.x;
+	command.y = position.y;
+	Server::getInstance()->addNetCommand(command);
+
+}
+
+void GameControler::updateWithClient()
+{
+	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+	{
+		(*manager)->swallow(food_list_, controled_ball_list_);
+	}
+
+	CommandImformation command;
+	int time = 0;
+	if (time = local_controler_->getDivideCount())
+	{
+		command.command = DIVIDE;
+		command.id = Client::getInstance()->getId();
+		Client::getInstance()->addNetCommand(command);
+	}
+
+	command.command = DIRECTION;
+	command.id = Client::getInstance()->getId();
+	auto position = local_controler_->getMousePosition();
+	command.x = position.x;
+	command.y = position.y;
+	Client::getInstance()->addNetCommand(command);
+}

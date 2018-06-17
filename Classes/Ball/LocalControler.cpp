@@ -1,19 +1,9 @@
 #include "LocalControler.h"
 #include "ControledBall.h"
 #include "ControledBallManager.h"
+#include "../Net/Net.h"
 USING_NS_CC;
 
-bool LocalControler::isDivide() const
-{
-	return is_divide_;
-}
-
-void LocalControler::changeDivideState()
-{
-	lock_.lock();
-	is_divide_ = 1 - is_divide_;
-	lock_.unlock();
-}
 
 bool LocalControler::init()
 {
@@ -28,6 +18,7 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 {
 	manager_ = manager;
 	ball_list_ = ball_list;
+	divide_count_ = 0;
 
 	auto mouse_listener = EventListenerMouse::create();
 	mouse_listener->onMouseMove = [=](Event* mouse_event) {
@@ -43,6 +34,9 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 		{
 		case EventKeyboard::KeyCode::KEY_SPACE:
 			manager_->divideBall(mouse_position_);
+			divide_state_lock_.lock();
+			divide_count_++;
+			divide_state_lock_.unlock();
 			break;
 		default:
 			break;
@@ -76,4 +70,23 @@ void LocalControler::update(float dt)
 {
 	manager_->moveTo(Director::getInstance()->getDeltaTime(), Director::getInstance()->convertToGL(mouse_position_));
 	manager_->updateState();
+}
+
+int LocalControler::getDivideCount()
+{
+	divide_state_lock_.lock();
+	auto temp = divide_count_;
+	divide_count_ = 0;
+	divide_state_lock_.unlock();
+	return temp;
+}
+
+cocos2d::Vec2 LocalControler::getMousePosition() const
+{
+	return mouse_position_;
+}
+
+cocos2d::Vec2 LocalControler::getManagerPosition() const
+{
+	return manager_->getPosition();
 }

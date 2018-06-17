@@ -8,10 +8,6 @@
 class FoodBall;
 class ControledBallManager;
 
-//the funtion return the square of the two Vec2;
-double calDistence(const cocos2d::Vec2 &i,const cocos2d::Vec2 &j);
-double ScoreToSpeed(int score);
-
 class ControledBall : public BaseBall
 {
 public:

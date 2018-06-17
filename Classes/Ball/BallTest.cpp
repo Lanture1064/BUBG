@@ -155,7 +155,7 @@ void BallTestScene::update(float dt)
 		layer->addChild(food);
 	}
 }
-inline double getDoubleRand(unsigned int range)
+double getDoubleRand(unsigned int range)
 {
 	double x = rand() / static_cast<double>(RAND_MAX);
 	double y = rand() % range;

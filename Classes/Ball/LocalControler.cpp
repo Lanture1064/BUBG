@@ -3,6 +3,18 @@
 #include "ControledBallManager.h"
 USING_NS_CC;
 
+bool LocalControler::isDivide() const
+{
+	return is_divide_;
+}
+
+void LocalControler::changeDivideState()
+{
+	lock_.lock();
+	is_divide_ = 1 - is_divide_;
+	lock_.unlock();
+}
+
 bool LocalControler::init()
 {
 	if (!Layer::init())

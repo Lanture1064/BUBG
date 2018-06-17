@@ -7,9 +7,6 @@
 enum Color { BLUE, GRAY, GREEN, RED, YELLOW };
 const int kColorNumber = 5;
 
-//this function is transformed the score of the ball to the size of the ball;
-double ScoreToSize(unsigned int score);
-
 class BaseBall : public cocos2d::Sprite
 {
 public:

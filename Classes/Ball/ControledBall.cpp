@@ -1,8 +1,8 @@
 #include "ControledBall.h"
 #include "FoodBall.h"
 #include "BaseBall.h"
+#include "../Tool/MathTool.h"
 #include <string>
-#include <cmath>
 USING_NS_CC;
 
 
@@ -174,13 +174,3 @@ void ControledBall::setDivideDirection(cocos2d::Vec2 direction)
 	divide_direction_ = direction;
 }
 
-
-double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
-{
-	return (i.x - j.x)*(i.x - j.x) + (i.y - j.y)*(i.y - j.y);
-}
-
-double ScoreToSpeed(int score)
-{
-	return 2000/std::pow(score,0.3);
-}

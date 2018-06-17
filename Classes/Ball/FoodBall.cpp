@@ -1,5 +1,6 @@
 #include "FoodBall.h"
 #include "BaseBall.h"
+#include "../Tool/MathTool.h"
 #include <string>
 USING_NS_CC;
 

@@ -22,5 +22,4 @@ protected:
 	std::list<ControledBall*> ball_container_;
 	cocos2d::Vec2 mouse_position_;
 };
-double getDoubleRand(unsigned int range);
 #endif // !BUBG_CLASSES_BALL_BALL_TEXT_H_

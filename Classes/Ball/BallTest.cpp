@@ -1,5 +1,6 @@
 #include "BallTest.h"
 #include "Ball.h"
+#include "../Tool/MathTool.h"
 USING_NS_CC;
 #define SIMPLE_GAME_TEST
 const int g_kFoodFlag = 0;

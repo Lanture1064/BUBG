@@ -169,16 +169,19 @@ void GameControler::initWithClient()
 		auto command_vec = Client::getInstance()->getLocalCommand();
 		for (auto command = command_vec.begin(); command != command_vec.end(); ++command)
 		{
+			FoodBall* food = nullptr;
+			ControledBallManager* manager = nullptr;
+
 			switch (command->command)
 			{
 			case NEW_FOOD:
-				auto food = food_manager->getNewFoodBall();
+				food = food_manager->getNewFoodBall();
 				food_list_.push_back(food);
 				food_layer->addChild(food);
 				food->setPosition(command->x, command->y);
 				break;
 			case NEW_MANAGER:
-				auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
+				manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
 				manager->setId(command->id);
 				manager->addFatherScene(controled_ball_layer);
 				manager_container_.push_back(manager);
@@ -225,6 +228,15 @@ void GameControler::update(float dt)
 	{
 		this->updateWithClient();
 	}
+	auto manager_position = local_controler_->getManagerPosition();
+	auto this_position = this->getPosition();
+	cocos2d::Vec2 position, temp_position;
+	temp_position.x = manager_position.x + this_position.x;
+	temp_position.y = manager_position.y + this_position.y;
+	auto visible_size = Director::getInstance()->getVisibleSize();
+	position.x = this_position.x + (visible_size.width / 2 - temp_position.x);
+	position.y = this_position.y + (visible_size.height / 2 - temp_position.y);
+	this->setPosition(position);
 }
 
 void GameControler::updateWithServer()

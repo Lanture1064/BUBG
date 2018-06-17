@@ -17,9 +17,22 @@ double ScoreToSpeed(int score)
 	return 2000 / std::pow(score, 0.3);
 }
 
-double getDoubleRand(unsigned int range)
+double getDoubleRand(int range)
 {
 	double x = rand() / static_cast<double>(RAND_MAX);
 	double y = rand() % range;
 	return x + y;
+}
+void delay(int seconds)
+
+{
+
+	clock_t start = clock();
+
+	clock_t lay = (clock_t)seconds * CLOCKS_PER_SEC;
+
+	while ((clock() - start) < lay)
+	{
+		;
+	}
 }

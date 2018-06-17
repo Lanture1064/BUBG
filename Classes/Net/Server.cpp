@@ -10,12 +10,16 @@ Server * Server::getInstance()
 
 void Server::claer()
 {
+	is_in_game_ = false;
 	is_wait_ = false;
+	Sleep(10);
 	new_id = 0x0001;
 	players_data_.clear();
-	Player server_player;
+
 	net_command_lock_.lock();
 	net_command_buffer_.clear();
+	net_command_lock_.unlock();
+
 	local_command_lock_.lock();
 	local_command_buffer_.clear();
 	local_command_lock_.unlock();
@@ -26,7 +30,7 @@ void Server::connect()
 	boost::asio::ip::tcp::acceptor aceptor(service_, endpoint_);
 	std::shared_ptr<Player::socket>  sock;
 	Player new_player;
-	for (;;)
+	while(is_wait_)
 	{
 		sock = std::make_shared<Player::socket>(service_);
 		aceptor.accept(*sock);
@@ -72,7 +76,7 @@ void Server::connect()
 
 void Server::getCommand()
 {
-	while (true)
+	while (is_in_game_)
 	{
 		for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 		{
@@ -94,7 +98,7 @@ void Server::getCommand()
 
 void Server::replayCommand()
 {
-	for (;;)
+	while (is_in_game_)
 	{
 
 		net_command_lock_.lock();
@@ -146,6 +150,16 @@ void Server::endWait()
 	is_wait_ = false;
 }
 
+void Server::startGame()
+{
+	is_in_game_ = true;
+}
+
+void Server::endGame()
+{
+	is_in_game_ = false;
+}
+
 
 
 bool Server::excuteCommand(CommandImformation command)
@@ -194,7 +208,7 @@ const std::vector<Player>& Server::getPlayer() const
 	return players_data_;
 }
 
-Server::Server():is_wait_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),
+Server::Server():is_wait_(false),is_in_game_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),
                  net_command_lock_(),local_command_lock_(), service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),log_()
 {
 

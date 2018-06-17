@@ -22,9 +22,13 @@ public:
 	bool connect();
 	void getCommand();
 	void replayCommand();
+	void startGame();
+	void endGame();
 	void setServerIp(std::string ip);
 	bool excuteCommand(CommandImformation command);
+	void clear();
 protected:
+	bool is_in_game_;
 	service service_;
 	Player player_;
 	endpoint server_;

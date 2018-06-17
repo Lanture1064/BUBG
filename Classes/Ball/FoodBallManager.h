@@ -18,6 +18,7 @@ public:
 
 	FoodBall* getNewFoodBall();
 	std::list<FoodBall*> getNewFoodBall(unsigned int food_ball_number);
+	unsigned int getSize() const;
 	~FoodBallManager();
 	
 private:

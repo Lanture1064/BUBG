@@ -23,11 +23,9 @@ Client * Client::getInstance()
 
 void Client::addNetCommand(CommandImformation command)
 {
-	if (net_command_lock_.try_lock())
-	{
-		net_command_buffer_.push_back(command);
-		net_command_lock_.unlock();
-	}
+	net_command_lock_.lock();
+	net_command_buffer_.push_back(command);
+	net_command_lock_.unlock();
 }
 
 std::vector<CommandImformation> Client::getLocalCommand()
@@ -69,7 +67,7 @@ bool Client::connect()
 
 void Client::getCommand()
 {
-	for (;;)
+	while(is_in_game_)
 	{
 		if (player_.sock->available())
 		{
@@ -88,7 +86,7 @@ void Client::getCommand()
 
 void Client::replayCommand()
 {
-	for (;;)
+	while(is_in_game_)
 	{
 		net_command_lock_.lock();
 		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
@@ -100,6 +98,16 @@ void Client::replayCommand()
 		net_command_buffer_.clear();
 		net_command_lock_.unlock();
 	}
+}
+
+void Client::startGame()
+{
+	is_in_game_ = true;
+}
+
+void Client::endGame()
+{
+	is_in_game_ = true;
 }
 
 void Client::setServerIp(std::string ip)
@@ -127,4 +135,20 @@ bool Client::excuteCommand(CommandImformation command)
 		break;
 	}
 	return true;
+}
+
+void Client::clear()
+{
+	is_in_game_ = false;
+	Sleep(10);
+
+	net_command_lock_.lock();
+	net_command_buffer_.clear();
+	net_command_lock_.unlock();
+
+	local_command_lock_.lock();
+	local_command_buffer_.clear();
+	local_command_lock_.unlock();
+
+	this->setServerIp("127.0.0.1");
 }

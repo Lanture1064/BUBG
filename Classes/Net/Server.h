@@ -22,6 +22,8 @@ public:
 	void replayCommand();
 	void beginWait();
 	void endWait();
+	void startGame();
+	void endGame();
 	bool excuteCommand(CommandImformation command);
 	std::vector<CommandImformation> getLocalCommand();
 	void addNetCommand(CommandImformation coammand);
@@ -33,6 +35,7 @@ protected:
 	Server& operator=(const Server& )=delete;
 	static int new_id;
 	bool is_wait_;
+	bool is_in_game_;
 	std::vector<Player> players_data_;
 	std::vector<CommandImformation> net_command_buffer_;
 	std::vector<CommandImformation> local_command_buffer_;

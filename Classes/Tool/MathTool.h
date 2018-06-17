@@ -10,7 +10,9 @@ double ScoreToSize(unsigned int score);
 double calDistence(const cocos2d::Vec2 &i, const cocos2d::Vec2 &j);
 double ScoreToSpeed(int score);
 
-double getDoubleRand(unsigned int range);
+double getDoubleRand(int range);
+
+void delay(int seconds);
 
 #endif // !BUBG_CLASSES_TOOL_MATH_TOOL_H_
 

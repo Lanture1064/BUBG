@@ -94,6 +94,11 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 	return temp_container;
 }
 
+unsigned int FoodBallManager::getSize() const
+{
+	return size_;
+}
+
 FoodBallManager::~FoodBallManager()
 {
 	for (auto i = food_ball_container_.begin(); i != food_ball_container_.end(); ++i)

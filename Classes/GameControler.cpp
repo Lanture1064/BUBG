@@ -106,16 +106,15 @@ void GameControler::initWithServer()
 		command.id = 0x0000;
 		auto x = getDoubleRand(background_size.width);
 		auto y = getDoubleRand(background_size.height);
+		command.x = x;
+		command.y = y;
 		auto manager = ControledBallManager::createManager(&controled_ball_list_,Vec2(x,y));
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
 		local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
 		this->addChild(local_controler_);
-		for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
-		{
-			Server::getInstance()->addNetCommand(command);
-		}
+		Server::getInstance()->addNetCommand(command);
 	}
 	net_controler_ = NetControler::createControler();
 	this->addChild(net_controler_);
@@ -124,15 +123,14 @@ void GameControler::initWithServer()
 		command.id = player->id;
 		auto x = getDoubleRand(background_size.width);
 		auto y = getDoubleRand(background_size.height);
+		command.x = x;
+		command.y = y;
 		auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(x, y));
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
 		net_controler_->addManager(manager);
-		for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
-		{
-			Server::getInstance()->addNetCommand(command);
-		}
+		Server::getInstance()->addNetCommand(command);
 	}
 
 	//finish init;

@@ -247,6 +247,10 @@ ControledBallManager * ControledBallManager::createManager(std::list<ControledBa
 			color_directory = BaseBall::kColorDirectoryVec[i];
 			break;
 		}
+		if (i == kUsedColor.size() - 1)
+		{
+			color_directory = BaseBall::kColorDirectoryVec[0];
+		}
 	}
 	return createManager(all_controled_ball_list, position, name,color_directory);
 }
@@ -299,6 +303,13 @@ ControledBallManager::~ControledBallManager()
 	{
 		delete (*i);
 		(*i) = nullptr;
+	}
+	for (auto i = 0; i < kColorNumber; ++i)
+	{
+		if (color_directory_ == BaseBall::kColorDirectoryVec[i])
+		{
+			kUsedColor[i] = false;
+		}
 	}
 }
 

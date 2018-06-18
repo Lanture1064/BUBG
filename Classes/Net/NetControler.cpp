@@ -55,11 +55,21 @@ void NetControler::update(float dt)
 			{
 				if ((*manager)->getId() == command->id)
 				{
-					(*manager)->moveTo(Director::getInstance()->getDeltaTime(), Vec2(command->x, command->y));
+					(*manager)->moveTo(Director::getInstance()->getDeltaTime(), Director::getInstance()->convertToGL(Vec2(command->x,command->y)));
 					break;
 				}
-				break;
 			}
+			break;
+		case DIVIDE:
+			for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+			{
+				if ((*manager)->getId() == command->id)
+				{
+					(*manager)->divideBall(Vec2(command->x, command->y));
+					break;
+				}
+			}
+			break;
 		default:
 			break;
 		}

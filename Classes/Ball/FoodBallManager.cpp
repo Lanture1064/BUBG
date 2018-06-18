@@ -53,7 +53,14 @@ FoodBall * FoodBallManager::getNewFoodBall()
 		}
 	}
 	index_ = 0;
-	return nullptr;
+	auto new_food = FoodBall::createFoodBall();
+	if (new_food)
+	{
+		++size_;
+		food_ball_container_.push_back(new_food);
+		new_food->changeUsedState();
+	}
+	return new_food;
 }
 
 //the parameter is the number of the food ball need;
@@ -90,7 +97,17 @@ std::list<FoodBall*> FoodBallManager::getNewFoodBall(unsigned int food_ball_numb
 			}
 		}
 	}
-	index_ = 0;
+	for (auto i = count; i != food_ball_number; ++i)
+	{
+		auto new_food = FoodBall::createFoodBall();
+		if (new_food)
+		{
+			++size_;
+			food_ball_container_.push_back(new_food);
+			temp_container.push_back(new_food);
+			new_food->changeUsedState();
+		}
+	}
 	return temp_container;
 }
 

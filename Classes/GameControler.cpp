@@ -255,6 +255,12 @@ void GameControler::updateWithServer()
 	auto background_size = background->getBoundingBox().size;
 	command.command = NEW_FOOD;
 
+	auto local_command = Server::getInstance()->getLocalCommand();
+	for (auto i = local_command.begin(); i != local_command.end(); ++i)
+	{
+		net_controler_->addCommand(*i);
+	}
+
 	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 	{
 		auto temp = (*manager)->swallow(food_list_, controled_ball_list_);
@@ -292,11 +298,33 @@ void GameControler::updateWithServer()
 
 void GameControler::updateWithClient()
 {
+	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
+	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
+
 	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 	{
 		(*manager)->swallow(food_list_, controled_ball_list_);
 	}
-
+	auto local_command = Client::getInstance()->getLocalCommand();
+	FoodBall* new_food = nullptr;
+	for (auto i = local_command.begin(); i != local_command.end(); ++i)
+	{
+		switch (i->command)
+		{
+		case NEW_FOOD:
+			new_food = food_manager->getNewFoodBall();
+			if (new_food)
+			{
+				food_layer->addChild(new_food);
+				new_food->setPosition(Vec2(i->x, i->y));
+				food_list_.push_back(new_food);
+			}
+			break;
+		case DIRECTION: case DIVIDE:  default:
+			net_controler_->addCommand(*i);
+			break;
+		}
+	}
 	CommandImformation command;
 	int time = 0;
 	if (time = local_controler_->getDivideCount())

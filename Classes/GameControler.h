@@ -5,8 +5,8 @@
 #include <vector>
 #include <list>
 
-#define USE_SERVER 0
-#define USE_CLIENT 1
+#define USE_SERVER 1
+#define USE_CLIENT 2
 
 class ControledBallManager;
 class ControledBall;
@@ -22,12 +22,12 @@ public:
 	~GameControler();
 
 	virtual bool init();
-	bool initControler(bool state);
+	bool initControler(int state);
 	//when start game as server,call this function to init;
 	void initWithServer();
 	//when start game as client,call this function to init;
 	void initWithClient();
-	static GameControler* createControler(bool state);
+	static GameControler* createControler(int state);
 	CREATE_FUNC(GameControler);
 	
 	void update(float dt);

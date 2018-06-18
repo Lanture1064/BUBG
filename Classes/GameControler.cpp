@@ -25,7 +25,7 @@ bool GameControler::init()
 	return true;
 }
 
-bool GameControler::initControler(bool state)
+bool GameControler::initControler(int state)
 {
 	state_ = state;
 	this->setAnchorPoint(Vec2::ZERO);
@@ -34,7 +34,7 @@ bool GameControler::initControler(bool state)
 	background->setTag(g_kBackgroundFlag);
 	background->setAnchorPoint(Vec2::ZERO);
 	this->addChild(background);
-	background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
+	//background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
 
 	auto food_manager = FoodBallManager::createManager();
 	this->addChild(food_manager);
@@ -151,9 +151,9 @@ void GameControler::initWithServer()
 
 void GameControler::initWithClient()
 {
-	Server::getInstance()->startGame();
-	std::thread get_command_thread(&Server::getCommand, Server::getInstance());
-	std::thread replay_command_thread(&Server::replayCommand, Server::getInstance());
+	Client::getInstance()->startGame();
+	std::thread get_command_thread(&Client::getCommand, Client::getInstance());
+	std::thread replay_command_thread(&Client::replayCommand, Client::getInstance());
 	get_command_thread.detach();
 	replay_command_thread.detach();
 
@@ -176,23 +176,29 @@ void GameControler::initWithClient()
 			{
 			case NEW_FOOD:
 				food = food_manager->getNewFoodBall();
-				food_list_.push_back(food);
-				food_layer->addChild(food);
-				food->setPosition(command->x, command->y);
+				if (food)
+				{
+					food_list_.push_back(food);
+					food_layer->addChild(food);
+					food->setPosition(command->x, command->y);
+				}
 				break;
 			case NEW_MANAGER:
 				manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
-				manager->setId(command->id);
-				manager->addFatherScene(controled_ball_layer);
-				manager_container_.push_back(manager);
-				if (manager->getId() == Client::getInstance()->getId())
+				if (manager)
 				{
-					local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
-					this->addChild(local_controler_);
-				}
-				else
-				{
-					net_controler_->addManager(manager);
+					manager->setId(command->id);
+					manager->addFatherScene(controled_ball_layer);
+					manager_container_.push_back(manager);
+					if (manager->getId() == Client::getInstance()->getId())
+					{
+						local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
+						this->addChild(local_controler_);
+					}
+					else
+					{
+						net_controler_->addManager(manager);
+					}
 				}
 				break;
 			case INIT_END:
@@ -205,7 +211,7 @@ void GameControler::initWithClient()
 	}
 }
 
-GameControler * GameControler::createControler(bool state)
+GameControler * GameControler::createControler(int state)
 {
 	auto controler = new GameControler();
 	if (controler && controler->init() && controler->initControler(state))
@@ -228,7 +234,7 @@ void GameControler::update(float dt)
 	{
 		this->updateWithClient();
 	}
-	auto manager_position = local_controler_->getManagerPosition();
+	/*auto manager_position = local_controler_->getManagerPosition();
 	auto this_position = this->getPosition();
 	cocos2d::Vec2 position, temp_position;
 	temp_position.x = manager_position.x + this_position.x;
@@ -236,7 +242,7 @@ void GameControler::update(float dt)
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	position.x = this_position.x + (visible_size.width / 2 - temp_position.x);
 	position.y = this_position.y + (visible_size.height / 2 - temp_position.y);
-	this->setPosition(position);
+	this->setPosition(position);*/
 }
 
 void GameControler::updateWithServer()

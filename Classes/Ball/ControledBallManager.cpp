@@ -238,6 +238,7 @@ ControledBallManager * ControledBallManager::createManager(std::list<ControledBa
 		{
 			kUsedColor[i] = true;
 			color_directory = BaseBall::kColorDirectoryVec[i];
+			break;
 		}
 	}
 	return createManager(all_controled_ball_list, position, name,color_directory);

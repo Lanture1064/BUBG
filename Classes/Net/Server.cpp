@@ -1,7 +1,7 @@
 #include "Server.h"
 #include <memory>
 
-int Server::new_id = 0x0000;
+int Server::new_id = 0x0001;
 Server * Server::getInstance()
 {
 	static Server instance;
@@ -100,27 +100,11 @@ void Server::replayCommand()
 {
 	while (is_in_game_)
 	{
-
 		net_command_lock_.lock();
 		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
 		{
 			switch (i->command)
 			{
-			case NEW_PLAYER:
-				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
-				{
-					std::vector<CommandImformation> buf;
-					buf.clear();
-					if (j->id == i->id)
-					{
-						CommandImformation replay;
-						replay.command = REPLAY_NEW_PLAYER;
-						replay.id = j->id;
-						buf.push_back(replay);
-						break;
-					}
-				}
-				break;
 			case DIRECTION:
 				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
@@ -133,10 +117,20 @@ void Server::replayCommand()
 					}
 				}
 				break;
+			case NEW_FOOD: case NEW_MANAGER: case INIT_END:
+				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
+				{
+					std::vector<CommandImformation> buf;
+					buf.clear();
+					buf.push_back(*i);
+					j->sock->send(boost::asio::buffer(buf));
+				}
+				break;
 			default:
 				break;
 			}
 		}
+		net_command_buffer_.clear();
 		net_command_lock_.unlock();
 	}
 }
@@ -186,6 +180,10 @@ std::vector<CommandImformation> Server::getLocalCommand()
 		local_command_buffer_.clear();
 		local_command_lock_.unlock();
 		return temp;
+	}
+	else
+	{
+		return std::vector<CommandImformation>();
 	}
 }
 

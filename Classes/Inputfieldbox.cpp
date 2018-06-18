@@ -1,4 +1,5 @@
 #include "Inputfieldbox.h"
+#include "Test/Test.h"
 #include "extensions\cocos-ext.h"  
 USING_NS_CC_EXT;
 USING_NS_CC;
@@ -78,7 +79,7 @@ bool Inputfield::init()
 
 void Inputfield::menuOkCallback(Ref* pSender)
 {
-	auto sc = BallTestScene::createScene();
+	auto sc = TestScene::createScene();
 	//change Scene from inputfield scene to balltestscene
 	Director::getInstance()->replaceScene(sc);
 

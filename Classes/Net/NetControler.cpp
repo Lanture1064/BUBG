@@ -15,6 +15,7 @@ bool NetControler::init()
 	{
 		return false;
 	}
+	this->scheduleUpdate();
 	return true;
 }
 

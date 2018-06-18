@@ -98,9 +98,16 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		{
 			ratio = distence / (*i)->getSize();
 		}
-		cos_val = (target.x - position.x) / distence;
-		sin_val = (target.y - position.y) / distence;
-
+		if (distence)
+		{
+			cos_val = (target.x - position.x) / distence;
+			sin_val = (target.y - position.y) / distence;
+		}
+		else
+		{
+			cos_val = 0;
+			sin_val = 0;
+		}
 		auto x_rate = speed_ * cos_val;
 		auto y_rate = speed_ * sin_val;
 

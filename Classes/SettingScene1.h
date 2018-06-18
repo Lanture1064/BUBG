@@ -22,6 +22,7 @@ public:
 	//菜单项回调函数
 	void menuSoundToggleCallback(cocos2d::Ref* pSender);
 	void menuMusicToggleCallback(cocos2d::Ref* pSender);
+	void menuControlToggleCallback(cocos2d::Ref* pSender);
 	void menuOkCallback(cocos2d::Ref* pSender);
 
 	// implement the "static create()" method manually

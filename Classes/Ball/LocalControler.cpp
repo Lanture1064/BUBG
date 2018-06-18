@@ -68,7 +68,8 @@ LocalControler::~LocalControler()
 
 void LocalControler::update(float dt)
 {
-	manager_->moveTo(Director::getInstance()->getDeltaTime(), Director::getInstance()->convertToGL(mouse_position_));
+	auto position = this->getParent()->convertToNodeSpace(Director::getInstance()->convertToGL(mouse_position_));
+	manager_->moveTo(Director::getInstance()->getDeltaTime(), position);
 	manager_->updateState();
 }
 

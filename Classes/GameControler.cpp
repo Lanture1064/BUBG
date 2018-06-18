@@ -6,6 +6,9 @@
 
 USING_NS_CC;
 
+//it's a suited proportion to eliminate the blank section of the background;
+#define BACKGROUND_WIDTH_PROPORTION 0.97
+
 const int g_kFoodManagerFlag = 1;
 const int g_kFoodLayerFlag = 2;
 const int g_kControledBallLayerFlag = 3;
@@ -34,7 +37,7 @@ bool GameControler::initControler(int state)
 	background->setTag(g_kBackgroundFlag);
 	background->setAnchorPoint(Vec2::ZERO);
 	this->addChild(background);
-	//background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
+	background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
 
 	auto food_manager = FoodBallManager::createManager();
 	this->addChild(food_manager);
@@ -83,6 +86,7 @@ void GameControler::initWithServer()
 	auto food_number = food_manager->getSize();
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
+	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
 	command.command = NEW_FOOD;
 	for (auto i = 0; i < food_number; ++i)
 	{
@@ -232,15 +236,40 @@ void GameControler::update(float dt)
 	{
 		this->updateWithClient();
 	}
-	/*auto manager_position = local_controler_->getManagerPosition();
+
+	//these codes are used to move the map with the player;
+	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
+	auto background_size = background->getBoundingBox().size;
+	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
+	auto visible_size = Director::getInstance()->getVisibleSize();
+
+	auto manager_position = local_controler_->getManagerPosition();
 	auto this_position = this->getPosition();
 	cocos2d::Vec2 position, temp_position;
 	temp_position.x = manager_position.x + this_position.x;
 	temp_position.y = manager_position.y + this_position.y;
-	auto visible_size = Director::getInstance()->getVisibleSize();
 	position.x = this_position.x + (visible_size.width / 2 - temp_position.x);
 	position.y = this_position.y + (visible_size.height / 2 - temp_position.y);
-	this->setPosition(position);*/
+
+	//border judge;
+	if (position.x > 0)
+	{
+		position.x = 0;
+	}
+	else if (position.x + background_size.width < visible_size.width)
+	{
+		position.x = visible_size.width - background_size.width;
+
+	}
+	if (position.y > 0)
+	{
+		position.y = 0;
+	}
+	else if (position.y + background_size.height < visible_size.height)
+	{
+		position.y = visible_size.height - background_size.height;
+	}
+	this->setPosition(position);
 }
 
 void GameControler::updateWithServer()
@@ -251,6 +280,7 @@ void GameControler::updateWithServer()
 
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
+	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
 	command.command = NEW_FOOD;
 
 	auto local_command = Server::getInstance()->getLocalCommand();

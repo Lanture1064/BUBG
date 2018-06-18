@@ -55,7 +55,8 @@ void NetControler::update(float dt)
 			{
 				if ((*manager)->getId() == command->id)
 				{
-					(*manager)->moveTo(Director::getInstance()->getDeltaTime(), Director::getInstance()->convertToGL(Vec2(command->x,command->y)));
+					auto position = this->getParent()->convertToNodeSpace(Director::getInstance()->convertToGL(Vec2(command->x, command->y)));
+					(*manager)->moveTo(Director::getInstance()->getDeltaTime(),position);
 					break;
 				}
 			}

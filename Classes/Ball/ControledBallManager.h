@@ -34,6 +34,8 @@ public:
 	void updateState();
 	//the function is used to make the controled balls run toward target;
 	void moveTo(double time,cocos2d::Vec2 target);
+	//the function is used to make the controled moved by key board;
+	void moveByKey(double time, cocos2d::Vec2 direction_count);
 	void divideBall(cocos2d::Vec2 target);
 	const std::list<ControledBall*> &getBallList() const;
 	//the first value return is the number of the food swallowed,

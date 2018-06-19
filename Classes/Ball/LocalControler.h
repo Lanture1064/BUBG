@@ -8,6 +8,8 @@
 class ControledBallManager;
 class ControledBall;
 
+enum KeyDirection{ UP,DOWN,LEFT,RIGHT };
+
 class LocalControler : public cocos2d::Layer
 {
 public:
@@ -28,6 +30,8 @@ protected:
 	std::list<ControledBall*>* ball_list_;
 	int divide_count_;
 	std::mutex divide_state_lock_;
+	cocos2d::Vec2 direction_count_;
+	std::vector<bool> key_pressed_;
 };
 
 #endif // !BUBG_CLASSES_BALL_LOCAL_CONTROLER_H_

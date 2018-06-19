@@ -137,6 +137,39 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 	}
 }
 
+void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
+{
+	auto x_speed = direction_count.x * speed_ / 60.0;
+	auto y_speed = direction_count.y * speed_ / 60.0;
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i)->isDivided())
+		{
+			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60.0;
+			if ((*i)->getTimeCount() == 0)
+			{
+				auto cos_val = x_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
+				auto sin_val = y_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
+				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+			}
+			auto direction = (*i)->getDivideDirection();
+			x_speed = speed_ * direction.x * ratio;
+			y_speed = speed_ * direction.y * ratio;
+			if ((*i)->getTimeCount() == 30)
+			{
+				(*i)->changeDividedState();
+				(*i)->resetTimeCount();
+			}
+			else
+			{
+				(*i)->countTime();
+			}
+		}
+		auto move = MoveBy::create(time, Vec2(x_speed*time, y_speed*time));
+		(*i)->runAction(move);		
+	}
+}
+
 void ControledBallManager::divideBall(cocos2d::Vec2 target)
 {
 	auto position = this->getPosition();

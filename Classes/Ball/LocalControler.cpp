@@ -19,6 +19,7 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 	manager_ = manager;
 	ball_list_ = ball_list;
 	divide_count_ = 0;
+	direction_count_ = Vec2(0, 0);
 
 	auto mouse_listener = EventListenerMouse::create();
 	mouse_listener->onMouseMove = [=](Event* mouse_event) {
@@ -37,6 +38,37 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 			divide_state_lock_.lock();
 			divide_count_++;
 			divide_state_lock_.unlock();
+			break;
+		case EventKeyboard::KeyCode::KEY_W: case EventKeyboard::KeyCode::KEY_UP_ARROW:
+			key_pressed_[UP] = true;
+			break;
+		case EventKeyboard::KeyCode::KEY_S: case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+			key_pressed_[DOWN] = true;
+			break;
+		case EventKeyboard::KeyCode::KEY_A: case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+			key_pressed_[LEFT] = true;
+			break;
+		case EventKeyboard::KeyCode::KEY_D: case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+			key_pressed_[RIGHT] = true;
+			break;
+		default:
+			break;
+		}
+	};
+	key_listener->onKeyReleased = [=](EventKeyboard::KeyCode key_code, Event* key_event) {
+		switch (key_code)
+		{
+		case EventKeyboard::KeyCode::KEY_W: case EventKeyboard::KeyCode::KEY_UP_ARROW:
+			key_pressed_[UP] = false;
+			break;
+		case EventKeyboard::KeyCode::KEY_S: case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+			key_pressed_[DOWN] = false;
+			break;
+		case EventKeyboard::KeyCode::KEY_A: case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+			key_pressed_[LEFT] = false;
+			break;
+		case EventKeyboard::KeyCode::KEY_D: case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+			key_pressed_[RIGHT] = false;
 			break;
 		default:
 			break;

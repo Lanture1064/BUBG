@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include <list>
 #include <thread>
+#include <vector>
 
 class ControledBallManager;
 class ControledBall;

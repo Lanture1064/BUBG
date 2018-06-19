@@ -167,11 +167,11 @@ void Setting::menuControlToggleCallback(Ref* pSender)
 	log("controlToggleMenuItem %d", controlToggleMenuItem->getSelectedIndex());
 
 	UserDefault *defaults = UserDefault::getInstance();
-	if (defaults->getBoolForKey(SOUND_KEY)) {
-		defaults->setBoolForKey(SOUND_KEY, false);
+	if (defaults->getBoolForKey(CONTROL_KEY)) {
+		defaults->setBoolForKey(CONTROL_KEY, false);
 	}
 	else {
-		defaults->setBoolForKey(SOUND_KEY, true);
+		defaults->setBoolForKey(CONTROL_KEY, true);
 		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
 	}
 

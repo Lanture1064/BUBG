@@ -2,6 +2,7 @@
 #include "ControledBall.h"
 #include "ControledBallManager.h"
 #include "../Net/Net.h"
+#include "../SettingHeader.h"
 USING_NS_CC;
 
 
@@ -20,6 +21,7 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 	ball_list_ = ball_list;
 	divide_count_ = 0;
 	direction_count_ = Vec2(0, 0);
+	key_pressed_ = std::vector<bool>(4);
 
 	auto mouse_listener = EventListenerMouse::create();
 	mouse_listener->onMouseMove = [=](Event* mouse_event) {
@@ -100,8 +102,75 @@ LocalControler::~LocalControler()
 
 void LocalControler::update(float dt)
 {
-	auto position = this->getParent()->convertToNodeSpace(Director::getInstance()->convertToGL(mouse_position_));
-	manager_->moveTo(Director::getInstance()->getDeltaTime(), position);
+	if (key_pressed_[RIGHT])
+	{
+		if (direction_count_.x < 60)
+		{
+			++direction_count_.x;
+		}
+	}
+	else
+	{
+		if (direction_count_.x > 0)
+		{
+			--direction_count_.x;
+		}
+	}
+
+	if (key_pressed_[LEFT])
+	{
+		if (direction_count_.x > -60)
+		{
+			--direction_count_.x;
+		}
+	}
+	else
+	{
+		if (direction_count_.x < 0)
+		{
+			++direction_count_.x;
+		}
+	}
+
+	if (key_pressed_[UP])
+	{
+		if (direction_count_.y < 60)
+		{
+			++direction_count_.y;
+		}
+	}
+	else
+	{
+		if (direction_count_.y > 0)
+		{
+			--direction_count_.y;
+		}
+	}
+
+	if (key_pressed_[DOWN])
+	{
+		if (direction_count_.y > -60)
+		{
+			--direction_count_.y;
+		}
+	}
+	else
+	{
+		if (direction_count_.y < 0)
+		{
+			++direction_count_.y;
+		}
+	}
+	auto user_default = UserDefault::getInstance();
+	if (user_default->getBoolForKey(CONTROL_KEY))
+	{
+		manager_->moveByKey(Director::getInstance()->getDeltaTime(), direction_count_);
+	}
+	else
+	{
+		auto position = this->getParent()->convertToNodeSpace(Director::getInstance()->convertToGL(mouse_position_));
+		manager_->moveTo(Director::getInstance()->getDeltaTime(), position);
+	}
 	manager_->updateState();
 }
 

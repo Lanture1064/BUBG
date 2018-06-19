@@ -132,6 +132,7 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 				(*i)->countTime();
 			}
 		}
+		(*i)->judgeIfMove(x_rate, y_rate);
 		auto move = MoveBy::create(time, Vec2(x_rate*time * ratio, y_rate*time * ratio));
 		(*i)->runAction(move);
 	}
@@ -165,6 +166,7 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 				(*i)->countTime();
 			}
 		}
+		(*i)->judgeIfMove(x_speed, y_speed);
 		auto move = MoveBy::create(time, Vec2(x_speed*time, y_speed*time));
 		(*i)->runAction(move);		
 	}

@@ -7,7 +7,7 @@
 USING_NS_CC;
 
 //it's a suited proportion to eliminate the blank section of the background;
-#define BACKGROUND_WIDTH_PROPORTION 0.97
+#define BACKGROUND_WIDTH_PROPORTION 1
 
 const int g_kFoodManagerFlag = 1;
 const int g_kFoodLayerFlag = 2;

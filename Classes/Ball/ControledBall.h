@@ -41,6 +41,10 @@ public:
 	//the function is used to get the direction of the ball which is divided;
 	cocos2d::Vec2 getDivideDirection() const;
 	void setDivideDirection(cocos2d::Vec2 direction);
+	//this function is used to judge if ball will move beyond window;
+	//if true,the speed in this direction will be set by zero;
+	template<class T>
+	void judgeIfMove(T &x_speed, T &y_speed);
 protected:
 	ControledBallManager * manager_;
 	double speed_;
@@ -52,5 +56,42 @@ protected:
 	int time_count_;
 	cocos2d::Vec2 divide_direction_;
 };
-#endif // !BUBG_CLASSES_BALL_CONTROLED_BALL_H_
 
+template<class T>
+inline void ControledBall::judgeIfMove(T & x_speed, T & y_speed)
+{
+	auto space_position = this->getParent()->convertToWorldSpace(this->getPosition());
+	auto visible_size = Director::getInstance()->getVisibleSize();
+	auto size = this->getBoundingBox().size;
+	if (space_position.x <= size.width/2)
+	{
+		if (x_speed < 0)
+		{
+			x_speed = 0;
+		}
+	}
+	else if (space_position.x + size.width/2 >= visible_size.width)
+	{
+		if (x_speed > 0)
+		{
+			x_speed = 0;
+		}
+	}
+	if (space_position.y <= size.height/2)
+	{
+		if (y_speed < 0)
+		{
+			y_speed = 0;
+		}
+	}
+	else if (space_position.y + size.height/2 >= visible_size.height)
+	{
+		if (y_speed > 0)
+		{
+			y_speed = 0;
+		}
+	}
+}
+
+
+#endif // !BUBG_CLASSES_BALL_CONTROLED_BALL_H_

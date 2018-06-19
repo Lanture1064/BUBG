@@ -63,8 +63,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto glview = director->getOpenGLView();
 	
 	//the width and the height of the window
-	const int WINDOW_WIDTH = 600;
-	const int WINDOW_HEIGHT = 400;
+	const int WINDOW_WIDTH = 1280;
+	const int WINDOW_HEIGHT = 720;
     if(!glview) {
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) || (CC_TARGET_PLATFORM == CC_PLATFORM_MAC) || (CC_TARGET_PLATFORM == CC_PLATFORM_LINUX)
         glview = GLViewImpl::createWithRect("BUBG", cocos2d::Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT));

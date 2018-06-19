@@ -67,15 +67,28 @@ bool Setting::init()
 		NULL);
 	musicToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(800, 340)));
 
+	//控制方式
+	auto controlmouse = MenuItemImage::create(
+		"menu/on.png",
+		"menu/on.png");
+	auto controlkeyboard= MenuItemImage::create(
+		"menu/off.png",
+		"menu/off.png");
+	auto controlToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuControlToggleCallback, this),
+		controlmouse,
+		controlkeyboard,
+		NULL);
+	controlToggleMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(800, 480)));
+
 	//Ok按钮
 	auto okMenuItem = MenuItemImage::create(
 		"menu/ok-down.png",
 		"menu/ok-up.png",
 		CC_CALLBACK_1(Setting::menuOkCallback, this));
 
-	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 510)));
+	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 600)));
 
-	Menu* mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem, okMenuItem, NULL);
+	Menu* mn = Menu::create(soundToggleMenuItem, musicToggleMenuItem,controlToggleMenuItem, okMenuItem, NULL);
 	mn->setPosition(Vec2::ZERO);
 	this->addChild(mn);
 
@@ -95,6 +108,12 @@ bool Setting::init()
 		soundToggleMenuItem->setSelectedIndex(1);//on
 	}
 
+	if (defaults->getBoolForKey(CONTROL_KEY)) {
+		controlToggleMenuItem->setSelectedIndex(0);//mouse
+	}
+	else {
+		controlToggleMenuItem->setSelectedIndex(1);//keyboard
+	}
 
 	return true;
 }
@@ -139,6 +158,23 @@ void Setting::menuMusicToggleCallback(Ref* pSender)
 		defaults->setBoolForKey(MUSIC_KEY, true);
 		SimpleAudioEngine::getInstance()->playBackgroundMusic("sound/music.mp3");
 	}
+}
+
+
+void Setting::menuControlToggleCallback(Ref* pSender)
+{
+	auto controlToggleMenuItem = (MenuItemToggle*)pSender;
+	log("controlToggleMenuItem %d", controlToggleMenuItem->getSelectedIndex());
+
+	UserDefault *defaults = UserDefault::getInstance();
+	if (defaults->getBoolForKey(SOUND_KEY)) {
+		defaults->setBoolForKey(SOUND_KEY, false);
+	}
+	else {
+		defaults->setBoolForKey(SOUND_KEY, true);
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
+
 }
 
 

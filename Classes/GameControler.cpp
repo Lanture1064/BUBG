@@ -3,8 +3,11 @@
 #include "Net/Net.h"
 #include "Tool/MathTool.h"
 #include <thread>
+#include"QuitScene.h"
 
 USING_NS_CC;
+
+using namespace CocosDenshion;
 
 //it's a suited proportion to eliminate the blank section of the background;
 #define BACKGROUND_WIDTH_PROPORTION 1
@@ -66,6 +69,17 @@ bool GameControler::initControler(int state)
 		return false;
 	}
 	this->scheduleUpdate();
+
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = true;
+	};
+	listener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = false;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	return true;
 }
 
@@ -270,6 +284,12 @@ void GameControler::update(float dt)
 		position.y = visible_size.height - background_size.height;
 	}
 	this->setPosition(position);
+
+	Node::update(dt);
+	auto q = EventKeyboard::KeyCode::KEY_Q;
+	if (isKeyPressed(q)) {
+		keyPressedDuration(q);
+	}
 }
 
 void GameControler::updateWithServer()
@@ -368,4 +388,21 @@ void GameControler::updateWithClient()
 	command.x = position.x;
 	command.y = position.y;
 	Client::getInstance()->addNetCommand(command);
+}
+
+bool GameControler::isKeyPressed(EventKeyboard::KeyCode keyCode) {
+	if (keys[keyCode]) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void GameControler::keyPressedDuration(EventKeyboard::KeyCode code) {
+	auto sc = QuitScene::createScene();
+	Director::getInstance()->pushScene(sc);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
+	}
 }

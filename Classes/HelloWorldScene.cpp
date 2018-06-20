@@ -112,8 +112,10 @@ void HelloWorld::quitGame(Object *pSender)
 
 void HelloWorld::onEnter()
 {
+
 	Scene::onEnter();
 	log("HelloWorld onEnter");
+
 }
 //¿ªÊ¼²¥·Å
 void HelloWorld::onEnterTransitionDidFinish()

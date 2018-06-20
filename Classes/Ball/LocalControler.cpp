@@ -104,7 +104,7 @@ void LocalControler::update(float dt)
 {
 	if (key_pressed_[RIGHT])
 	{
-		if (direction_count_.x < 60)
+		if (direction_count_.x < 30)
 		{
 			++direction_count_.x;
 		}
@@ -119,7 +119,7 @@ void LocalControler::update(float dt)
 
 	if (key_pressed_[LEFT])
 	{
-		if (direction_count_.x > -60)
+		if (direction_count_.x > -30)
 		{
 			--direction_count_.x;
 		}
@@ -134,7 +134,7 @@ void LocalControler::update(float dt)
 
 	if (key_pressed_[UP])
 	{
-		if (direction_count_.y < 60)
+		if (direction_count_.y < 30)
 		{
 			++direction_count_.y;
 		}
@@ -149,7 +149,7 @@ void LocalControler::update(float dt)
 
 	if (key_pressed_[DOWN])
 	{
-		if (direction_count_.y > -60)
+		if (direction_count_.y > -30)
 		{
 			--direction_count_.y;
 		}

@@ -108,8 +108,8 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 			cos_val = 0;
 			sin_val = 0;
 		}
-		auto x_rate = speed_ * cos_val;
-		auto y_rate = speed_ * sin_val;
+		auto x_rate = (*i)->getSpeed() * cos_val;
+		auto y_rate = (*i)->getSpeed() * sin_val;
 
 		if ((*i)->isDivided())
 		{
@@ -120,8 +120,8 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
 			}
 			auto direction = (*i)->getDivideDirection();
-			x_rate = speed_ * direction.x;
-			y_rate = speed_ * direction.y;
+			x_rate = (*i)->getSpeed() * direction.x;
+			y_rate = (*i)->getSpeed() * direction.y;
 			if ((*i)->getTimeCount() == 30)
 			{
 				(*i)->changeDividedState();
@@ -140,13 +140,13 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 
 void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 {
-	auto x_speed = direction_count.x * speed_ / 60.0;
-	auto y_speed = direction_count.y * speed_ / 60.0;
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
+		auto x_speed = direction_count.x * (*i)->getSpeed() / 30.0;
+		auto y_speed = direction_count.y * (*i)->getSpeed() / 30.0;
 		if ((*i)->isDivided())
 		{
-			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60.0;
+			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60;
 			if ((*i)->getTimeCount() == 0)
 			{
 				auto cos_val = x_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
@@ -154,8 +154,8 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
 			}
 			auto direction = (*i)->getDivideDirection();
-			x_speed = speed_ * direction.x * ratio;
-			y_speed = speed_ * direction.y * ratio;
+			x_speed = (*i)->getSpeed() * direction.x * ratio;
+			y_speed = (*i)->getSpeed() * direction.y * ratio;
 			if ((*i)->getTimeCount() == 30)
 			{
 				(*i)->changeDividedState();

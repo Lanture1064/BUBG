@@ -2,6 +2,7 @@
 #define __QUIT_SCENE_H__
 
 #include "cocos2d.h"
+#include"SettingScene1.h"
 #include "SettingHeader.h"
 
 class QuitScene : public cocos2d::Layer

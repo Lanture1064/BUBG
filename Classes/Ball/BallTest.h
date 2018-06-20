@@ -4,6 +4,9 @@
 #include "cocos2d.h"
 #include "FoodBallManager.h"
 #include "ControledBallManager.h"
+#include"SettingScene1.h"
+#include "SimpleAudioEngine.h"
+USING_NS_CC;
 
 class BallTestScene : public cocos2d::Scene
 {
@@ -16,7 +19,12 @@ public:
 	void createOneFood(cocos2d::Object* pSender);
 	void createTenFood(cocos2d::Object* pSender);
 	void returnMenu(cocos2d::Object* pSender);
+
 	void update(float dt);
+	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
+	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
+	void keyPressedDuration(EventKeyboard::KeyCode code);
+
 protected:
 	std::list<FoodBall*> food_container_;
 	std::list<ControledBall*> ball_container_;

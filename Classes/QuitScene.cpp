@@ -74,7 +74,11 @@ bool QuitScene::init()
 
 void QuitScene::menuSettingCallback(Ref* pSender)
 {
-	
+	auto sc = Setting::createScene();
+	Director::getInstance()->pushScene(sc);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }
 
 void QuitScene::menuQuitCallback(Ref* pSender)

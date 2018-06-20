@@ -401,6 +401,7 @@ bool GameControler::isKeyPressed(EventKeyboard::KeyCode keyCode) {
 
 void GameControler::keyPressedDuration(EventKeyboard::KeyCode code) {
 	auto sc = QuitScene::createScene();
+	keys[code] = false;
 	Director::getInstance()->pushScene(sc);
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");

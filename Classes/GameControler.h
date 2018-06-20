@@ -4,15 +4,11 @@
 #include "cocos2d.h"
 #include <vector>
 #include <list>
+#include "Ball/Ball.h"
+#include "Net/Net.h"
 
 #define USE_SERVER 1
 #define USE_CLIENT 2
-
-class ControledBallManager;
-class ControledBall;
-class FoodBall;
-class LocalControler;
-class NetControler;
 
 //this class anchorpoint is Vec2::ZERO
 class GameControler : public cocos2d::Layer
@@ -39,6 +35,7 @@ protected:
 	std::vector<ControledBallManager*> manager_container_;
 	std::list<FoodBall*> food_list_;
 	std::list<ControledBall*> controled_ball_list_;
+	std::list<VirusBall*> virus_list_;
 	int state_;
 	LocalControler* local_controler_;
 	NetControler* net_controler_;

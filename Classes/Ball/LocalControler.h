@@ -2,12 +2,11 @@
 #define BUBG_CLASSES_BALL_LOCAL_CONTROLER_H_
 
 #include "cocos2d.h"
+#include "ControledBall.h"
+#include "ControledBallManager.h"
 #include <list>
 #include <thread>
 #include <vector>
-
-class ControledBallManager;
-class ControledBall;
 
 enum KeyDirection{ UP,DOWN,LEFT,RIGHT };
 

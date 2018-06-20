@@ -28,6 +28,8 @@
 
 #define DIVIDE 0x0008
 
+#define NEW_VIRUS 0x0009
+
 class Client;
 class Server;
 struct CommandImformation

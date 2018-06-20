@@ -1,6 +1,4 @@
 #include "LocalControler.h"
-#include "ControledBall.h"
-#include "ControledBallManager.h"
 #include "../Net/Net.h"
 #include "../SettingHeader.h"
 USING_NS_CC;

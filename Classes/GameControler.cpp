@@ -1,5 +1,4 @@
 #include "GameControler.h"
-#include "Ball/Ball.h"
 #include "Net/Net.h"
 #include "Tool/MathTool.h"
 #include <thread>
@@ -39,7 +38,7 @@ bool GameControler::initControler(int state)
 	this->addChild(background);
 	background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
 
-	auto food_manager = FoodBallManager::createManager();
+	auto food_manager = FoodBallManager::createManager(500);
 	this->addChild(food_manager);
 	food_manager->setTag(g_kFoodManagerFlag);
 
@@ -137,6 +136,23 @@ void GameControler::initWithServer()
 		Server::getInstance()->addNetCommand(command);
 	}
 
+	command.command = NEW_VIRUS;
+	for (auto i = 0; i < 10; ++i)
+	{
+		auto virus = VirusBall::createBall();
+		if (virus)
+		{
+			virus_list_.push_back(virus);
+			controled_ball_layer->addChild(virus, virus->getScore());
+			auto x = getDoubleRand(background_size.width);
+			auto y = getDoubleRand(background_size.height);
+			virus->setPosition(Vec2(x, y));
+			command.x = x;
+			command.y = y;
+			Server::getInstance()->addNetCommand(command);
+		}
+	}
+
 	//finish init;
 	command.command = INIT_END;
 	command.id = -1;
@@ -171,43 +187,54 @@ void GameControler::initWithClient()
 		auto command_vec = Client::getInstance()->getLocalCommand();
 		for (auto command = command_vec.begin(); command != command_vec.end(); ++command)
 		{
-			FoodBall* food = nullptr;
-			ControledBallManager* manager = nullptr;
-
-			switch (command->command)
 			{
-			case NEW_FOOD:
-				food = food_manager->getNewFoodBall();
-				if (food)
+				FoodBall* food = nullptr;
+				ControledBallManager* manager = nullptr;
+				VirusBall* virus = nullptr;
+
+				switch (command->command)
 				{
-					food_list_.push_back(food);
-					food_layer->addChild(food);
-					food->setPosition(command->x, command->y);
-				}
-				break;
-			case NEW_MANAGER:
-				manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
-				if (manager)
-				{
-					manager->setId(command->id);
-					manager->addFatherScene(controled_ball_layer);
-					manager_container_.push_back(manager);
-					if (manager->getId() == Client::getInstance()->getId())
+				case NEW_FOOD:
+					food = food_manager->getNewFoodBall();
+					if (food)
 					{
-						local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
-						this->addChild(local_controler_);
+						food_list_.push_back(food);
+						food_layer->addChild(food);
+						food->setPosition(command->x, command->y);
 					}
-					else
+					break;
+				case NEW_MANAGER:
+					manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
+					if (manager)
 					{
-						net_controler_->addManager(manager);
+						manager->setId(command->id);
+						manager->addFatherScene(controled_ball_layer);
+						manager_container_.push_back(manager);
+						if (manager->getId() == Client::getInstance()->getId())
+						{
+							local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
+							this->addChild(local_controler_);
+						}
+						else
+						{
+							net_controler_->addManager(manager);
+						}
 					}
+					break;
+				case NEW_VIRUS:
+					virus = VirusBall::createBall();
+					if (virus)
+					{
+						controled_ball_layer->addChild(virus, virus->getScore());
+						virus->setPosition(Vec2(command->x, command->y));
+					}
+					break;
+				case INIT_END:
+					return;
+					break;
+				default:
+					break;
 				}
-				break;
-			case INIT_END:
-				return;
-				break;
-			default:
-				break;
 			}
 		}
 	}
@@ -277,6 +304,7 @@ void GameControler::updateWithServer()
 	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
 	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
+	auto controled_ball_layer = static_cast<Layer*>(this->getChildByTag(g_kControledBallLayerFlag));
 
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
@@ -291,23 +319,46 @@ void GameControler::updateWithServer()
 
 	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 	{
-		auto temp = (*manager)->swallow(food_list_, controled_ball_list_);
-		for (auto i = 0; i < temp.first; ++i)
 		{
-			auto food = food_manager->getNewFoodBall();
-			if (food)
+			auto temp = (*manager)->swallow(food_list_, controled_ball_list_);
+			command.command = NEW_FOOD;
+			for (auto i = 0; i < temp.first; ++i)
 			{
-				food_list_.push_back(food);
-				food_layer->addChild(food);
-				auto x = getDoubleRand(background_size.width);
-				auto y = getDoubleRand(background_size.height);
-				food->setPosition(Vec2(x, y));
-				command.x = x;
-				command.y = y;
-				Server::getInstance()->addNetCommand(command);
+				auto food = food_manager->getNewFoodBall();
+				if (food)
+				{
+					food_list_.push_back(food);
+					food_layer->addChild(food);
+					auto x = getDoubleRand(background_size.width);
+					auto y = getDoubleRand(background_size.height);
+					food->setPosition(Vec2(x, y));
+					command.x = x;
+					command.y = y;
+					Server::getInstance()->addNetCommand(command);
+				}
+			}
+		}
+		{
+			command.command = NEW_VIRUS;
+			auto temp = (*manager)->swallowVirus(virus_list_);
+			for (auto i = 0; i < temp; ++i)
+			{
+				auto virus = VirusBall::createBall();
+				if (virus)
+				{
+					virus_list_.push_back(virus);
+					controled_ball_layer->addChild(virus, virus->getScore());
+					auto x = getDoubleRand(background_size.width);
+					auto y = getDoubleRand(background_size.height);
+					virus->setPosition(Vec2(x, y));
+					command.x = x;
+					command.y = y;
+					Server::getInstance()->addNetCommand(command);
+				}
 			}
 		}
 	}
+
 	int time = 0;
 	if (time=local_controler_->getDivideCount())
 	{
@@ -328,29 +379,42 @@ void GameControler::updateWithClient()
 {
 	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
 	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
+	auto controled_ball_layer = static_cast<Layer*>(this->getChildByTag(g_kControledBallLayerFlag));
 
 	for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 	{
 		(*manager)->swallow(food_list_, controled_ball_list_);
+		(*manager)->swallowVirus(virus_list_);
 	}
 	auto local_command = Client::getInstance()->getLocalCommand();
-	FoodBall* new_food = nullptr;
 	for (auto i = local_command.begin(); i != local_command.end(); ++i)
 	{
-		switch (i->command)
 		{
-		case NEW_FOOD:
-			new_food = food_manager->getNewFoodBall();
-			if (new_food)
+			FoodBall* new_food = nullptr;
+			VirusBall* new_virus = nullptr;
+			switch (i->command)
 			{
-				food_layer->addChild(new_food);
-				new_food->setPosition(Vec2(i->x, i->y));
-				food_list_.push_back(new_food);
+			case NEW_FOOD:
+				new_food = food_manager->getNewFoodBall();
+				if (new_food)
+				{
+					food_layer->addChild(new_food);
+					new_food->setPosition(Vec2(i->x, i->y));
+					food_list_.push_back(new_food);
+				}
+				break;
+			case NEW_VIRUS:
+				new_virus = VirusBall::createBall();
+				if (new_virus)
+				{
+					controled_ball_layer->addChild(new_virus, new_virus->getScore());
+					new_virus->setPosition(Vec2(i->x, i->y));
+					virus_list_.push_back(new_virus);
+				}
+			case DIRECTION: case DIVIDE:  default:
+				net_controler_->addCommand(*i);
+				break;
 			}
-			break;
-		case DIRECTION: case DIVIDE:  default:
-			net_controler_->addCommand(*i);
-			break;
 		}
 	}
 	CommandImformation command;

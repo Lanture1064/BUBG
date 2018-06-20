@@ -119,7 +119,7 @@ int ControledBall::checkSwallowVirus(const std::list<VirusBall*>& virus_ball_lis
 		{	
 			if (!(*i)->isDelete())
 			{
-				temp_ball_storage_.push_back(*i);
+				//temp_ball_storage_.push_back(*i);
 				(*i)->deleteVirus();
 				if (!is_swallow_virus_)
 				{

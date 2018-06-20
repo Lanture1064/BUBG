@@ -23,16 +23,3 @@ double getDoubleRand(int range)
 	double y = rand() % range;
 	return x + y;
 }
-void delay(int seconds)
-
-{
-
-	clock_t start = clock();
-
-	clock_t lay = (clock_t)seconds * CLOCKS_PER_SEC;
-
-	while ((clock() - start) < lay)
-	{
-		;
-	}
-}

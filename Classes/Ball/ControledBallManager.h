@@ -8,7 +8,6 @@
 #include <list>
 #include <vector>
 #include <utility>
-#include "../SettingHeader.h"
 
 class ControledBallManager : public cocos2d::Node
 {

@@ -82,7 +82,6 @@ void ControledBallManager::updateState()
 
 void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 {	
-	//auto position = this->getPosition();
 	
 	 for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
@@ -282,6 +281,36 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 			(*i)->checkSwallowVirus(virus_list);
 		}
 	}
+
+	auto temp = std::sqrt(0.5);
+	static const std::vector<Vec2> direction = { Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(0,-1),Vec2(temp,temp),Vec2(temp,-temp),
+											     Vec2(-temp,temp),Vec2(-temp,-temp) };
+	auto append_list = std::list<ControledBall*>();
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i)->isSwallowVirus())
+		{
+			for (auto j = 0; j < 3; ++j)
+			{
+				(*i)->divide();
+			}
+			(*i)->changeDividedState();
+			(*i)->changeSwallowVirusState();
+			(*i)->setDirectionWhenSwallowVirus(direction[0]);
+			for (auto j = 1; j < 8; ++j)
+			{
+				auto ball = ControledBall::createControledBall((*i)->getScore()*1.1, color_directory_);
+				ball->setManager(this);
+				ball->changeDividedState();
+				ball->changeSwallowVirusState();
+				ball->setDirectionWhenSwallowVirus(direction[j]);
+				father_->addChild(ball);
+				ball->setPosition((*i)->getPosition());
+				append_list.push_back(ball);
+			}
+		}
+	}
+
 	for (auto i = virus_list.begin(); i != virus_list.end();)
 	{
 		if ((*i)->isDelete())
@@ -294,34 +323,7 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 		}
 		++i;
 	}
-	auto temp = std::sqrt(0.5);
-	static const std::vector<Vec2> direction = { Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(0,-1),Vec2(temp,temp),Vec2(temp,-temp),
-											     Vec2(-temp,temp),Vec2(-temp,-temp) };
-	auto append_list = std::list<ControledBall*>();
-	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
-	{
-		if ((*i)->isSwallowVirus())
-		{
-			for (auto j = 0; j < 2; ++j)
-			{
-				(*i)->divide();
-			}
-			(*i)->changeDividedState();
-			(*i)->changeSwallowVirusState();
-			(*i)->setDirectionWhenSwallowVirus(direction[0]);
-			for (auto j = 1; j < 8; ++j)
-			{
-				auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
-				ball->setManager(this);
-				ball->changeDividedState();
-				ball->changeSwallowVirusState();
-				ball->setDirectionWhenSwallowVirus(direction[j]);
-				father_->addChild(ball);
-				ball->setPosition((*i)->getPosition());
-				append_list.push_back(ball);
-			}
-		}
-	}
+
 	controled_ball_list_.insert(controled_ball_list_.end(), append_list.begin(), append_list.end());
 	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))

@@ -12,7 +12,6 @@ double ScoreToSpeed(int score);
 
 double getDoubleRand(int range);
 
-void delay(int seconds);
 
 #endif // !BUBG_CLASSES_TOOL_MATH_TOOL_H_
 

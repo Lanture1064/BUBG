@@ -55,8 +55,10 @@ void ControledBall::initControledBall(int score,std::string color_directory)
 	manager_ = nullptr;
 	is_delete_ = false;
 	is_divided_ = false;
+	is_swallow_virus_ = false;
 	time_count_ = 0;
 	divide_direction_ = Vec2::ZERO;
+	direction_when_swallow_virus_ = Vec2::ZERO;
 	this->setScale(size_ / this->getContentSize().width);
 	this->setZOrder(score_);
 }
@@ -91,12 +93,43 @@ void ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_
 	for (auto i = controled_ball_list.begin(); i != controled_ball_list.end(); ++i)
 	{
 		auto ball_position = (*i)->getPosition();
+		
 		if (std::sqrt(calDistence(position, ball_position))+((*i)->size_)/2 < size_/2)
 		{
-			temp_ball_storage_.push_back(*i);
-			(*i)->is_delete_ = true;
+			if (!(*i)->is_delete_)
+			{
+				temp_ball_storage_.push_back(*i);
+				(*i)->is_delete_ = true;
+			}
+		}
+
+	}
+}
+
+
+
+int ControledBall::checkSwallowVirus(const std::list<VirusBall*>& virus_ball_list)
+{
+	auto position = this->getPosition();
+	int count = 0;
+	for (auto i = virus_ball_list.begin(); i != virus_ball_list.end(); ++i)
+	{
+		auto ball_position = (*i)->getPosition();
+		if (std::sqrt(calDistence(position, ball_position)) + ((*i)->getSize()) / 2 < size_ / 2)
+		{	
+			if (!(*i)->isDelete())
+			{
+				temp_ball_storage_.push_back(*i);
+				(*i)->deleteVirus();
+				if (!is_swallow_virus_)
+				{
+					is_swallow_virus_ = 1;
+				}
+				count++;
+			}
 		}
 	}
+	return count;
 }
 
 ControledBallManager * ControledBall::getManager() const
@@ -148,6 +181,26 @@ bool ControledBall::isDivided() const
 	return is_divided_;
 }
 
+bool ControledBall::isSwallowVirus() const
+{
+	return is_swallow_virus_;
+}
+
+
+void ControledBall::changeSwallowVirusState()
+{
+	is_swallow_virus_ = 1 - is_swallow_virus_;
+}
+
+void ControledBall::setDirectionWhenSwallowVirus(cocos2d::Vec2 direction)
+{
+	direction_when_swallow_virus_ = direction;
+}
+
+cocos2d::Vec2 ControledBall::getDirectionWhenSwallow() const
+{
+	return direction_when_swallow_virus_;
+}
 
 void ControledBall::countTime()
 {

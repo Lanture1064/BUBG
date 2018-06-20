@@ -1,8 +1,6 @@
 #include "SimpleAudioEngine.h"
 #include "../SettingHeader.h"
 #include "ControledBallManager.h"
-#include "ControledBall.h"
-#include "FoodBall.h"
 #include "../Tool/MathTool.h"
 USING_NS_CC;
 
@@ -117,7 +115,15 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 			ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60.0;
 			if ((*i)->getTimeCount() == 0)
 			{
-				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+				if ((*i)->isSwallowVirus())
+				{
+					(*i)->setDivideDirection((*i)->getDirectionWhenSwallow());
+					(*i)->changeSwallowVirusState();
+				}
+				else
+				{
+					(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+				}
 			}
 			auto direction = (*i)->getDivideDirection();
 			x_rate = (*i)->getSpeed() * direction.x;
@@ -149,9 +155,17 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60;
 			if ((*i)->getTimeCount() == 0)
 			{
-				auto cos_val = x_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
-				auto sin_val = y_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
-				(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+				if ((*i)->isSwallowVirus())
+				{
+					(*i)->setDivideDirection((*i)->getDirectionWhenSwallow());
+					(*i)->changeSwallowVirusState();
+				}
+				else
+				{
+					auto cos_val = x_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
+					auto sin_val = y_speed / std::pow((x_speed*x_speed + y_speed * y_speed), 0.5);
+					(*i)->setDivideDirection(Vec2(cos_val, sin_val));
+				}
 			}
 			auto direction = (*i)->getDivideDirection();
 			x_speed = (*i)->getSpeed() * direction.x * ratio;
@@ -253,6 +267,69 @@ void ControledBallManager::checkSwallowBall(const std::list<FoodBall*> &ball_lis
 			(*i)->checkSwallowBall(ball_list);
 		}
 	}
+	this->updateState();
+
+}
+
+int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
+{
+	int count = 0;
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+
+		if (!(*i)->isDelete())
+		{
+			(*i)->checkSwallowVirus(virus_list);
+		}
+	}
+	for (auto i = virus_list.begin(); i != virus_list.end();)
+	{
+		if ((*i)->isDelete())
+		{
+			(*i)->removeFromParent();
+			(*i) = nullptr;
+			i = virus_list.erase(i);
+			++count;
+			continue;
+		}
+		++i;
+	}
+	auto temp = std::sqrt(0.5);
+	static const std::vector<Vec2> direction = { Vec2(1,0),Vec2(-1,0),Vec2(0,1),Vec2(0,-1),Vec2(temp,temp),Vec2(temp,-temp),
+											     Vec2(-temp,temp),Vec2(-temp,-temp) };
+	auto append_list = std::list<ControledBall*>();
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
+	{
+		if ((*i)->isSwallowVirus())
+		{
+			for (auto j = 0; j < 2; ++j)
+			{
+				(*i)->divide();
+			}
+			(*i)->changeDividedState();
+			(*i)->changeSwallowVirusState();
+			(*i)->setDirectionWhenSwallowVirus(direction[0]);
+			for (auto j = 1; j < 8; ++j)
+			{
+				auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
+				ball->setManager(this);
+				ball->changeDividedState();
+				ball->changeSwallowVirusState();
+				ball->setDirectionWhenSwallowVirus(direction[j]);
+				father_->addChild(ball);
+				ball->setPosition((*i)->getPosition());
+				append_list.push_back(ball);
+			}
+		}
+	}
+	controled_ball_list_.insert(controled_ball_list_.end(), append_list.begin(), append_list.end());
+	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
+		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
+	}
+	this->updateState();
+	return count;
 }
 
 unsigned int ControledBallManager::isDead()
@@ -336,6 +413,7 @@ ControledBallManager::~ControledBallManager()
 {
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
+		(*i)->removeFromParent();
 		delete (*i);
 		(*i) = nullptr;
 	}

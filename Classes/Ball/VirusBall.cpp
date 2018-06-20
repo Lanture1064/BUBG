@@ -19,6 +19,7 @@ bool VirusBall::init()
 	const int kInitScore = 1000;
 	score_ = kInitScore;
 	size_ = ScoreToSize(score_);
+	is_delete_ = false;
 	this->setScale(size_ / this->getContentSize().width);
 	return true;
 }
@@ -33,4 +34,14 @@ VirusBall * VirusBall::createBall()
 	}
 	CC_SAFE_DELETE(ball);
 	return nullptr;
+}
+
+bool VirusBall::isDelete() const
+{
+	return is_delete_;
+}
+
+void VirusBall::deleteVirus()
+{
+	is_delete_ = true;
 }

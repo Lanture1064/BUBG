@@ -12,9 +12,11 @@ public:
 	~VirusBall();
 	virtual bool init();
 	static VirusBall* createBall();
+	bool isDelete() const;
+	void deleteVirus();
 	CREATE_FUNC(VirusBall);
 protected:
-
+	bool is_delete_;
 };
 
 #endif // !BUBG_CLASSES_BALL_VIRUS_BALL_H_

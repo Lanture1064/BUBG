@@ -23,6 +23,7 @@ ControledBall * ControledBall::createControledBall(int score, std::string color_
 	if (controled_ball&&controled_ball->init())
 	{
 		controled_ball->initControledBall(score, color_directory);
+		controled_ball->autorelease();
 		return controled_ball;
 	}
 	CC_SAFE_DELETE(controled_ball);
@@ -123,7 +124,7 @@ int ControledBall::checkSwallowVirus(const std::list<VirusBall*>& virus_ball_lis
 				(*i)->deleteVirus();
 				if (!is_swallow_virus_)
 				{
-					is_swallow_virus_ = 1;
+					is_swallow_virus_ = true;
 				}
 				count++;
 			}

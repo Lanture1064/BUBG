@@ -14,7 +14,7 @@ double calDistence(const cocos2d::Vec2 & i, const cocos2d::Vec2 & j)
 
 double ScoreToSpeed(int score)
 {
-	return 2000 / std::pow(score, 0.3);
+	return 1000 / std::pow(score, 0.3);
 }
 
 double getDoubleRand(int range)

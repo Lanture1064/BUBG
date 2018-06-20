@@ -36,9 +36,9 @@ bool GameControler::initControler(int state)
 	background->setTag(g_kBackgroundFlag);
 	background->setAnchorPoint(Vec2::ZERO);
 	this->addChild(background);
-	background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
+	background->setScale(Director::getInstance()->getVisibleSize().width * 1.5 / background->getContentSize().width);
 
-	auto food_manager = FoodBallManager::createManager(500);
+	auto food_manager = FoodBallManager::createManager(100);
 	this->addChild(food_manager);
 	food_manager->setTag(g_kFoodManagerFlag);
 
@@ -137,15 +137,15 @@ void GameControler::initWithServer()
 	}
 
 	command.command = NEW_VIRUS;
-	for (auto i = 0; i < 10; ++i)
+	for (auto i = 0; i < 5; ++i)
 	{
 		auto virus = VirusBall::createBall();
 		if (virus)
 		{
 			virus_list_.push_back(virus);
 			controled_ball_layer->addChild(virus, virus->getScore());
-			auto x = getDoubleRand(background_size.width);
-			auto y = getDoubleRand(background_size.height);
+			auto x = getDoubleRand(background_size.width - virus->getSize()) + virus->getSize() / 2;
+			auto y = getDoubleRand(background_size.height - virus->getSize()) + virus->getSize() / 2;
 			virus->setPosition(Vec2(x, y));
 			command.x = x;
 			command.y = y;
@@ -308,7 +308,6 @@ void GameControler::updateWithServer()
 
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
-	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
 	command.command = NEW_FOOD;
 
 	auto local_command = Server::getInstance()->getLocalCommand();
@@ -348,8 +347,8 @@ void GameControler::updateWithServer()
 				{
 					virus_list_.push_back(virus);
 					controled_ball_layer->addChild(virus, virus->getScore());
-					auto x = getDoubleRand(background_size.width);
-					auto y = getDoubleRand(background_size.height);
+					auto x = getDoubleRand(background_size.width - virus->getSize()) + virus->getSize() / 2;
+					auto y = getDoubleRand(background_size.height - virus->getSize()) + virus->getSize() / 2;
 					virus->setPosition(Vec2(x, y));
 					command.x = x;
 					command.y = y;
@@ -372,7 +371,7 @@ void GameControler::updateWithServer()
 	command.x = position.x;
 	command.y = position.y;
 	Server::getInstance()->addNetCommand(command);
-
+	
 }
 
 void GameControler::updateWithClient()

@@ -51,7 +51,6 @@ void ControledBallManager::removeBall(ControledBall * ball)
 		if ((*i) == ball)
 		{
 			(*i)->removeFromParent();
-			delete (*i);
 			*i = nullptr;
 			i = controled_ball_list_.erase(i);
 			return;
@@ -111,7 +110,7 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 		if ((*i)->isDivided())
 		{
 			//the ball dash when ball divided;
-			ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60.0;
+			ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 30.0;
 			if ((*i)->getTimeCount() == 0)
 			{
 				if ((*i)->isSwallowVirus())
@@ -151,7 +150,7 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 		auto y_speed = direction_count.y * (*i)->getSpeed() / 30.0;
 		if ((*i)->isDivided())
 		{
-			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 60;
+			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 30;
 			if ((*i)->getTimeCount() == 0)
 			{
 				if ((*i)->isSwallowVirus())
@@ -308,7 +307,12 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 				ball->setPosition((*i)->getPosition());
 				append_list.push_back(ball);
 			}
+			if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+			{
+				SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
+			}
 		}
+		
 	}
 
 	for (auto i = virus_list.begin(); i != virus_list.end();)
@@ -326,11 +330,7 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 
 	controled_ball_list_.insert(controled_ball_list_.end(), append_list.begin(), append_list.end());
 	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
-	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
-	{
-		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
-	}
-	this->updateState();
+	
 	return count;
 }
 
@@ -413,18 +413,6 @@ void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_
 
 ControledBallManager::~ControledBallManager()
 {
-	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
-	{
-		(*i)->removeFromParent();
-		delete (*i);
-		(*i) = nullptr;
-	}
-	for (auto i = 0; i < kColorNumber; ++i)
-	{
-		if (color_directory_ == BaseBall::kColorDirectoryVec[i])
-		{
-			kUsedColor[i] = false;
-		}
-	}
+	
 }
 

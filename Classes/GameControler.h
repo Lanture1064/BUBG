@@ -10,6 +10,15 @@
 #define USE_SERVER 1
 #define USE_CLIENT 2
 
+
+USING_NS_CC;
+
+class ControledBallManager;
+class ControledBall;
+class FoodBall;
+class LocalControler;
+class NetControler;
+
 //this class anchorpoint is Vec2::ZERO
 class GameControler : public cocos2d::Layer
 {
@@ -31,6 +40,9 @@ public:
 	void updateWithServer();
 	//when start game as client,call this function to update;
 	void updateWithClient();
+	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
+	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
+	void keyPressedDuration(EventKeyboard::KeyCode code);
 protected:
 	std::vector<ControledBallManager*> manager_container_;
 	std::list<FoodBall*> food_list_;

@@ -69,11 +69,11 @@ bool Setting::init()
 
 	//¿ØÖÆ·½Ê½
 	auto controlmouse = MenuItemImage::create(
-		"menu/on.png",
-		"menu/on.png");
+		"menu/keyboard.png",
+		"menu/keyboard.png");
 	auto controlkeyboard= MenuItemImage::create(
-		"menu/off.png",
-		"menu/off.png");
+		"menu/mouse.png",
+		"menu/mouse.png");
 	auto controlToggleMenuItem = MenuItemToggle::createWithCallback(CC_CALLBACK_1(Setting::menuControlToggleCallback, this),
 		controlmouse,
 		controlkeyboard,

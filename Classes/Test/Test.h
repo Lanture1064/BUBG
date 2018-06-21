@@ -2,6 +2,7 @@
 #define BUBG_CLASSES_TEST_TEST_H_
 
 #include "cocos2d.h"
+#include"SettingScene1.h"
 
 class TestScene : public cocos2d::Scene
 {

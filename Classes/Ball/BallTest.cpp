@@ -1,13 +1,18 @@
 #include "BallTest.h"
 #include "Ball.h"
 #include "../Tool/MathTool.h"
+#include "SimpleAudioEngine.h"
 USING_NS_CC;
+
 #define SIMPLE_GAME_TEST
 const int g_kFoodFlag = 0;
 const int g_kNumberFlag = 1;
 const int g_kFoodManagerFlag = 2;
 const int g_kControledManagerFlag = 3;
 auto food_ball_number = 0;
+
+using namespace CocosDenshion;
+
 BallTestScene::~BallTestScene()
 {
 	
@@ -88,6 +93,17 @@ bool BallTestScene::init()
 	this->addChild(number_label);
 	number_label->setTag(g_kNumberFlag);
 #endif // SIMPLE_GAME_TEST
+
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = true;
+	};
+	listener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = false;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 	return true;
 }
 
@@ -154,5 +170,28 @@ void BallTestScene::update(float dt)
 		food_container_.push_back(food);
 		auto layer = static_cast<Layer*>(this->getChildByTag(g_kFoodFlag));
 		layer->addChild(food);
+	}
+	Node::update(dt);
+	auto q = EventKeyboard::KeyCode::KEY_Q;
+	if (isKeyPressed(q)) {
+		keyPressedDuration(q);
+	}
+	
+}
+
+bool BallTestScene::isKeyPressed(EventKeyboard::KeyCode keyCode) {
+	if (keys[keyCode]) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+void BallTestScene::keyPressedDuration(EventKeyboard::KeyCode code) {
+	auto sc = Setting::createScene();
+	Director::getInstance()->pushScene(sc);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
 	}
 }

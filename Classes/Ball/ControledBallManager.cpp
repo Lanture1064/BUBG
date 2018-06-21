@@ -215,22 +215,12 @@ const std::list<ControledBall*> &ControledBallManager::getBallList() const
 
 std::pair<unsigned int,unsigned int> ControledBallManager::swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list)
 {
-	checkSwallowBall(food_ball_list);
+	std::pair<unsigned int, unsigned int> result = std::make_pair<unsigned int, unsigned>(0, 0);
+
+	result.first = checkSwallowBall(food_ball_list);
 	checkSwallowBall(controled_ball_list);
 	this->updateState();
-	std::pair<unsigned int, unsigned int> result = std::make_pair<unsigned int, unsigned>(0, 0);
-	for (auto i = food_ball_list.begin(); i != food_ball_list.end();)
-	{
-		if (!(*i)->isUsed())
-		{
-			(*i)->removeFromParent();
-			(*i) = nullptr;
-			i = food_ball_list.erase(i);
-			result.first++;
-			continue;
-		}
-		++i;
-	}
+	
 	for (auto i = controled_ball_list.begin(); i != controled_ball_list.end();)
 	{
 		if ((*i)->isDelete())
@@ -256,17 +246,18 @@ void ControledBallManager::checkSwallowBall(const std::list<ControledBall*> &bal
 		}
 	}
 }
-void ControledBallManager::checkSwallowBall(const std::list<FoodBall*> &ball_list)
+int ControledBallManager::checkSwallowBall(std::list<FoodBall*> &ball_list)
 {
+	int count = 0;
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
 		if (!(*i)->isDelete())
 		{
-			(*i)->checkSwallowBall(ball_list);
+			count=(*i)->checkSwallowBall(ball_list);
 		}
 	}
 	this->updateState();
-
+	return count;
 }
 
 int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)

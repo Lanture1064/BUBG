@@ -23,7 +23,7 @@ public:
 	void initControledBall(int score,std::string color_directory);
 	double getSpeed() const;
 	
-	void checkSwallowBall(const std::list<FoodBall*> &food_ball_list);
+	int checkSwallowBall(std::list<FoodBall*> &food_ball_list);
 	void checkSwallowBall(const std::list<ControledBall*> &controled_ball_list);
 	//this function is including dividing and removing ball operator after swallowing
 	int checkSwallowVirus(const std::list<VirusBall*> &virus_ball_list);

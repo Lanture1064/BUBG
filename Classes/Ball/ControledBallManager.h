@@ -47,7 +47,7 @@ public:
 	//the second value is the number of the controled ball swallowed;
 	std::pair<unsigned int,unsigned int> swallow(std::list<FoodBall*> &food_ball_list, std::list<ControledBall*> &controled_ball_list);
 	void checkSwallowBall(const std::list<ControledBall*> &ball_list);
-	void checkSwallowBall(const std::list<FoodBall*> &ball_list);
+	int checkSwallowBall(std::list<FoodBall*> &ball_list);
 	
 	int swallowVirus(std::list<VirusBall*> &virus_list);
 

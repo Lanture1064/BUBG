@@ -70,10 +70,11 @@ double ControledBall::getSpeed() const
 	return speed_;
 }
 
-void ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
+int ControledBall::checkSwallowBall(std::list<FoodBall*> &food_ball_list)
 {
+	int count = 0;
 	auto position = this->getPosition();
-	for (auto i = food_ball_list.begin(); i != food_ball_list.end(); ++i)
+	for (auto i = food_ball_list.begin(); i != food_ball_list.end();)
 	{
 		if ((*i)->isUsed())
 		{
@@ -81,11 +82,17 @@ void ControledBall::checkSwallowBall(const std::list<FoodBall*> &food_ball_list)
 			if (calDistence(position, food_position) < 0.9*size_*size_/4)
 			{
 				(*i)->changeUsedState();
-				auto k=(*i)->getAnchorPoint();
+				(*i)->removeFromParent();
 				temp_ball_storage_.push_back(*i);
+				count++;
+				(*i) = nullptr;
+				i = food_ball_list.erase(i);
+				continue;
 			}
 		}
+		++i;
 	}
+	return count;
 }
 
 void ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_ball_list)

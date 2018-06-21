@@ -19,6 +19,8 @@ public:
 	//get the command from other client;
 	void getCommand();
 	//send command to client;
+	//this function send te command by,command buffer,which is influenced by mutex;
+	//should be instead of sendCommand;
 	void replayCommand();
 	void beginWait();
 	void endWait();
@@ -27,6 +29,8 @@ public:
 	bool excuteCommand(CommandImformation command);
 	std::vector<CommandImformation> getLocalCommand();
 	void addNetCommand(CommandImformation coammand);
+	//this function send the command directly
+	void sendCommand(CommandImformation command);
 	void addNetCommand(std::vector<CommandImformation> command);
 	const std::vector<Player>& getPlayer() const;
 protected:

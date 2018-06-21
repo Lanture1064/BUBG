@@ -21,7 +21,11 @@ public:
 	std::vector<CommandImformation> getLocalCommand();
 	bool connect();
 	void getCommand();
+	//this function send te command by,command buffer,which is influenced by mutex;
+	//should be instead of sendCommand;
 	void replayCommand();
+	//this function send the command directly
+	void sendCommand(CommandImformation command);
 	void startGame();
 	void endGame();
 	void setServerIp(std::string ip);

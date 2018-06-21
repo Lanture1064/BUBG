@@ -194,6 +194,35 @@ void Server::addNetCommand(CommandImformation command)
 	net_command_lock_.unlock();
 }
 
+void Server::sendCommand(CommandImformation command)
+{
+	std::vector<CommandImformation> buf;
+	switch (command.command)
+	{
+	case DIRECTION:
+		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
+		{
+			buf.clear();
+			if (j->id != command.id)
+			{
+				buf.push_back(command);
+				j->sock->send(boost::asio::buffer(buf));
+			}
+		}
+		break;
+	case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS:
+		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
+		{
+			buf.clear();
+			buf.push_back(command);
+			j->sock->send(boost::asio::buffer(buf));
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void Server::addNetCommand(std::vector<CommandImformation> command)
 {
 	net_command_lock_.lock();

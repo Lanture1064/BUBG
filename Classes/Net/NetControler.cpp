@@ -51,10 +51,24 @@ void NetControler::update(float dt)
 		switch (command->command)
 		{
 		case DIRECTION:
-			manager_container_[command->id]->moveTo(Director::getInstance()->getDeltaTime(), Vec2(command->x, command->y));
+			for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+			{
+				if ((*manager)->getId() == command->id)
+				{
+					(*manager)->moveTo(Director::getInstance()->getDeltaTime(), Vec2(command->x, command->y));;
+					break;
+				}
+			}
 			break;
 		case DIRECTION_BY_KEY:
-			manager_container_[command->id]->moveByKey(Director::getInstance()->getDeltaTime(), Vec2(command->x, command->y));
+			for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+			{
+				if ((*manager)->getId() == command->id)
+				{
+					(*manager)->moveByKey(Director::getInstance()->getDeltaTime(), Vec2(command->x, command->y));
+					break;
+				}
+			}
 		case DIVIDE:
 			for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 			{

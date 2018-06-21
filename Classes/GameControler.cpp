@@ -39,9 +39,9 @@ bool GameControler::initControler(int state)
 	background->setTag(g_kBackgroundFlag);
 	background->setAnchorPoint(Vec2::ZERO);
 	this->addChild(background);
-	background->setScale(Director::getInstance()->getVisibleSize().width * 1.5 / background->getContentSize().width);
+	background->setScale(Director::getInstance()->getVisibleSize().width * 3 / background->getContentSize().width);
 
-	auto food_manager = FoodBallManager::createManager(100);
+	auto food_manager = FoodBallManager::createManager(300);
 	this->addChild(food_manager);
 	food_manager->setTag(g_kFoodManagerFlag);
 
@@ -86,9 +86,9 @@ void GameControler::initWithServer()
 {
 	Server::getInstance()->startGame();
 	std::thread get_command_thread(&Server::getCommand, Server::getInstance());
-	std::thread replay_command_thread(&Server::replayCommand, Server::getInstance());
+	//std::thread replay_command_thread(&Server::replayCommand, Server::getInstance());
 	get_command_thread.detach();
-	replay_command_thread.detach();
+	//replay_command_thread.detach();
 
 	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
 	auto controled_ball_layer = static_cast<Layer*>(this->getChildByTag(g_kControledBallLayerFlag));
@@ -113,7 +113,7 @@ void GameControler::initWithServer()
 			food->setPosition(Vec2(x, y));
 			command.x = x;
 			command.y = y;
-			Server::getInstance()->addNetCommand(command);
+			Server::getInstance()->sendCommand(command);
 		}
 	}
 
@@ -131,7 +131,7 @@ void GameControler::initWithServer()
 		manager_container_.push_back(manager);
 		local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
 		this->addChild(local_controler_);
-		Server::getInstance()->addNetCommand(command);
+		Server::getInstance()->sendCommand(command);
 	}
 	net_controler_ = NetControler::createControler();
 	this->addChild(net_controler_);
@@ -147,7 +147,7 @@ void GameControler::initWithServer()
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
 		net_controler_->addManager(manager);
-		Server::getInstance()->addNetCommand(command);
+		Server::getInstance()->sendCommand(command);
 	}
 
 	command.command = NEW_VIRUS;
@@ -163,7 +163,7 @@ void GameControler::initWithServer()
 			virus->setPosition(Vec2(x, y));
 			command.x = x;
 			command.y = y;
-			Server::getInstance()->addNetCommand(command);
+			Server::getInstance()->sendCommand(command);
 		}
 	}
 
@@ -174,7 +174,7 @@ void GameControler::initWithServer()
 	command.y = 0;
 	for (auto player = Server::getInstance()->getPlayer().begin(); player != Server::getInstance()->getPlayer().end(); ++player)
 	{
-		Server::getInstance()->addNetCommand(command);
+		Server::getInstance()->sendCommand(command);
 	}
 
 	//provide time for client to init;
@@ -185,9 +185,9 @@ void GameControler::initWithClient()
 {
 	Client::getInstance()->startGame();
 	std::thread get_command_thread(&Client::getCommand, Client::getInstance());
-	std::thread replay_command_thread(&Client::replayCommand, Client::getInstance());
+	//std::thread replay_command_thread(&Client::replayCommand, Client::getInstance());
 	get_command_thread.detach();
-	replay_command_thread.detach();
+	//replay_command_thread.detach();
 
 	auto food_layer = static_cast<Layer*>(this->getChildByTag(g_kFoodLayerFlag));
 	auto controled_ball_layer = static_cast<Layer*>(this->getChildByTag(g_kControledBallLayerFlag));
@@ -355,7 +355,7 @@ void GameControler::updateWithServer()
 					food->setPosition(Vec2(x, y));
 					command.x = x;
 					command.y = y;
-					Server::getInstance()->addNetCommand(command);
+					Server::getInstance()->sendCommand(command);
 				}
 			}
 		}
@@ -374,7 +374,7 @@ void GameControler::updateWithServer()
 					virus->setPosition(Vec2(x, y));
 					command.x = x;
 					command.y = y;
-					Server::getInstance()->addNetCommand(command);
+					Server::getInstance()->sendCommand(command);
 				}
 			}
 		}
@@ -385,7 +385,7 @@ void GameControler::updateWithServer()
 	{
 		command.command = DIVIDE;
 		command.id = 0x0000;
-		Server::getInstance()->addNetCommand(command);
+		Server::getInstance()->sendCommand(command);
 	}
 
 	Vec2 position;
@@ -403,7 +403,7 @@ void GameControler::updateWithServer()
 	command.id = 0x0000;
 	command.x = position.x;
 	command.y = position.y;
-	Server::getInstance()->addNetCommand(command);
+	Server::getInstance()->sendCommand(command);
 	
 }
 
@@ -455,7 +455,7 @@ void GameControler::updateWithClient()
 	{
 		command.command = DIVIDE;
 		command.id = Client::getInstance()->getId();
-		Client::getInstance()->addNetCommand(command);
+		Client::getInstance()->sendCommand(command);
 	}
 	auto user_default = UserDefault::getInstance();
 	Vec2 position;
@@ -472,7 +472,7 @@ void GameControler::updateWithClient()
 	command.id = Client::getInstance()->getId();
 	command.x = position.x;
 	command.y = position.y;
-	Client::getInstance()->addNetCommand(command);
+	Client::getInstance()->sendCommand(command);
 }
 
 bool GameControler::isKeyPressed(EventKeyboard::KeyCode keyCode) {

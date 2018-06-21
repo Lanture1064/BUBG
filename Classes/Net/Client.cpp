@@ -99,6 +99,13 @@ void Client::replayCommand()
 	}
 }
 
+void Client::sendCommand(CommandImformation command)
+{
+	std::vector<CommandImformation> buf;
+	buf.push_back(command);
+	player_.sock->send(boost::asio::buffer(buf));
+}
+
 void Client::startGame()
 {
 	is_in_game_ = true;

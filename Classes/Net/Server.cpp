@@ -117,7 +117,7 @@ void Server::replayCommand()
 					}
 				}
 				break;
-			case NEW_FOOD: case NEW_MANAGER: case INIT_END:
+			case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS:
 				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 				{
 					std::vector<CommandImformation> buf;

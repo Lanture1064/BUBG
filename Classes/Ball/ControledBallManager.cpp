@@ -136,7 +136,7 @@ void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
 				(*i)->countTime();
 			}
 		}
-		(*i)->judgeIfMove(x_rate, y_rate);
+		(*i)->judgeIfMove(x_rate, y_rate,background_size_);
 		auto move = MoveBy::create(time, Vec2(x_rate*time * ratio, y_rate*time * ratio));
 		(*i)->runAction(move);
 	}
@@ -178,7 +178,7 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 				(*i)->countTime();
 			}
 		}
-		(*i)->judgeIfMove(x_speed, y_speed);
+		(*i)->judgeIfMove(x_speed, y_speed,background_size_);
 		auto move = MoveBy::create(time, Vec2(x_speed*time, y_speed*time));
 		(*i)->runAction(move);		
 	}
@@ -294,7 +294,7 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 				(*i)->divide();
 			}
 			(*i)->changeDividedState();
-			(*i)->changeSwallowVirusState();
+			(*i)->resetTimeCount();
 			(*i)->setDirectionWhenSwallowVirus(direction[0]);
 			for (auto j = 1; j < 8; ++j)
 			{
@@ -340,17 +340,19 @@ unsigned int ControledBallManager::isDead()
 }
 
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size)
 {
-	return createManager(all_controled_ball_list, Vec2::ZERO);
+	return createManager(all_controled_ball_list, visible_size, Vec2::ZERO);
 }
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+														   cocos2d::Vec2 position)
 {
 	std::string name = "guest";
-	return createManager(all_controled_ball_list, position, name);
+	return createManager(all_controled_ball_list, visible_size, position, name);
 }
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position, std::string name)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+														   cocos2d::Vec2 position, std::string name)
 {
 	std::string color_directory;
 	for (auto i = 0; i != kUsedColor.size(); ++i)
@@ -366,18 +368,18 @@ ControledBallManager * ControledBallManager::createManager(std::list<ControledBa
 			color_directory = BaseBall::kColorDirectoryVec[0];
 		}
 	}
-	return createManager(all_controled_ball_list, position, name,color_directory);
+	return createManager(all_controled_ball_list, visible_size, position, name,color_directory);
 }
 
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position,
-														   std::string name,std::string color_directory)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+														   cocos2d::Vec2 position, std::string name,std::string color_directory)
 {
 	auto manager = new ControledBallManager();
 
 	if (manager&&manager->init())
 	{
-		manager->initManager(all_controled_ball_list,position, name, color_directory);
+		manager->initManager(all_controled_ball_list,position, name, color_directory,visible_size);
 		manager->autorelease();
 		return manager;
 	}
@@ -396,7 +398,7 @@ bool ControledBallManager::init()
 }
 
 void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position,
-									   std::string name, std::string color_directory)
+									   std::string name, std::string color_directory, const cocos2d::Vec2 &visible_size)
 {
 	auto ball = ControledBall::createControledBall(color_directory);
 	ball->setPosition(position);
@@ -409,6 +411,7 @@ void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_
 	speed_ = ball->getSpeed();
 	color_directory_ = color_directory;
 	id_ = -1;
+	background_size_ = visible_size;
 }
 
 ControledBallManager::~ControledBallManager()

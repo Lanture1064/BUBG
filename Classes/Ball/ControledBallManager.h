@@ -20,6 +20,7 @@ protected:
 	cocos2d::Node* father_;
 	std::string color_directory_;
 	std::string name_;
+	cocos2d::Vec2 background_size_;
 public:
 	int getId() const;
 	void setId(int id);
@@ -52,14 +53,17 @@ public:
 
 	unsigned int isDead();
 
-	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list);
-	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position);
-	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name);
-	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position,
-		                                       std::string name, std::string color_directory);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+											   cocos2d::Vec2 position);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+											   cocos2d::Vec2 position, std::string name);
+	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size, 
+											   cocos2d::Vec2 position, std::string name, std::string color_directory);
 	CREATE_FUNC(ControledBallManager);
 	virtual bool init();
-	void initManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name,std::string color_directory);
+	void initManager(std::list<ControledBall*>* all_controled_ball_list, cocos2d::Vec2 position, std::string name,std::string color_directory,
+				     const cocos2d::Vec2 &visible_size);
 	~ControledBallManager();
 	ControledBallManager() = default;
 };

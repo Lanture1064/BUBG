@@ -97,7 +97,7 @@ void ControledBall::checkSwallowBall(const std::list<ControledBall*> &controled_
 		
 		if (std::sqrt(calDistence(position, ball_position))+((*i)->size_)/2 < size_/2)
 		{
-			if (!(*i)->is_delete_)
+			if (!(*i)->is_delete_&&!((*i)->isDivided()&&(*i)->getParent()==this->getParent()))
 			{
 				temp_ball_storage_.push_back(*i);
 				(*i)->is_delete_ = true;

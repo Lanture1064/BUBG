@@ -43,8 +43,8 @@ bool BallTestScene::init()
 		(*i)->setPosition(Vec2(origin.x + getDoubleRand(visible_size.width), origin.y + getDoubleRand(visible_size.height)));
 		food_layer->addChild(*i);
 	}
-
-	auto controled_ball_manager = ControledBallManager::createManager(&ball_container_);
+	auto size = Director::getInstance()->getVisibleSize();
+	auto controled_ball_manager = ControledBallManager::createManager(&ball_container_, Vec2(size.width, size.height));
 	controled_ball_manager->addFatherScene(this);
 
 	controled_ball_manager->setTag(g_kControledManagerFlag);

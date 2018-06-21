@@ -183,7 +183,7 @@ int LocalControler::getDivideCount()
 
 cocos2d::Vec2 LocalControler::getMousePosition() const
 {
-	return mouse_position_;
+	return this->getParent()->convertToNodeSpace(Director::getInstance()->convertToGL(mouse_position_));;
 }
 
 cocos2d::Vec2 LocalControler::getManagerPosition() const

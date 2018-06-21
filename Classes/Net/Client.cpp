@@ -125,7 +125,7 @@ bool Client::excuteCommand(CommandImformation command)
 	case REPLAY_NEW_PLAYER:
 		player_.id = command.id;
 		break;
-	case DIRECTION: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE:
+	case DIRECTION: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS:
 		local_command_lock_.lock();
 		local_command_buffer_.push_back(command);
 		local_command_lock_.unlock();

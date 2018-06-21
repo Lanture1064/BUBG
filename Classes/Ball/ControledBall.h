@@ -50,7 +50,7 @@ public:
 	//this function is used to judge if ball will move beyond window;
 	//if true,the speed in this direction will be set by zero;
 	template<class T>
-	void judgeIfMove(T &x_speed, T &y_speed);
+	void judgeIfMove(T &x_speed, T &y_speed, cocos2d::Vec2 visible_size);
 protected:
 	ControledBallManager * manager_;
 	double speed_;
@@ -67,10 +67,9 @@ protected:
 };
 
 template<class T>
-inline void ControledBall::judgeIfMove(T & x_speed, T & y_speed)
+inline void ControledBall::judgeIfMove(T & x_speed, T & y_speed, cocos2d::Vec2 visible_size)
 {
-	auto space_position = this->getParent()->convertToWorldSpace(this->getPosition());
-	auto visible_size = Director::getInstance()->getVisibleSize();
+	auto space_position = this->getPosition();
 	auto size = this->getBoundingBox().size;
 	if (space_position.x <= size.width/2)
 	{
@@ -79,7 +78,7 @@ inline void ControledBall::judgeIfMove(T & x_speed, T & y_speed)
 			x_speed = 0;
 		}
 	}
-	else if (space_position.x + size.width/2 >= visible_size.width)
+	else if (space_position.x + size.width/2 >= visible_size.x)
 	{
 		if (x_speed > 0)
 		{
@@ -93,7 +92,7 @@ inline void ControledBall::judgeIfMove(T & x_speed, T & y_speed)
 			y_speed = 0;
 		}
 	}
-	else if (space_position.y + size.height/2 >= visible_size.height)
+	else if (space_position.y + size.height/2 >= visible_size.y)
 	{
 		if (y_speed > 0)
 		{

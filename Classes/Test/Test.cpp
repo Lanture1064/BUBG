@@ -36,7 +36,7 @@ void TestScene::initScene()
 	auto pClient_label = MenuItemLabel::create(client_label, this, menu_selector(TestScene::clientButton));
 	auto client_button = Menu::create(pClient_label, NULL);
 	//this address is the ip of ZYD'laptop;
-	//Client::getInstance()->setServerIp("192.168.3.5");
+	Client::getInstance()->setServerIp("192.168.3.5");
 	server_button->setPosition(Vec2(100, 100));
 	client_button->setPosition(Vec2(200, 200));
 	this->addChild(server_button);

@@ -111,7 +111,7 @@ void GameControler::initWithServer()
 		auto y = getDoubleRand(background_size.height);
 		command.x = x;
 		command.y = y;
-		auto manager = ControledBallManager::createManager(&controled_ball_list_,Vec2(x,y));
+		auto manager = ControledBallManager::createManager(&controled_ball_list_,Vec2(background_size.width, background_size.height),Vec2(x,y));
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
@@ -128,7 +128,7 @@ void GameControler::initWithServer()
 		auto y = getDoubleRand(background_size.height);
 		command.x = x;
 		command.y = y;
-		auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(x, y));
+		auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),Vec2(x, y));
 		manager->setId(command.id);
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
@@ -179,7 +179,7 @@ void GameControler::initWithClient()
 	auto controled_ball_layer = static_cast<Layer*>(this->getChildByTag(g_kControledBallLayerFlag));
 	auto food_manager = static_cast<FoodBallManager*>(this->getChildByTag(g_kFoodManagerFlag));
 	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
-
+	auto background_size = background->getBoundingBox().size;
 	net_controler_ = NetControler::createControler();
 	this->addChild(net_controler_);
 	for (;;)
@@ -204,7 +204,8 @@ void GameControler::initWithClient()
 					}
 					break;
 				case NEW_MANAGER:
-					manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(command->x, command->y));
+					manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),
+																  Vec2(command->x, command->y));
 					if (manager)
 					{
 						manager->setId(command->id);
@@ -226,6 +227,7 @@ void GameControler::initWithClient()
 					if (virus)
 					{
 						controled_ball_layer->addChild(virus, virus->getScore());
+						virus_list_.push_back(virus);
 						virus->setPosition(Vec2(command->x, command->y));
 					}
 					break;

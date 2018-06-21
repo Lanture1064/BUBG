@@ -18,8 +18,8 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 	manager_ = manager;
 	ball_list_ = ball_list;
 	divide_count_ = 0;
-	direction_count_ = Vec2(0, 0);
-	key_pressed_ = std::vector<bool>(4);
+	key_x_direction_ = 0;
+	key_y_direction_ = 0;
 
 	auto mouse_listener = EventListenerMouse::create();
 	mouse_listener->onMouseMove = [=](Event* mouse_event) {
@@ -40,16 +40,16 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 			divide_state_lock_.unlock();
 			break;
 		case EventKeyboard::KeyCode::KEY_W: case EventKeyboard::KeyCode::KEY_UP_ARROW:
-			key_pressed_[UP] = true;
+			key_y_direction_ += 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_S: case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-			key_pressed_[DOWN] = true;
+			key_y_direction_ -= 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_A: case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-			key_pressed_[LEFT] = true;
+			key_x_direction_ -= 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_D: case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-			key_pressed_[RIGHT] = true;
+			key_x_direction_ += 1;
 			break;
 		default:
 			break;
@@ -59,16 +59,16 @@ void LocalControler::initControler(ControledBallManager * manager, std::list<Con
 		switch (key_code)
 		{
 		case EventKeyboard::KeyCode::KEY_W: case EventKeyboard::KeyCode::KEY_UP_ARROW:
-			key_pressed_[UP] = false;
+			key_y_direction_ -= 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_S: case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-			key_pressed_[DOWN] = false;
+			key_y_direction_ += 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_A: case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-			key_pressed_[LEFT] = false;
+			key_x_direction_ += 1;
 			break;
 		case EventKeyboard::KeyCode::KEY_D: case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-			key_pressed_[RIGHT] = false;
+			key_x_direction_ -= 1;
 			break;
 		default:
 			break;
@@ -100,69 +100,11 @@ LocalControler::~LocalControler()
 
 void LocalControler::update(float dt)
 {
-	if (key_pressed_[RIGHT])
-	{
-		if (direction_count_.x < 30)
-		{
-			++direction_count_.x;
-		}
-	}
-	else
-	{
-		if (direction_count_.x > 0)
-		{
-			--direction_count_.x;
-		}
-	}
-
-	if (key_pressed_[LEFT])
-	{
-		if (direction_count_.x > -30)
-		{
-			--direction_count_.x;
-		}
-	}
-	else
-	{
-		if (direction_count_.x < 0)
-		{
-			++direction_count_.x;
-		}
-	}
-
-	if (key_pressed_[UP])
-	{
-		if (direction_count_.y < 30)
-		{
-			++direction_count_.y;
-		}
-	}
-	else
-	{
-		if (direction_count_.y > 0)
-		{
-			--direction_count_.y;
-		}
-	}
-
-	if (key_pressed_[DOWN])
-	{
-		if (direction_count_.y > -30)
-		{
-			--direction_count_.y;
-		}
-	}
-	else
-	{
-		if (direction_count_.y < 0)
-		{
-			++direction_count_.y;
-		}
-	}
+	
 	auto user_default = UserDefault::getInstance();
 	if (user_default->getBoolForKey(CONTROL_KEY))
 	{
-		manager_->moveByKey(Director::getInstance()->getDeltaTime(), direction_count_);
+		manager_->moveByKey(Director::getInstance()->getDeltaTime(), Vec2(key_x_direction_,key_y_direction_));
 	}
 	else
 	{
@@ -189,4 +131,9 @@ cocos2d::Vec2 LocalControler::getMousePosition() const
 cocos2d::Vec2 LocalControler::getManagerPosition() const
 {
 	return manager_->getPosition();
+}
+
+cocos2d::Vec2 LocalControler::getKeyDirection() const
+{
+	return cocos2d::Vec2(key_x_direction_,key_y_direction_);
 }

@@ -146,8 +146,8 @@ void ControledBallManager::moveByKey(double time, cocos2d::Vec2 direction_count)
 {
 	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i)
 	{
-		auto x_speed = direction_count.x * (*i)->getSpeed() / 30.0;
-		auto y_speed = direction_count.y * (*i)->getSpeed() / 30.0;
+		auto x_speed = direction_count.x * (*i)->getSpeed();
+		auto y_speed = direction_count.y * (*i)->getSpeed();
 		if ((*i)->isDivided())
 		{
 			auto ratio = 3.0 - 2.0 * (*i)->getTimeCount() / 30;

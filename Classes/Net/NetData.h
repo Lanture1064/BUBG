@@ -30,6 +30,8 @@
 
 #define NEW_VIRUS 0x0009
 
+#define DIRECTION_BY_KEY 0x000A
+
 class Client;
 class Server;
 struct CommandImformation

@@ -387,9 +387,20 @@ void GameControler::updateWithServer()
 		command.id = 0x0000;
 		Server::getInstance()->addNetCommand(command);
 	}
-	command.command = DIRECTION;
+
+	Vec2 position;
+	auto user_default = UserDefault::getInstance();
+	if (user_default->getBoolForKey(CONTROL_KEY))
+	{
+		command.command = DIRECTION_BY_KEY;
+		position = local_controler_->getKeyDirection();
+	}
+	else
+	{
+		command.command = DIRECTION;
+		position = local_controler_->getMousePosition();
+	}
 	command.id = 0x0000;
-	auto position = local_controler_->getMousePosition();
 	command.x = position.x;
 	command.y = position.y;
 	Server::getInstance()->addNetCommand(command);
@@ -432,7 +443,7 @@ void GameControler::updateWithClient()
 					new_virus->setPosition(Vec2(i->x, i->y));
 					virus_list_.push_back(new_virus);
 				}
-			case DIRECTION: case DIVIDE:  default:
+			case DIRECTION: case DIVIDE:  case DIRECTION_BY_KEY: default:
 				net_controler_->addCommand(*i);
 				break;
 			}
@@ -446,10 +457,19 @@ void GameControler::updateWithClient()
 		command.id = Client::getInstance()->getId();
 		Client::getInstance()->addNetCommand(command);
 	}
-
-	command.command = DIRECTION;
+	auto user_default = UserDefault::getInstance();
+	Vec2 position;
+	if (user_default->getBoolForKey(CONTROL_KEY))
+	{
+		command.command = DIRECTION_BY_KEY;
+		position = local_controler_->getKeyDirection();
+	}
+	else
+	{
+		command.command = DIRECTION;
+		position = local_controler_->getMousePosition();
+	}
 	command.id = Client::getInstance()->getId();
-	auto position = local_controler_->getMousePosition();
 	command.x = position.x;
 	command.y = position.y;
 	Client::getInstance()->addNetCommand(command);

@@ -1,6 +1,7 @@
 #include "Test.h"
 #include "../GameControler.h"
 #include "../Net/Net.h"
+#include "ChatBox.h"
 #include <thread>
 USING_NS_CC;
 
@@ -28,6 +29,7 @@ TestScene * TestScene::createScene()
 
 void TestScene::initScene()
 {
+
 	auto server_label = Label::create("Server", "Arial", 20);
 	auto pServer_label = MenuItemLabel::create(server_label, this, menu_selector(TestScene::serverButton));
 	auto server_button = Menu::create(pServer_label, NULL);
@@ -59,6 +61,9 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 	}
 	auto controler = GameControler::createControler(USE_SERVER);
 	this->addChild(controler);
+	auto chat_box = ChatBox::createBox(0x0000);
+	chat_box->setPosition(500, 100);
+	this->addChild(chat_box);
 }
 
 void TestScene::clientButton(cocos2d::Object * pSender)

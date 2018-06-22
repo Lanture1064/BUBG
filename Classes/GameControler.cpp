@@ -125,8 +125,7 @@ void GameControler::initWithServer()
 		auto y = getDoubleRand(background_size.height);
 		command.x = x;
 		command.y = y;
-		auto manager = ControledBallManager::createManager(&controled_ball_list_,Vec2(background_size.width, background_size.height),Vec2(x,y));
-		manager->setId(command.id);
+		auto manager = ControledBallManager::createManager(&controled_ball_list_,Vec2(background_size.width, background_size.height), command.id, Vec2(x,y));
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
 		local_controler_ = LocalControler::createControler(manager, &controled_ball_list_);
@@ -142,8 +141,7 @@ void GameControler::initWithServer()
 		auto y = getDoubleRand(background_size.height);
 		command.x = x;
 		command.y = y;
-		auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),Vec2(x, y));
-		manager->setId(command.id);
+		auto manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),command.id, Vec2(x, y));
 		manager->addFatherScene(controled_ball_layer);
 		manager_container_.push_back(manager);
 		net_controler_->addManager(manager);
@@ -218,11 +216,10 @@ void GameControler::initWithClient()
 					}
 					break;
 				case NEW_MANAGER:
-					manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),
+					manager = ControledBallManager::createManager(&controled_ball_list_, Vec2(background_size.width, background_size.height),command->id,
 																  Vec2(command->x, command->y));
 					if (manager)
 					{
-						manager->setId(command->id);
 						manager->addFatherScene(controled_ball_layer);
 						manager_container_.push_back(manager);
 						if (manager->getId() == Client::getInstance()->getId())

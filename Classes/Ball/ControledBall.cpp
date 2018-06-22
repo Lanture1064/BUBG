@@ -14,15 +14,15 @@ ControledBall::~ControledBall()
 ControledBall * ControledBall::createControledBall()
 {
 	std::string color_directory = "ball/gray_ball.png";
-	return createControledBall(color_directory);
+	return createControledBall(color_directory,std::string());
 }
 
-ControledBall * ControledBall::createControledBall(int score, std::string color_directory)
+ControledBall * ControledBall::createControledBall(int score, std::string color_directory, std::string name)
 {
 	ControledBall* controled_ball = new ControledBall();
 	if (controled_ball&&controled_ball->init())
 	{
-		controled_ball->initControledBall(score, color_directory);
+		controled_ball->initControledBall(score, color_directory, name);
 		controled_ball->autorelease();
 		return controled_ball;
 	}
@@ -30,10 +30,10 @@ ControledBall * ControledBall::createControledBall(int score, std::string color_
 	return nullptr;
 }
 
-ControledBall * ControledBall::createControledBall(std::string color_directory)
+ControledBall * ControledBall::createControledBall(std::string color_directory , std::string name)
 {
 	const unsigned int kInitScore = 100;
-	return createControledBall(kInitScore, color_directory);
+	return createControledBall(kInitScore, color_directory, name);
 }
 
 
@@ -46,7 +46,7 @@ bool ControledBall::init()
 	return true;
 }
 
-void ControledBall::initControledBall(int score,std::string color_directory)
+void ControledBall::initControledBall(int score,std::string color_directory, std::string name)
 {
 	this->initWithFile(color_directory);
 	color_directory_ = color_directory;
@@ -60,6 +60,14 @@ void ControledBall::initControledBall(int score,std::string color_directory)
 	time_count_ = 0;
 	divide_direction_ = Vec2::ZERO;
 	direction_when_swallow_virus_ = Vec2::ZERO;
+	
+	auto name_label = Label::create(name, "Arial", ScoreToSize(100));
+	//name_label->setScale(size_ / this->getContentSize().width);
+	name_label->setColor(cocos2d::Color3B::BLACK);
+	this->addChild(name_label);
+	auto ball_size = this->getContentSize();
+	name_label->setPosition(ball_size.width / 2, ball_size.height / 2);
+
 	this->setScale(size_ / this->getContentSize().width);
 	this->setZOrder(score_);
 }

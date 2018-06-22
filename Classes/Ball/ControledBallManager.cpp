@@ -193,7 +193,7 @@ void ControledBallManager::divideBall(cocos2d::Vec2 target)
 		if ((*i)->getScore() > 400)
 		{
 			(*i)->divide();
-			auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_);
+			auto ball = ControledBall::createControledBall((*i)->getScore(), color_directory_, name_);
 			ball->setManager(this);
 			ball->changeDividedState();
 			father_->addChild(ball);
@@ -289,7 +289,7 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 			(*i)->setDirectionWhenSwallowVirus(direction[0]);
 			for (auto j = 1; j < 8; ++j)
 			{
-				auto ball = ControledBall::createControledBall((*i)->getScore()*1.1, color_directory_);
+				auto ball = ControledBall::createControledBall((*i)->getScore()*1.1, color_directory_, name_);
 				ball->setManager(this);
 				ball->changeDividedState();
 				ball->changeSwallowVirusState();
@@ -331,18 +331,22 @@ unsigned int ControledBallManager::isDead()
 }
 
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size)
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size ,int id)
 {
-	return createManager(all_controled_ball_list, visible_size, Vec2::ZERO);
+	return createManager(all_controled_ball_list, visible_size, id, Vec2::ZERO);
 }
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size, int id,
 														   cocos2d::Vec2 position)
 {
-	std::string name = "guest";
-	return createManager(all_controled_ball_list, visible_size, position, name);
+	std::string name = "Player";
+	auto temp = std::string("00");
+	temp[0] += id / 10;
+	temp[1] += id % 10;
+	name += temp;
+	return createManager(all_controled_ball_list, visible_size, id, position, name);
 }
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size, int id,
 														   cocos2d::Vec2 position, std::string name)
 {
 	std::string color_directory;
@@ -359,18 +363,18 @@ ControledBallManager * ControledBallManager::createManager(std::list<ControledBa
 			color_directory = BaseBall::kColorDirectoryVec[0];
 		}
 	}
-	return createManager(all_controled_ball_list, visible_size, position, name,color_directory);
+	return createManager(all_controled_ball_list, visible_size, id, position, name, color_directory);
 }
 
 
-ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size,
+ControledBallManager * ControledBallManager::createManager(std::list<ControledBall*> *all_controled_ball_list, const cocos2d::Vec2 &visible_size, int id,
 														   cocos2d::Vec2 position, std::string name,std::string color_directory)
 {
 	auto manager = new ControledBallManager();
 
 	if (manager&&manager->init())
 	{
-		manager->initManager(all_controled_ball_list,position, name, color_directory,visible_size);
+		manager->initManager(all_controled_ball_list,position, id , name, color_directory,visible_size);
 		manager->autorelease();
 		return manager;
 	}
@@ -388,20 +392,20 @@ bool ControledBallManager::init()
 	return true;
 }
 
-void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position,
+void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_ball_list, cocos2d::Vec2 position, int id,
 									   std::string name, std::string color_directory, const cocos2d::Vec2 &visible_size)
 {
-	auto ball = ControledBall::createControledBall(color_directory);
+	name_ = name;
+	auto ball = ControledBall::createControledBall(color_directory, name);
 	ball->setPosition(position);
 	this->setPosition(position);
-	name_ = name;
 	ball->setManager(this);
 	controled_ball_list_.push_back(ball);
 	all_controled_ball_list_ = all_controled_ball_list;
 	all_controled_ball_list_->push_back(ball);
 	speed_ = ball->getSpeed();
 	color_directory_ = color_directory;
-	id_ = -1;
+	id_ = id;
 	background_size_ = visible_size;
 }
 

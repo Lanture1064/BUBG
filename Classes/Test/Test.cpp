@@ -52,7 +52,7 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 	t.detach();
 	for (;;)
 	{
-		if (Server::getInstance()->getPlayer().size())
+		if (Server::getInstance()->getPlayer().size()<1)
 		{
 			Server::getInstance()->endWait();
 			Server::getInstance()->startGame();

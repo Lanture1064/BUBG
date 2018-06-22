@@ -16,11 +16,11 @@ public:
 	ControledBall() = default;
 	~ControledBall();
 	static ControledBall* createControledBall();
-	static ControledBall* createControledBall(int score,std::string color_directory);
-	static ControledBall* createControledBall(std::string color_directory);
+	static ControledBall* createControledBall(int score,std::string color_directory, std::string name);
+	static ControledBall* createControledBall(std::string color_directory, std::string name);
 
 	virtual bool init();
-	void initControledBall(int score,std::string color_directory);
+	void initControledBall(int score,std::string color_directory, std::string name);
 	double getSpeed() const;
 	
 	int checkSwallowBall(std::list<FoodBall*> &food_ball_list);

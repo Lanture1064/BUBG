@@ -1,5 +1,6 @@
 #include "ChatBox.h"
 #include "cocos-ext.h"
+#include "Net/Net.h"
 
 USING_NS_CC;
 using namespace cocos2d::extension;
@@ -17,9 +18,10 @@ bool ChatBox::init()
 	return true;
 }
 
-void ChatBox::initBox(int id,int message_number)
+void ChatBox::initBox(int id,int state, int message_number)
 {
 	id_ = id;
+	state_ = state;
 	auto size = Director::getInstance()->getVisibleSize();
 	label_size_ = size.height / 36;
 	this->setAnchorPoint(Vec2(0, 0));
@@ -45,12 +47,12 @@ void ChatBox::initBox(int id,int message_number)
 	this->scheduleUpdate();
 }
 
-ChatBox * ChatBox::createBox(int id, int message_number)
+ChatBox * ChatBox::createBox(int id, int state, int message_number)
 {
 	auto chat_box = new ChatBox();
 	if (chat_box&&chat_box->init())
 	{
-		chat_box->initBox(id,message_number);
+		chat_box->initBox(id,state,message_number);
 		chat_box->autorelease();
 		return chat_box;
 	}
@@ -69,28 +71,15 @@ void ChatBox::editBoxReturn(EditBox * edit_box)
 		number[1] += id_ % 10;
 		name += number;
 		name += text;
-		for (auto i = message_.begin(); i != message_.end(); ++i)
+		this->displayMessage(name);
+		if (state_ == USE_SERVER)
 		{
-			if (i->first->getString() == "")
-			{
-				i->first->setString(name);
-				i->second = 0;
-				edit_box->setText("");
-				return;
-			}
+			Server::getInstance()->sendMessage(name);
 		}
-		int index = 0;
-		int max_count = 0;
-		for (auto i = 0; i != message_.size(); ++i)
+		else if (state_ == USE_CLIENT)
 		{
-			if (message_[i].second > max_count)
-			{
-				index = i;
-				max_count = message_[i].second;
-			}
+			Client::getInstance()->sendMessage(name);
 		}
-		message_[index].first->setString(name);
-		message_[index].second = 0;
 		edit_box->setText("");
 	}
 }
@@ -112,4 +101,42 @@ void ChatBox::update(float dt)
 			}
 		}
 	}
+	if (state_ == USE_SERVER)
+	{
+		auto temp = Server::getInstance()->getMessage();
+		for (auto text = temp.begin(); text != temp.end(); ++text)
+		{
+			this->displayMessage(*text);
+		}
+	}
+	else  if (state_ == USE_CLIENT)
+	{
+		auto text = Client::getInstance()->getMessage();
+		this->displayMessage(text);
+	}
+}
+
+void ChatBox::displayMessage(const std::string& text)
+{
+	for (auto i = message_.begin(); i != message_.end(); ++i)
+	{
+		if (i->first->getString() == "")
+		{
+			i->first->setString(text);
+			i->second = 0;
+			return;
+		}
+	}
+	int index = 0;
+	int max_count = 0;
+	for (auto i = 0; i != message_.size(); ++i)
+	{
+		if (message_[i].second > max_count)
+		{
+			index = i;
+			max_count = message_[i].second;
+		}
+	}
+	message_[index].first->setString(text);
+	message_[index].second = 0;
 }

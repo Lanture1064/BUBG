@@ -7,10 +7,6 @@
 #include "Ball/Ball.h"
 #include "Net/Net.h"
 
-#define USE_SERVER 1
-#define USE_CLIENT 2
-
-
 USING_NS_CC;
 
 class ControledBallManager;

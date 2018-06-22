@@ -52,7 +52,7 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 	t.detach();
 	for (;;)
 	{
-		if (Server::getInstance()->getPlayer().size()<1)
+		if (Server::getInstance()->getPlayer().size())
 		{
 			Server::getInstance()->endWait();
 			Server::getInstance()->startGame();
@@ -61,7 +61,7 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 	}
 	auto controler = GameControler::createControler(USE_SERVER);
 	this->addChild(controler);
-	auto chat_box = ChatBox::createBox(0x0000);
+	auto chat_box = ChatBox::createBox(0x0000,USE_SERVER);
 	chat_box->setPosition(500, 100);
 	this->addChild(chat_box);
 }
@@ -72,5 +72,8 @@ void TestScene::clientButton(cocos2d::Object * pSender)
 	Client::getInstance()->startGame();
 	auto controler = GameControler::createControler(USE_CLIENT);
 	this->addChild(controler);
+	auto chat_box = ChatBox::createBox(Client::getInstance()->getId(), USE_CLIENT);
+	chat_box->setPosition(500, 100);
+	this->addChild(chat_box);
 }
 

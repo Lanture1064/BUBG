@@ -26,6 +26,8 @@ public:
 	void replayCommand();
 	//this function send the command directly
 	void sendCommand(CommandImformation command);
+	std::string getMessage();
+	void sendMessage(std::string text);
 	void startGame();
 	void endGame();
 	void setServerIp(std::string ip);
@@ -37,6 +39,7 @@ protected:
 	service service_;
 	Player player_;
 	endpoint server_;
+	endpoint message_server_;
 	std::vector<CommandImformation> local_command_buffer_;
 	std::vector<CommandImformation> net_command_buffer_;
 	std::mutex local_command_lock_;

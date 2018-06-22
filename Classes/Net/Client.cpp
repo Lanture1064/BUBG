@@ -8,6 +8,8 @@ Client::Client() :service_(), local_command_buffer_(), net_command_buffer_(), lo
 	add = boost::asio::ip::address::from_string("127.0.0.1");
 	server_.address(add);
 	server_.port(PORT);
+	message_server_.address(add);
+	message_server_.port(MESSAGE_PORT);
 }
 
 Client::~Client()
@@ -46,12 +48,17 @@ bool Client::connect()
 		{
 			player_.sock = std::make_shared<Player::socket>(service_);
 		}
+		if (player_.message_sock == nullptr)
+		{
+			player_.message_sock = std::make_shared<Player::socket>(service_);
+		}
 		player_.sock->connect(server_);
 		std::vector<CommandImformation> buf;
 		CommandImformation command;
 		command.command = NEW_PLAYER;
 		buf.push_back(command);
 		player_.sock->send(boost::asio::buffer(buf));
+		player_.message_sock->connect(message_server_);
 		return true;
 	} catch (std::exception& e)
 	{
@@ -104,6 +111,35 @@ void Client::sendCommand(CommandImformation command)
 	std::vector<CommandImformation> buf;
 	buf.push_back(command);
 	player_.sock->send(boost::asio::buffer(buf));
+}
+
+std::string Client::getMessage()
+{
+	if (player_.message_sock->available())
+	{
+		auto text = std::string();
+		auto buf = std::string(1, '\0');
+		for (;;)
+		{
+			player_.message_sock->receive(boost::asio::buffer(buf));
+			if (*buf.begin() == '\n')
+			{
+				break;
+			}
+			text += buf;
+		}
+		return text;
+	}
+	else
+	{
+		return std::string();
+	}
+}
+
+void Client::sendMessage(std::string text)
+{
+	text += "\n";
+	player_.message_sock->send(boost::asio::buffer(text));
 }
 
 void Client::startGame()

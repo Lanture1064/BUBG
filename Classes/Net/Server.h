@@ -22,6 +22,8 @@ public:
 	//this function send te command by,command buffer,which is influenced by mutex;
 	//should be instead of sendCommand;
 	void replayCommand();
+	std::vector<std::string> getMessage();
+	void sendMessage(std::string);
 	void beginWait();
 	void endWait();
 	void startGame();
@@ -48,6 +50,7 @@ protected:
 	std::mutex local_command_lock_;
 	io_service service_;
 	endpoint endpoint_;
+	endpoint message_endpoint_;
 };
 
 #endif // !BUBG_CLASSES_NET_SERVER_H_

@@ -5,6 +5,11 @@
 #include <memory>
 
 #define PORT 2018
+#define MESSAGE_PORT 1998
+
+#define USE_SERVER 1
+#define USE_CLIENT 2
+
 //the command means the server end the game;
 #define EXIT 0x0000
 
@@ -54,6 +59,7 @@ public:
 	int id;
 private:
 	std::shared_ptr<socket> sock;
+	std::shared_ptr<socket> message_sock;
 };
 #endif // !BUBU_CLASSES_NET_NETDATA_H_
 

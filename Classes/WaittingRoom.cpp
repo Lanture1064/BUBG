@@ -64,7 +64,7 @@ void WaittingRoom::initRoom(int state)
 		}
 		else
 		{
-			message_label_->setString("连接失败");
+			message_label_->setString("Conne fail");
 			auto quit_button = MenuItemImage::create("menu/back01.png", "menu/back02.png", CC_CALLBACK_1(WaittingRoom::returnStartScene, this));
 			this->addChild(quit_button);
 			quit_button->setPosition(position.width / 2, position.height / 4);
@@ -117,7 +117,7 @@ void WaittingRoom::update(float dt)
 			else
 			{
 				auto position = Director::getInstance()->getVisibleSize();
-				message_label_->setString("服务端已断开连接");
+				message_label_->setString("Server close the socket");
 				auto quit_button = MenuItemImage::create("back01.png", "back02.png", CC_CALLBACK_1(WaittingRoom::returnStartScene, this));
 				auto menu = Menu::create(quit_button, NULL);
 				this->addChild(menu);

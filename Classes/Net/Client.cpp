@@ -186,8 +186,14 @@ void Client::clear()
 {
 	is_in_game_ = false;
 	Sleep(10);
-	player_.sock->close();
-	player_.message_sock->close();
+	if (player_.sock)
+	{
+		player_.sock->close();
+	}
+	if (player_.message_sock)
+	{
+		player_.message_sock->close();
+	}
 	net_command_lock_.lock();
 	net_command_buffer_.clear();
 	net_command_lock_.unlock();

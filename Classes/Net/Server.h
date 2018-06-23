@@ -35,6 +35,7 @@ public:
 	void sendCommand(CommandImformation command);
 	void addNetCommand(std::vector<CommandImformation> command);
 	const std::vector<Player>& getPlayer() const;
+	std::string getIp() const;
 protected:
 	Server();
 	~Server();

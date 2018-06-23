@@ -1,4 +1,5 @@
 #include "Server.h"
+#include "Iphlpapi.h"
 #include <memory>
 
 int Server::new_id = 0x0001;
@@ -291,6 +292,11 @@ void Server::addNetCommand(std::vector<CommandImformation> command)
 const std::vector<Player>& Server::getPlayer() const
 {
 	return players_data_;
+}
+
+std::string Server::getIp() const
+{
+	return endpoint_.address().to_string();
 }
 
 Server::Server():is_wait_(false),is_in_game_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),

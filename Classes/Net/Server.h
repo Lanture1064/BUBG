@@ -18,10 +18,7 @@ public:
 	void connect();
 	//get the command from other client;
 	void getCommand();
-	//send command to client;
-	//this function send te command by,command buffer,which is influenced by mutex;
-	//should be instead of sendCommand;
-	void replayCommand();
+
 	std::vector<std::string> getMessage();
 	void sendMessage(std::string);
 	void beginWait();
@@ -30,10 +27,8 @@ public:
 	void endGame();
 	bool excuteCommand(CommandImformation command);
 	std::vector<CommandImformation> getLocalCommand();
-	void addNetCommand(CommandImformation coammand);
 	//this function send the command directly
 	void sendCommand(CommandImformation command);
-	void addNetCommand(std::vector<CommandImformation> command);
 	const std::vector<Player>& getPlayer() const;
 	std::string getIp() const;
 protected:
@@ -44,10 +39,8 @@ protected:
 	bool is_wait_;
 	bool is_in_game_;
 	std::vector<Player> players_data_;
-	std::vector<CommandImformation> net_command_buffer_;
 	std::vector<CommandImformation> local_command_buffer_;
 	std::string log_;
-	std::mutex net_command_lock_;
 	std::mutex local_command_lock_;
 	io_service service_;
 	endpoint endpoint_;

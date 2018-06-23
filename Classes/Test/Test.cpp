@@ -40,7 +40,7 @@ void TestScene::initScene()
 	auto client_button = Menu::create(pClient_label, NULL);
 	//this address is the ip of ZYD'laptop;
 	//Client::getInstance()->setServerIp("192.168.3.5");
-	Client::getInstance()->setServerIp("192.168.43.80");
+	//Client::getInstance()->setServerIp("192.168.43.80");
 	server_button->setPosition(Vec2(100, 100));
 	client_button->setPosition(Vec2(200, 200));
 	this->addChild(server_button);

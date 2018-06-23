@@ -296,26 +296,32 @@ void GameControler::update(float dt)
 	position.x = this_position.x + (visible_size.width / 2 - temp_position.x);
 	position.y = this_position.y + (visible_size.height / 2 - temp_position.y);
 
-	//border judge;
-	if (position.x > 0)
+	if(local_controler_->isDead())
 	{
-		position.x = 0;
-	}
-	else if (position.x + background_size.width < visible_size.width)
-	{
-		position.x = visible_size.width - background_size.width;
 
 	}
-	if (position.y > 0)
+	else
 	{
-		position.y = 0;
-	}
-	else if (position.y + background_size.height < visible_size.height)
-	{
-		position.y = visible_size.height - background_size.height;
-	}
-	this->setPosition(position);
+		//border judge;
+		if (position.x > 0)
+		{
+			position.x = 0;
+		}
+		else if (position.x + background_size.width < visible_size.width)
+		{
+			position.x = visible_size.width - background_size.width;
 
+		}
+		if (position.y > 0)
+		{
+			position.y = 0;
+		}
+		else if (position.y + background_size.height < visible_size.height)
+		{
+			position.y = visible_size.height - background_size.height;
+		}
+		this->setPosition(position);
+	}
 	Node::update(dt);
 	auto q = EventKeyboard::KeyCode::KEY_Q;
 	if (isKeyPressed(q)) {

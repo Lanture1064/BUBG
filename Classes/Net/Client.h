@@ -17,13 +17,9 @@ protected:
 	Client& operator=(const Client &) = delete;
 public:
 	static Client* getInstance();
-	void addNetCommand(CommandImformation command);
 	std::vector<CommandImformation> getLocalCommand();
 	bool connect();
 	void getCommand();
-	//this function send te command by,command buffer,which is influenced by mutex;
-	//should be instead of sendCommand;
-	void replayCommand();
 	//this function send the command directly
 	void sendCommand(CommandImformation command);
 	std::string getMessage();
@@ -43,9 +39,7 @@ protected:
 	endpoint server_;
 	endpoint message_server_;
 	std::vector<CommandImformation> local_command_buffer_;
-	std::vector<CommandImformation> net_command_buffer_;
 	std::mutex local_command_lock_;
-	std::mutex net_command_lock_;
 	std::string log_;
 };
 

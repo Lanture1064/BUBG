@@ -20,14 +20,17 @@ void Server::clear()
 	this->sendCommand(command);
 	for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 	{
-		i->sock->close();
-		i->message_sock->close();
+		if (i->sock != nullptr)
+		{
+			i->sock->close();
+		}
+		if (i->message_sock != nullptr)
+		{
+			i->message_sock->close();
+		}
 	}
 	players_data_.clear();
 
-	net_command_lock_.lock();
-	net_command_buffer_.clear();
-	net_command_lock_.unlock();
 
 	local_command_lock_.lock();
 	local_command_buffer_.clear();
@@ -97,15 +100,18 @@ void Server::getCommand()
 	{
 		for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 		{
-			if ((*i).sock->available())
+			if (i->sock != nullptr)
 			{
-				std::vector<CommandImformation> buf((*i).sock->available()/sizeof(CommandImformation));
-				(*i).sock->read_some(boost::asio::buffer(buf));
-				for (auto j = buf.begin(); j != buf.end(); ++j)
+				if ((*i).sock->available())
 				{
-					if (!excuteCommand(*j))
+					std::vector<CommandImformation> buf((*i).sock->available() / sizeof(CommandImformation));
+					(*i).sock->read_some(boost::asio::buffer(buf));
+					for (auto j = buf.begin(); j != buf.end(); ++j)
 					{
-						break;
+						if (!excuteCommand(*j))
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -113,74 +119,38 @@ void Server::getCommand()
 	}
 }
 
-void Server::replayCommand()
-{
-	while (is_in_game_)
-	{
-		net_command_lock_.lock();
-		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
-		{
-			switch (i->command)
-			{
-			case DIRECTION:
-				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
-				{
-					std::vector<CommandImformation> buf;
-					buf.clear();
-					if (j->id != i->id)
-					{
-						buf.push_back(*i);
-						j->sock->send(boost::asio::buffer(buf));
-					}
-				}
-				break;
-			case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS:
-				for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
-				{
-					std::vector<CommandImformation> buf;
-					buf.clear();
-					buf.push_back(*i);
-					j->sock->send(boost::asio::buffer(buf));
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		net_command_buffer_.clear();
-		net_command_lock_.unlock();
-	}
-}
 
 std::vector<std::string> Server::getMessage()
 {
 	auto temp = std::vector<std::string>();
 	for (auto player = players_data_.begin(); player != players_data_.end(); ++player)
 	{
-		if (player->message_sock->available())
+		if (player->message_sock != nullptr)
 		{
-			auto text = std::string();
-			auto buf = std::string(1, '\0');
-			for(;;)
+			if (player->message_sock->available())
 			{
-				player->message_sock->receive(boost::asio::buffer(buf));
-				if (*buf.begin() == '\n')
+				auto text = std::string();
+				auto buf = std::string(1, '\0');
+				for (;;)
 				{
-					break;
+					player->message_sock->receive(boost::asio::buffer(buf));
+					if (*buf.begin() == '\n')
+					{
+						break;
+					}
+					text += buf;
 				}
-				text += buf;
-			}
-			temp.push_back(text);
-			text += "\n";
-			for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
-			{
-				if (i->id != player->id)
+				temp.push_back(text);
+				text += "\n";
+				for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 				{
-					i->message_sock->send(boost::asio::buffer(text));
+					if (i->id != player->id)
+					{
+						i->message_sock->send(boost::asio::buffer(text));
+					}
 				}
 			}
 		}
-		
 	}
 	return temp;
 }
@@ -190,7 +160,10 @@ void Server::sendMessage(std::string text)
 	text += "\n";
 	for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 	{
-		i->message_sock->send(boost::asio::buffer(text));
+		if (i->message_sock != nullptr)
+		{
+			i->message_sock->send(boost::asio::buffer(text));
+		}
 	}
 }
 
@@ -221,12 +194,27 @@ bool Server::excuteCommand(CommandImformation command)
 	{
 		return false;
 	}
-	local_command_lock_.lock();
-	local_command_buffer_.push_back(command);
-	local_command_lock_.unlock();
-	net_command_lock_.lock();
-	net_command_buffer_.push_back(command);
-	net_command_lock_.unlock();
+	if (command.command != EXIT_GAME)
+	{
+		local_command_lock_.lock();
+		local_command_buffer_.push_back(command);
+		local_command_lock_.unlock();
+	}
+	else
+	{
+		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
+		{
+			if (j->id == command.id)
+			{
+				auto m = j->message_sock;
+				auto n = j->sock;
+				j->message_sock = nullptr;
+				j->sock = nullptr;
+				m->close();
+				n->close();
+			}
+		}
+	}
 	return true;
 }
 
@@ -246,26 +234,23 @@ std::vector<CommandImformation> Server::getLocalCommand()
 	}
 }
 
-void Server::addNetCommand(CommandImformation command)
-{
-	net_command_lock_.lock();
-	net_command_buffer_.push_back(command);
-	net_command_lock_.unlock();
-}
 
 void Server::sendCommand(CommandImformation command)
 {
 	std::vector<CommandImformation> buf;
 	switch (command.command)
 	{
-	case DIRECTION:
+	case DIRECTION: case DIRECTION_BY_KEY:
 		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 		{
 			buf.clear();
-			if (j->id != command.id)
+			if (j->sock != nullptr)
 			{
-				buf.push_back(command);
-				j->sock->send(boost::asio::buffer(buf));
+				if (j->id != command.id)
+				{
+					buf.push_back(command);
+					j->sock->send(boost::asio::buffer(buf));
+				}
 			}
 		}
 		break;
@@ -274,7 +259,10 @@ void Server::sendCommand(CommandImformation command)
 		{
 			buf.clear();
 			buf.push_back(command);
-			j->sock->send(boost::asio::buffer(buf));
+			if (j->sock != nullptr)
+			{
+				j->sock->send(boost::asio::buffer(buf));
+			}
 		}
 		break;
 	default:
@@ -282,12 +270,6 @@ void Server::sendCommand(CommandImformation command)
 	}
 }
 
-void Server::addNetCommand(std::vector<CommandImformation> command)
-{
-	net_command_lock_.lock();
-	net_command_buffer_.insert(net_command_buffer_.end(),command.begin(), command.end());
-	net_command_lock_.unlock();
-}
 
 const std::vector<Player>& Server::getPlayer() const
 {
@@ -299,8 +281,8 @@ std::string Server::getIp() const
 	return endpoint_.address().to_string();
 }
 
-Server::Server():is_wait_(false),is_in_game_(false),players_data_(),net_command_buffer_(),local_command_buffer_(),
-                 net_command_lock_(),local_command_lock_(), service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),
+Server::Server():is_wait_(false),is_in_game_(false),players_data_(), local_command_buffer_(),
+				 local_command_lock_(), service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),
 				 message_endpoint_(boost::asio::ip::tcp::v4(),MESSAGE_PORT),log_()
 {
 

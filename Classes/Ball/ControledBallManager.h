@@ -51,7 +51,7 @@ public:
 	
 	int swallowVirus(std::list<VirusBall*> &virus_list);
 
-	unsigned int isDead();
+	bool isDead();
 
 	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size, int id);
 	static ControledBallManager* createManager(std::list<ControledBall*>* all_controled_ball_list, const cocos2d::Vec2 &visible_size, int id,

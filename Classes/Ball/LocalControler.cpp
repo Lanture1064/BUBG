@@ -137,3 +137,8 @@ cocos2d::Vec2 LocalControler::getKeyDirection() const
 {
 	return cocos2d::Vec2(key_x_direction_,key_y_direction_);
 }
+
+bool LocalControler::isDead() const
+{
+	return manager_->isDead();
+}

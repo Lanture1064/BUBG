@@ -24,6 +24,7 @@ public:
 	cocos2d::Vec2 getMousePosition() const;
 	cocos2d::Vec2 getManagerPosition() const;
 	cocos2d::Vec2 getKeyDirection() const;
+	bool isDead() const;
 protected:
 	cocos2d::Vec2 mouse_position_;
 	ControledBallManager* manager_;

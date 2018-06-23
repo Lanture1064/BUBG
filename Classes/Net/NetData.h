@@ -11,7 +11,7 @@
 #define USE_CLIENT 2
 
 //the command means the server end the game;
-#define EXIT 0x0000
+#define EXIT_GAME 0x0000
 
 //the command is means finish the init and start the game;
 #define INIT_END 0x0001

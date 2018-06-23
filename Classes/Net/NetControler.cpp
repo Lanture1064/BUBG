@@ -69,6 +69,7 @@ void NetControler::update(float dt)
 					break;
 				}
 			}
+			break;
 		case DIVIDE:
 			for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
 			{

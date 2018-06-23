@@ -325,9 +325,16 @@ int ControledBallManager::swallowVirus(std::list<VirusBall*>& virus_list)
 	return count;
 }
 
-unsigned int ControledBallManager::isDead()
+bool ControledBallManager::isDead()
 {
-	return controled_ball_list_.size();
+	if (controled_ball_list_.size())
+	{
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 

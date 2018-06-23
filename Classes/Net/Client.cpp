@@ -3,7 +3,7 @@
 #include <sstream>
 #include <thread>
 
-Client::Client() :service_(), local_command_buffer_(), net_command_buffer_(), local_command_lock_(), net_command_lock_(), player_()
+Client::Client() :service_(), local_command_buffer_(), local_command_lock_(), player_()
 {
 	boost::asio::ip::address add;
 	add = boost::asio::ip::address::from_string("127.0.0.1");
@@ -24,12 +24,6 @@ Client * Client::getInstance()
 	return &instance;
 }
 
-void Client::addNetCommand(CommandImformation command)
-{
-	net_command_lock_.lock();
-	net_command_buffer_.push_back(command);
-	net_command_lock_.unlock();
-}
 
 std::vector<CommandImformation> Client::getLocalCommand()
 {
@@ -93,21 +87,6 @@ void Client::getCommand()
 	}
 }
 
-void Client::replayCommand()
-{
-	while(is_in_game_)
-	{
-		net_command_lock_.lock();
-		for (auto i = net_command_buffer_.begin(); i != net_command_buffer_.end(); ++i)
-		{
-			std::vector<CommandImformation> buf;
-			buf.push_back(*i);
-			player_.sock->send(boost::asio::buffer(buf));
-		}
-		net_command_buffer_.clear();
-		net_command_lock_.unlock();
-	}
-}
 
 void Client::sendCommand(CommandImformation command)
 {
@@ -171,12 +150,10 @@ bool Client::excuteCommand(CommandImformation command)
 	case REPLAY_NEW_PLAYER:
 		player_.id = command.id;
 		break;
-	case DIRECTION: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS:
+	case DIRECTION: case DIRECTION_BY_KEY: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS: case END_GAME: default:
 		local_command_lock_.lock();
 		local_command_buffer_.push_back(command);
 		local_command_lock_.unlock();
-		break;
-	default:
 		break;
 	}
 	return true;
@@ -188,15 +165,19 @@ void Client::clear()
 	Sleep(10);
 	if (player_.sock)
 	{
+		CommandImformation command;
+		command.command = EXIT_GAME;
+		command.id = Client::getId();
+		auto buf = std::vector<CommandImformation>();
+		buf.push_back(command);
+		player_.sock->send(boost::asio::buffer(buf));
+		Sleep(100);
 		player_.sock->close();
 	}
 	if (player_.message_sock)
 	{
 		player_.message_sock->close();
 	}
-	net_command_lock_.lock();
-	net_command_buffer_.clear();
-	net_command_lock_.unlock();
 
 	local_command_lock_.lock();
 	local_command_buffer_.clear();

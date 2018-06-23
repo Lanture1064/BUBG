@@ -5,6 +5,8 @@
 #include "cocos-ext.h"
 #include <vector>
 
+USING_NS_CC;
+
 class ChatBox : public  cocos2d::Layer,cocos2d::extension::EditBoxDelegate
 {
 public:
@@ -17,6 +19,13 @@ public:
 	virtual void editBoxReturn(cocos2d::extension::EditBox* edit_box);
 	void update(float dt);
 	void displayMessage(const std::string& text);
+	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
+	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
+	void keyPressedDuration(EventKeyboard::KeyCode code);
+
+	void menuQuitCallback(cocos2d::Ref* pSender);
+	void menuBackCallback(cocos2d::Ref* pSender);
+
 protected:
 	int label_size_;
 	std::vector<std::pair<cocos2d::Label*,int>> message_;

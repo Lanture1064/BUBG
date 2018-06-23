@@ -2,7 +2,7 @@
 #define BUBG_CLASSES_QUIT_SCENE_H_
 
 #include "cocos2d.h"
-#include"SettingScene1.h"
+#include "SettingScene1.h"
 #include "SettingHeader.h"
 
 class QuitScene : public cocos2d::Layer

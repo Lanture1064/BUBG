@@ -24,9 +24,7 @@ int main()
 			}
 		}
 		std::thread t2(&Server::getCommand, (Server::getInstance()));
-		std::thread t3(&Server::replayCommand,(Server::getInstance()));
 		t2.detach();
-		t3.detach();
 		for (;;)
 		{
 			auto i = Server::getInstance()->getLocalCommand();
@@ -40,7 +38,6 @@ int main()
 	{
 		Client::getInstance()->connect();
 		//std::thread t1(&Client::getCommand,(Client::getInstance()));
-		std::thread t2(&Client::replayCommand,(Client::getInstance()));
 		//t1.detach();
 		t2.detach();
 		for (;;)

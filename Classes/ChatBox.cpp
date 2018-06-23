@@ -1,10 +1,17 @@
 #include "ChatBox.h"
 #include "cocos-ext.h"
 #include "Net/Net.h"
+#include "HelloWorldScene.h"
 
 USING_NS_CC;
 using namespace cocos2d::extension;
 
+const int g_kbg = 2;
+const int g_kmn = 3;
+const int g_kChatBox=1;
+
+Menu*mn;
+Sprite*bg;
 
 ChatBox::~ChatBox()
 {}
@@ -38,6 +45,7 @@ void ChatBox::initBox(int id,int state, int message_number)
 	}
 	auto edit_box = EditBox::create(Size(size.width / 3, label_size_*2), "inputfield.png");
 	edit_box->setAnchorPoint(Vec2(0,0.5));
+	edit_box->setZOrder(g_kChatBox);
 	this->addChild(edit_box);
 	edit_box->setPosition(Vec2(0, label_size_));
 	edit_box->setPlaceholderFontSize(label_size_);
@@ -45,6 +53,45 @@ void ChatBox::initBox(int id,int state, int message_number)
 	edit_box->setMaxLength(50);
 	edit_box->setDelegate(this);
 	this->scheduleUpdate();
+
+	auto quitMenuItem = MenuItemImage::create(
+		"menu/quit01.png",
+		"menu/quie02.png",
+		CC_CALLBACK_1(ChatBox::menuQuitCallback, this));
+	quitMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 400)));
+	auto backMenuItem = MenuItemImage::create(
+		"menu/back01.png",
+		"menu/back02.png",
+		CC_CALLBACK_1(ChatBox::menuBackCallback, this));
+
+	backMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 600)));
+
+	mn = Menu::create(quitMenuItem, backMenuItem, NULL);
+	mn->setPosition(Vec2::ZERO);
+	mn->setZOrder(g_kmn);
+	this->addChild(mn);
+
+	mn->setVisible(false);
+	mn->setEnabled(false);
+
+	bg = Sprite::create("menu/background_quit.png");
+	auto position = Director::getInstance()->getVisibleSize();
+	bg->setPosition(position.width / 2, position.height / 2);
+	bg->setZOrder(g_kbg);
+	this->addChild(bg);
+
+	bg->setVisible(false);
+
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = true;
+	};
+	listener->onKeyReleased = [=](EventKeyboard::KeyCode keyCode, Event * event)
+	{
+		keys[keyCode] = false;
+	};
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 }
 
 ChatBox * ChatBox::createBox(int id, int state, int message_number)
@@ -114,6 +161,14 @@ void ChatBox::update(float dt)
 		auto text = Client::getInstance()->getMessage();
 		this->displayMessage(text);
 	}
+
+	Node::update(dt);
+	auto q = EventKeyboard::KeyCode::KEY_Q;
+	if (isKeyPressed(q)) {
+		mn->setVisible(true);
+		mn->setEnabled(true);
+		bg->setVisible(true);
+	}
 }
 
 void ChatBox::displayMessage(const std::string& text)
@@ -139,4 +194,33 @@ void ChatBox::displayMessage(const std::string& text)
 	}
 	message_[index].first->setString(text);
 	message_[index].second = 0;
+}
+
+void  ChatBox::menuQuitCallback(Ref* pSender)
+{
+	Client::getInstance()->clear();
+	Server::getInstance()->clear();
+	auto scene = HelloWorld::create();
+	Director::getInstance()->replaceScene(scene);
+
+}
+
+
+void ChatBox::menuBackCallback(Ref* pSender)
+{
+	mn->setVisible(false);
+	mn->setEnabled(false);
+	bg->setVisible(false);
+}
+
+void ChatBox::keyPressedDuration(EventKeyboard::KeyCode code) {
+}
+
+bool ChatBox::isKeyPressed(EventKeyboard::KeyCode keyCode) {
+	if (keys[keyCode]) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

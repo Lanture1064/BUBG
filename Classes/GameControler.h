@@ -6,6 +6,7 @@
 #include <list>
 #include "Ball/Ball.h"
 #include "Net/Net.h"
+#include "SettingHeader.h"
 
 USING_NS_CC;
 
@@ -36,9 +37,6 @@ public:
 	void updateWithServer();
 	//when start game as client,call this function to update;
 	void updateWithClient();
-	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
-	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
-	void keyPressedDuration(EventKeyboard::KeyCode code);
 protected:
 	std::vector<ControledBallManager*> manager_container_;
 	std::list<FoodBall*> food_list_;

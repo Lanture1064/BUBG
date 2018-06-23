@@ -74,6 +74,7 @@ void Client::getCommand()
 {
 	while(is_in_game_)
 	{
+		
 		if (player_.sock != nullptr)
 		{
 			if (player_.sock->available())
@@ -89,6 +90,7 @@ void Client::getCommand()
 				}
 			}
 		}
+		
 	}
 }
 
@@ -206,10 +208,13 @@ void Client::clear()
 			}
 		}
 		player_.sock->close();
+		player_.sock = nullptr;
+		
 	}
 	if (player_.message_sock)
 	{
 		player_.message_sock->close();
+		player_.message_sock = nullptr;
 	}
 
 	local_command_lock_.lock();

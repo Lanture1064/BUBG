@@ -266,7 +266,7 @@ void Server::sendCommand(CommandImformation command)
 			close_sock_lock_.unlock();
 		}
 		break;
-	case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS:
+	case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS: case END_GAME: default:
 		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 		{
 			buf.clear();
@@ -279,8 +279,7 @@ void Server::sendCommand(CommandImformation command)
 			close_sock_lock_.unlock();
 		}
 		break;
-	default:
-		break;
+	
 	}
 }
 

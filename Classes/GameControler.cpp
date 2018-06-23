@@ -1,9 +1,10 @@
 #include "GameControler.h"
 #include "Net/Net.h"
 #include "Tool/MathTool.h"
-#include <thread>
+#include "DisconnectBox.h"
 #include "QuitScene.h"
 
+#include <thread>
 USING_NS_CC;
 
 using namespace CocosDenshion;
@@ -244,6 +245,12 @@ bool GameControler::initWithClient()
 						virus->setPosition(Vec2(command->x, command->y));
 					}
 					break;
+				case END_GAME:
+				{
+					Client::getInstance()->closeSocket();
+					return false;
+					break;
+				}
 				case INIT_END:
 					return true;
 					break;
@@ -449,6 +456,14 @@ void GameControler::updateWithClient()
 					new_virus->setPosition(Vec2(i->x, i->y));
 					virus_list_.push_back(new_virus);
 				}
+			case END_GAME:
+			{
+				auto visible_size = Director::getInstance()->getVisibleSize();
+				auto disconnect_box = DisconnectBox::createBox();
+				this->getParent()->addChild(disconnect_box);
+				disconnect_box->setPosition(visible_size.width / 2, visible_size.height / 2);
+				break;
+			}
 			case DIRECTION: case DIVIDE:  case DIRECTION_BY_KEY: default:
 				net_controler_->addCommand(*i);
 				break;

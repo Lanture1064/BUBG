@@ -1,5 +1,5 @@
-#ifndef __Inputfield_SCENE_H__
-#define __Inputfield_SCENE_H__
+#ifndef BUBG_CLASSES_Inputfield_SCENE_H_
+#define BUBG_CLASSES_Inputfield_SCENE_H_
 
 #include "cocos2d.h"
 #include"Ball/BallTest.h"

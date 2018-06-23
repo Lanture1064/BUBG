@@ -59,6 +59,8 @@ bool Client::connect()
 		return true;
 	} catch (std::exception& e)
 	{
+		player_.sock = nullptr;
+		player_.message_sock = nullptr;
 		std::ostringstream os;
 		std::string temp;
 		os.str(temp);
@@ -72,15 +74,18 @@ void Client::getCommand()
 {
 	while(is_in_game_)
 	{
-		if (player_.sock->available())
+		if (player_.sock != nullptr)
 		{
-			std::vector<CommandImformation> buf(player_.sock->available() / sizeof(CommandImformation));
-			player_.sock->receive(boost::asio::buffer(buf));
-			for (auto i = buf.begin(); i != buf.end(); ++i)
+			if (player_.sock->available())
 			{
-				if (!excuteCommand(*i))
+				std::vector<CommandImformation> buf(player_.sock->available() / sizeof(CommandImformation));
+				player_.sock->receive(boost::asio::buffer(buf));
+				for (auto i = buf.begin(); i != buf.end(); ++i)
 				{
-					break;
+					if (!excuteCommand(*i))
+					{
+						break;
+					}
 				}
 			}
 		}
@@ -92,30 +97,37 @@ void Client::sendCommand(CommandImformation command)
 {
 	std::vector<CommandImformation> buf;
 	buf.push_back(command);
-	player_.sock->send(boost::asio::buffer(buf));
+	if (player_.sock != nullptr)
+	{
+		player_.sock->send(boost::asio::buffer(buf));
+	}
 }
 
 std::string Client::getMessage()
 {
-	if (player_.message_sock->available())
+	if (player_.message_sock != nullptr)
 	{
-		auto text = std::string();
-		auto buf = std::string(1, '\0');
-		for (;;)
+		if (player_.message_sock->available())
 		{
-			player_.message_sock->receive(boost::asio::buffer(buf));
-			if (*buf.begin() == '\n')
+			auto text = std::string();
+			auto buf = std::string(1, '\0');
+			for (;;)
 			{
-				break;
+				player_.message_sock->receive(boost::asio::buffer(buf));
+				if (*buf.begin() == '\n')
+				{
+					break;
+				}
+				text += buf;
 			}
-			text += buf;
+			return text;
 		}
-		return text;
+		else
+		{
+			return std::string();
+		}
 	}
-	else
-	{
-		return std::string();
-	}
+	return std::string();
 }
 
 void Client::sendMessage(std::string text)
@@ -150,7 +162,9 @@ bool Client::excuteCommand(CommandImformation command)
 	case REPLY_NEW_PLAYER:
 		player_.id = command.id;
 		break;
-	case DIRECTION: case DIRECTION_BY_KEY: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS: case END_GAME: default:
+	case END_GAME:
+		this->closeSocket();
+	case DIRECTION: case DIRECTION_BY_KEY: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS:  default:
 		local_command_lock_.lock();
 		local_command_buffer_.push_back(command);
 		local_command_lock_.unlock();
@@ -225,4 +239,12 @@ void Client::wait()
 bool Client::isStart() const
 {
 	return is_in_game_;
+}
+
+void Client::closeSocket()
+{
+	player_.message_sock->close();
+	player_.sock->close();
+	player_.message_sock = nullptr;
+	player_.sock = nullptr;
 }

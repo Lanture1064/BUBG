@@ -32,6 +32,7 @@ public:
 	int getId() const;
 	void wait();
 	bool isStart() const;
+	void closeSocket();
 protected:
 	bool is_in_game_;
 	service service_;

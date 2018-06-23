@@ -1,5 +1,5 @@
-#ifndef __QUIT_SCENE_H__
-#define __QUIT_SCENE_H__
+#ifndef BUBG_CLASSES_QUIT_SCENE_H_
+#define BUBG_CLASSES_QUIT_SCENE_H_
 
 #include "cocos2d.h"
 #include"SettingScene1.h"

@@ -1,6 +1,5 @@
-#ifndef __Setting_SCENE_H__
-#define __Setting_SCENE_H__
-
+#ifndef BUBG_CLASSES_SETTING_SCENE_H_
+#define BUBG_CLASSES_SETTING_SCENE_H_
 #include "cocos2d.h"
 #include "SettingHeader.h"
 

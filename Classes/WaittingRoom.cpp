@@ -64,10 +64,11 @@ void WaittingRoom::initRoom(int state)
 		}
 		else
 		{
-			message_label_->setString("Conne fail");
+			message_label_->setString("Connect fail");
 			auto quit_button = MenuItemImage::create("menu/back01.png", "menu/back02.png", CC_CALLBACK_1(WaittingRoom::returnStartScene, this));
-			this->addChild(quit_button);
-			quit_button->setPosition(position.width / 2, position.height / 4);
+			auto menu = Menu::create(quit_button, NULL);
+			this->addChild(menu);
+			menu->setPosition(position.width / 2, position.height / 2);
 		}
 	}
 	this->scheduleUpdate();

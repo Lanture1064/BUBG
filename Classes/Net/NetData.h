@@ -27,7 +27,7 @@
 //the command is used to join new player;
 #define NEW_PLAYER 0x0005
 //the command is used to return the id to the new player;
-#define REPLAY_NEW_PLAYER 0x0006
+#define REPLY_NEW_PLAYER 0x0006
 
 #define END_GAME 0x0007
 
@@ -37,6 +37,7 @@
 
 #define DIRECTION_BY_KEY 0x000A
 
+#define REPLY_EXIT 0x000B
 class Client;
 class Server;
 struct CommandImformation

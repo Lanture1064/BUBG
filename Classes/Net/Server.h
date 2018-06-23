@@ -42,6 +42,8 @@ protected:
 	std::vector<CommandImformation> local_command_buffer_;
 	std::string log_;
 	std::mutex local_command_lock_;
+	std::mutex close_sock_lock_;
+	std::mutex close_message_lock_;
 	io_service service_;
 	endpoint endpoint_;
 	endpoint message_endpoint_;

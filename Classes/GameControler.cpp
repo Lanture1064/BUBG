@@ -178,8 +178,6 @@ bool GameControler::initWithServer()
 		Server::getInstance()->sendCommand(command);
 	}
 
-	//provide time for client to init;
-	Sleep(50);
 	return true;
 }
 

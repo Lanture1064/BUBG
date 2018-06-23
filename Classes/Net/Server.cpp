@@ -13,7 +13,6 @@ void Server::clear()
 {
 	is_in_game_ = false;
 	is_wait_ = false;
-	Sleep(10);
 	new_id = 0x0001;
 	CommandImformation command;
 	command.command = END_GAME;
@@ -57,7 +56,7 @@ void Server::connect()
 		{
 			buf.clear();
 			CommandImformation temp;
-			temp.command = REPLAY_NEW_PLAYER;
+			temp.command = REPLY_NEW_PLAYER;
 			temp.id = new_player.id;
 			buf.push_back(temp);
 			new_player.sock->send(boost::asio::buffer(buf));
@@ -160,10 +159,12 @@ void Server::sendMessage(std::string text)
 	text += "\n";
 	for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 	{
+		close_message_lock_.lock();
 		if (i->message_sock != nullptr)
 		{
 			i->message_sock->send(boost::asio::buffer(text));
 		}
+		close_message_lock_.unlock();
 	}
 }
 
@@ -206,12 +207,20 @@ bool Server::excuteCommand(CommandImformation command)
 		{
 			if (j->id == command.id)
 			{
-				auto m = j->message_sock;
-				auto n = j->sock;
-				j->message_sock = nullptr;
+				command.command = REPLY_EXIT;
+				std::vector<CommandImformation> buf;
+				buf.push_back(command);
+				j->sock->send(boost::asio::buffer(buf));
+				close_sock_lock_.lock();
+				j->sock->close();
 				j->sock = nullptr;
-				m->close();
-				n->close();
+				close_sock_lock_.unlock();
+				close_message_lock_.lock();
+				j->message_sock->close();
+				j->message_sock = nullptr;
+				close_message_lock_.unlock();
+
+				
 			}
 		}
 	}
@@ -244,14 +253,17 @@ void Server::sendCommand(CommandImformation command)
 		for (auto j = players_data_.begin(); j != players_data_.end(); ++j)
 		{
 			buf.clear();
+			close_sock_lock_.lock();
 			if (j->sock != nullptr)
 			{
 				if (j->id != command.id)
 				{
+					
 					buf.push_back(command);
 					j->sock->send(boost::asio::buffer(buf));
 				}
 			}
+			close_sock_lock_.unlock();
 		}
 		break;
 	case NEW_FOOD: case NEW_MANAGER: case INIT_END: case NEW_VIRUS:
@@ -259,10 +271,12 @@ void Server::sendCommand(CommandImformation command)
 		{
 			buf.clear();
 			buf.push_back(command);
+			close_sock_lock_.lock();
 			if (j->sock != nullptr)
-			{
+			{				
 				j->sock->send(boost::asio::buffer(buf));
 			}
+			close_sock_lock_.unlock();
 		}
 		break;
 	default:

@@ -147,7 +147,7 @@ bool Client::excuteCommand(CommandImformation command)
 	}
 	switch (command.command)
 	{
-	case REPLAY_NEW_PLAYER:
+	case REPLY_NEW_PLAYER:
 		player_.id = command.id;
 		break;
 	case DIRECTION: case DIRECTION_BY_KEY: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS: case END_GAME: default:
@@ -162,7 +162,6 @@ bool Client::excuteCommand(CommandImformation command)
 void Client::clear()
 {
 	is_in_game_ = false;
-	Sleep(10);
 	if (player_.sock)
 	{
 		CommandImformation command;
@@ -171,7 +170,27 @@ void Client::clear()
 		auto buf = std::vector<CommandImformation>();
 		buf.push_back(command);
 		player_.sock->send(boost::asio::buffer(buf));
-		Sleep(100);
+		for (;;)
+		{
+			int state = 0;
+			if (player_.sock->available())
+			{
+				buf.resize(player_.sock->available() / sizeof(CommandImformation));
+				player_.sock->receive(boost::asio::buffer(buf));
+				for (auto i = buf.begin(); i != buf.end(); ++i)
+				{
+					if (i->command == REPLY_EXIT)
+					{
+						state = 1;
+						break;
+					}
+				}
+			}
+			if (state)
+			{
+				break;
+			}
+		}
 		player_.sock->close();
 	}
 	if (player_.message_sock)

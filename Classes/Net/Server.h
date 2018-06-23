@@ -13,7 +13,7 @@ class Server
 public:
 	static Server* getInstance();
 	//clear the data when game end;
-	void claer();
+	void clear();
 	//get connect with the clients and add to players_data;
 	void connect();
 	//get the command from other client;

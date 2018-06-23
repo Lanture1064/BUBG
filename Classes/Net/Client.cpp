@@ -1,6 +1,7 @@
 #include "Client.h"
 #include <Boost/asio.hpp>
 #include <sstream>
+#include <thread>
 
 Client::Client() :service_(), local_command_buffer_(), net_command_buffer_(), local_command_lock_(), net_command_lock_(), player_()
 {
@@ -14,7 +15,7 @@ Client::Client() :service_(), local_command_buffer_(), net_command_buffer_(), lo
 
 Client::~Client()
 {
-
+	this->clear();
 }
 
 Client * Client::getInstance()
@@ -59,6 +60,8 @@ bool Client::connect()
 		buf.push_back(command);
 		player_.sock->send(boost::asio::buffer(buf));
 		player_.message_sock->connect(message_server_);
+		std::thread t(&Client::wait, this);
+		t.detach();
 		return true;
 	} catch (std::exception& e)
 	{
@@ -183,7 +186,8 @@ void Client::clear()
 {
 	is_in_game_ = false;
 	Sleep(10);
-
+	player_.sock->close();
+	player_.message_sock->close();
 	net_command_lock_.lock();
 	net_command_buffer_.clear();
 	net_command_lock_.unlock();
@@ -198,4 +202,21 @@ void Client::clear()
 int Client::getId() const
 {
 	return player_.id;
+}
+
+void Client::wait()
+{
+	for (;;)
+	{
+		if (player_.sock->available())
+		{
+			this->startGame();
+			break;
+		}
+	}
+}
+
+bool Client::isStart() const
+{
+	return is_in_game_;
 }

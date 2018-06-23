@@ -1,42 +1,60 @@
 #include "GameScene.h"
+#include "Net/Net.h"
+#include "GameControler.h"
+#include "ChatBox.h"
 
 USING_NS_CC;
 
-Scene* Game::createScene()
+GameScene* GameScene::createScene(int state)
 {
-	// 'scene' is an autorelease object
-	auto scene = Scene::create();
-
-	// 'layer' is an autorelease object
-	auto layer = Game::create();
-
-	// add layer as a child to scene
-	scene->addChild(layer);
-
-	// return the scene
-	return scene;
+	auto scene = new GameScene();
+	if (scene && scene->init() && scene->initScene(state))
+	{
+		scene->autorelease();
+		return scene;
+	}
+	CC_SAFE_DELETE(scene);
+	return nullptr;
 }
 
 // on "init" you need to initialize your instance
-bool Game::init()
+bool GameScene::init()
 {
 	//////////////////////////////
 	// 1. super init first
-	if (!Layer::init())
+	if (!Scene::init())
 	{
 		return false;
 	}
+	return true;
+}
 
-	Size visible_size = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
-	Sprite *bg = Sprite::create("menu/background.png");
-
-	// position the label on the center of the screen
-	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
-		origin.y + visible_size.height / 2));
-	this->addChild(bg);
-
+bool GameScene::initScene(int state)
+{
+	state_ = state;
+	if (state != USE_SERVER && state != USE_CLIENT)
+	{
+		return false;
+	}
+	auto controler = GameControler::createControler(state);
+	if (!controler)
+	{
+		return false;
+	}
+	this->addChild(controler);
+	int id = -1;
+	if (state == USE_SERVER)
+	{
+		id = 0x0000;
+	}
+	else if (state == USE_CLIENT)
+	{
+		id = Client::getInstance()->getId();
+	}
+	auto chat_box = ChatBox::createBox(id,state);
+	auto position = Director::getInstance()->getVisibleSize();
+	chat_box->setPosition(position.width / 40, position.height / 10);
+	this->addChild(chat_box);
 	return true;
 }
 

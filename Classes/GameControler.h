@@ -25,9 +25,9 @@ public:
 	virtual bool init();
 	bool initControler(int state);
 	//when start game as server,call this function to init;
-	void initWithServer();
+	bool initWithServer();
 	//when start game as client,call this function to init;
-	void initWithClient();
+	bool initWithClient();
 	static GameControler* createControler(int state);
 	CREATE_FUNC(GameControler);
 	

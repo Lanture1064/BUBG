@@ -3,18 +3,21 @@
 
 #include "cocos2d.h"
 
-class Game : public cocos2d::Layer
+class GameScene : public cocos2d::Scene
 {
 public:
 	// there's no 'id' in cpp, so we recommend returning the class instance pointer
-	static cocos2d::Scene* createScene();
+	static GameScene* createScene(int state);
 
 	// Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
 	virtual bool init();
 
-	// implement the "static create()" method manually
-	CREATE_FUNC(Game);
+	bool initScene(int state);
 
+	// implement the "static create()" method manually
+	CREATE_FUNC(GameScene);
+protected:
+	int state_;
 	
 };
 

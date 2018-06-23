@@ -34,6 +34,8 @@ public:
 	bool excuteCommand(CommandImformation command);
 	void clear();
 	int getId() const;
+	void wait();
+	bool isStart() const;
 protected:
 	bool is_in_game_;
 	service service_;

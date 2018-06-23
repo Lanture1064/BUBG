@@ -8,12 +8,20 @@ Server * Server::getInstance()
 	return &instance;
 }
 
-void Server::claer()
+void Server::clear()
 {
 	is_in_game_ = false;
 	is_wait_ = false;
 	Sleep(10);
 	new_id = 0x0001;
+	CommandImformation command;
+	command.command = END_GAME;
+	this->sendCommand(command);
+	for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
+	{
+		i->sock->close();
+		i->message_sock->close();
+	}
 	players_data_.clear();
 
 	net_command_lock_.lock();
@@ -294,5 +302,5 @@ Server::Server():is_wait_(false),is_in_game_(false),players_data_(),net_command_
 
 Server::~Server()
 {
-	
+	this->clear();
 }

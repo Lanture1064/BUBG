@@ -61,7 +61,10 @@ bool GameControler::initControler(int state)
 	}
 	else if (state == USE_CLIENT)
 	{
-		this->initWithClient();
+		if (!this->initWithClient())
+		{
+			return false;
+		}
 	}
 	else
 	{
@@ -82,7 +85,7 @@ bool GameControler::initControler(int state)
 	return true;
 }
 
-void GameControler::initWithServer()
+bool GameControler::initWithServer()
 {
 	Server::getInstance()->startGame();
 	std::thread get_command_thread(&Server::getCommand, Server::getInstance());
@@ -177,9 +180,10 @@ void GameControler::initWithServer()
 
 	//provide time for client to init;
 	Sleep(50);
+	return true;
 }
 
-void GameControler::initWithClient()
+bool GameControler::initWithClient()
 {
 	Client::getInstance()->startGame();
 	std::thread get_command_thread(&Client::getCommand, Client::getInstance());
@@ -243,7 +247,7 @@ void GameControler::initWithClient()
 					}
 					break;
 				case INIT_END:
-					return;
+					return true;
 					break;
 				default:
 					break;
@@ -251,6 +255,7 @@ void GameControler::initWithClient()
 			}
 		}
 	}
+	return true;
 }
 
 GameControler * GameControler::createControler(int state)

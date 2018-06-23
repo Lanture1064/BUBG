@@ -1,7 +1,8 @@
 #include "Test.h"
 #include "../GameControler.h"
 #include "../Net/Net.h"
-#include "ChatBox.h"
+#include "../ChatBox.h"
+#include "../WaittingRoom.h"
 #include <thread>
 USING_NS_CC;
 
@@ -38,7 +39,7 @@ void TestScene::initScene()
 	auto pClient_label = MenuItemLabel::create(client_label, this, menu_selector(TestScene::clientButton));
 	auto client_button = Menu::create(pClient_label, NULL);
 	//this address is the ip of ZYD'laptop;
-	Client::getInstance()->setServerIp("192.168.3.5");
+	//Client::getInstance()->setServerIp("192.168.3.5");
 	server_button->setPosition(Vec2(100, 100));
 	client_button->setPosition(Vec2(200, 200));
 	this->addChild(server_button);
@@ -47,7 +48,9 @@ void TestScene::initScene()
 
 void TestScene::serverButton(cocos2d::Object * pSender)
 {
-	Server::getInstance()->beginWait();
+	auto scene = WaittingRoom::createRoom(USE_SERVER);
+	Director::getInstance()->replaceScene(scene);
+	/*Server::getInstance()->beginWait();
 	std::thread t(&Server::connect, Server::getInstance());
 	t.detach();
 	for (;;)
@@ -63,17 +66,19 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 	this->addChild(controler);
 	auto chat_box = ChatBox::createBox(0x0000,USE_SERVER);
 	chat_box->setPosition(500, 100);
-	this->addChild(chat_box);
+	this->addChild(chat_box);*/
 }
 
 void TestScene::clientButton(cocos2d::Object * pSender)
 {
-	Client::getInstance()->connect();
+	auto scene = WaittingRoom::createRoom(USE_CLIENT);
+	Director::getInstance()->replaceScene(scene);
+	/*Client::getInstance()->connect();
 	Client::getInstance()->startGame();
 	auto controler = GameControler::createControler(USE_CLIENT);
 	this->addChild(controler);
 	auto chat_box = ChatBox::createBox(Client::getInstance()->getId(), USE_CLIENT);
 	chat_box->setPosition(500, 100);
-	this->addChild(chat_box);
+	this->addChild(chat_box);*/
 }
 

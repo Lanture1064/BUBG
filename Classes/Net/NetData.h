@@ -38,6 +38,7 @@
 #define DIRECTION_BY_KEY 0x000A
 
 #define REPLY_EXIT 0x000B
+#define REPLY_END 0x000C
 class Client;
 class Server;
 struct CommandImformation

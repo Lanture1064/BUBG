@@ -17,15 +17,23 @@ void Server::clear()
 	CommandImformation command;
 	command.command = END_GAME;
 	this->sendCommand(command);
+	
+	
 	for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 	{
 		if (i->sock != nullptr)
 		{
+			clear_sock_lock_.lock();
 			i->sock->close();
+			i->sock = nullptr;
+			clear_sock_lock_.unlock();
 		}
 		if (i->message_sock != nullptr)
 		{
+			clear_message_lock_.lock();
 			i->message_sock->close();
+			i->sock = nullptr;
+			clear_message_lock_.unlock();
 		}
 	}
 	players_data_.clear();
@@ -97,6 +105,7 @@ void Server::getCommand()
 {
 	while (is_in_game_)
 	{
+		clear_sock_lock_.lock();
 		for (auto i = players_data_.begin(); i != players_data_.end(); ++i)
 		{
 			if (i->sock != nullptr)
@@ -115,6 +124,7 @@ void Server::getCommand()
 				}
 			}
 		}
+		clear_sock_lock_.unlock();
 	}
 }
 
@@ -122,6 +132,7 @@ void Server::getCommand()
 std::vector<std::string> Server::getMessage()
 {
 	auto temp = std::vector<std::string>();
+	clear_message_lock_.lock();
 	for (auto player = players_data_.begin(); player != players_data_.end(); ++player)
 	{
 		if (player->message_sock != nullptr)
@@ -151,6 +162,7 @@ std::vector<std::string> Server::getMessage()
 			}
 		}
 	}
+	clear_message_lock_.unlock();
 	return temp;
 }
 

@@ -44,6 +44,8 @@ protected:
 	std::mutex local_command_lock_;
 	std::mutex close_sock_lock_;
 	std::mutex close_message_lock_;
+	std::mutex clear_sock_lock_;
+	std::mutex clear_message_lock_;
 	io_service service_;
 	endpoint endpoint_;
 	endpoint message_endpoint_;

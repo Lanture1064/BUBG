@@ -177,7 +177,14 @@ bool Client::excuteCommand(CommandImformation command)
 		player_.id = command.id;
 		break;
 	case END_GAME:
+	{
+		std::vector<CommandImformation> buf;
+		CommandImformation temp;
+		temp.command = REPLY_END;
+		buf.push_back(temp);
+		player_.sock->send(boost::asio::buffer(buf));
 		this->closeSocket();
+	}
 	case DIRECTION: case DIRECTION_BY_KEY: case NEW_MANAGER: case NEW_FOOD: case INIT_END: case DIVIDE: case NEW_VIRUS:  default:
 		local_command_lock_.lock();
 		local_command_buffer_.push_back(command);

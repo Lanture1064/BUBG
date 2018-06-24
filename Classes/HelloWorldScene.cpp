@@ -1,7 +1,7 @@
 #include "HelloWorldScene.h"
-#include"Inputfieldbox.h"
-#include<string>
-#include"Test/Test.h"
+#include "Inputfieldbox.h"
+#include "StartScene.h"
+#include <string>
 USING_NS_CC;
 using namespace CocosDenshion;
 
@@ -72,7 +72,7 @@ bool HelloWorld::init()
 
 void HelloWorld::getGameScene(cocos2d::Object *pSender)
 {
-	auto sc = TestScene::createScene();
+	auto sc = StartScene::createScene();
 	auto reScene = TransitionShrinkGrow::create(0.7f, sc);
 	Director::getInstance()->pushScene(reScene);
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {

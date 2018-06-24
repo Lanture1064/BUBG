@@ -31,7 +31,7 @@ bool DisconnectBox::init()
 	label->setColor(Color3B::BLACK);
 	this->addChild(label);
 	label->setPosition(0, visible_size.height / 5);
-	auto button = MenuItemImage::create("menu/ok-up.png", "menu/ok-down", CC_CALLBACK_1(DisconnectBox::quitGame, this));
+	auto button = MenuItemImage::create("menu/ok-up.png", "menu/ok-down.png", CC_CALLBACK_1(DisconnectBox::quitGame, this));
 	auto menu = Menu::create(button, NULL);
 	this->addChild(menu);
 	menu->setPosition(0, 0);

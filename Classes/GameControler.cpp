@@ -2,7 +2,6 @@
 #include "Net/Net.h"
 #include "Tool/MathTool.h"
 #include "DisconnectBox.h"
-#include "QuitScene.h"
 #include <thread>
 
 USING_NS_CC;

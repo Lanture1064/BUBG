@@ -56,7 +56,7 @@ void ChatBox::initBox(int id,int state, int message_number)
 
 	auto quitMenuItem = MenuItemImage::create(
 		"menu/quit01.png",
-		"menu/quie02.png",
+		"menu/quit02.png",
 		CC_CALLBACK_1(ChatBox::menuQuitCallback, this));
 	quitMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(600, 400)));
 	auto backMenuItem = MenuItemImage::create(

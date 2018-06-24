@@ -15,6 +15,33 @@ bool StartScene::init()
 	{
 		return false;
 	}
+
+	auto visible_size = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+
+	Sprite *bg = Sprite::create("menu/background_startgame.jpg");
+	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
+		origin.y + visible_size.height / 2));
+	this->addChild(bg);
+
+	MenuItemImage *creategameMenuItem = MenuItemImage::create(
+		"menu/creategame01.png",
+		"menu/creategame02.png",
+		CC_CALLBACK_1(StartScene::createGame, this));
+
+	creategameMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(640, 400)));
+
+	MenuItemImage *joingameMenuItem = MenuItemImage::create(
+		"menu/joingame01.png",
+		"menu/joingame02.png",
+		CC_CALLBACK_1(StartScene::joinGame, this));
+
+	joingameMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(640, 550)));
+
+	Menu* mu = Menu::create(creategameMenuItem, joingameMenuItem, NULL);
+	mu->setPosition(Vec2::ZERO);
+	this->addChild(mu);
+
 	return true;
 }
 

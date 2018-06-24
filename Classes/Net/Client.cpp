@@ -74,7 +74,7 @@ void Client::getCommand()
 {
 	while(is_in_game_)
 	{
-		
+		get_command_lock_.lock();
 		if (player_.sock != nullptr)
 		{
 			if (player_.sock->available())
@@ -90,6 +90,7 @@ void Client::getCommand()
 				}
 			}
 		}
+		get_command_lock_.unlock();
 		
 	}
 }
@@ -99,14 +100,17 @@ void Client::sendCommand(CommandImformation command)
 {
 	std::vector<CommandImformation> buf;
 	buf.push_back(command);
+	send_command_lock_.lock();
 	if (player_.sock != nullptr)
 	{
 		player_.sock->send(boost::asio::buffer(buf));
 	}
+	send_command_lock_.unlock();
 }
 
 std::string Client::getMessage()
 {
+	get_message_lock_.lock();
 	if (player_.message_sock != nullptr)
 	{
 		if (player_.message_sock->available())
@@ -122,20 +126,28 @@ std::string Client::getMessage()
 				}
 				text += buf;
 			}
+			get_message_lock_.unlock();
 			return text;
 		}
 		else
 		{
+			get_message_lock_.unlock();
 			return std::string();
 		}
 	}
+	get_message_lock_.unlock();
 	return std::string();
 }
 
 void Client::sendMessage(std::string text)
 {
 	text += "\n";
-	player_.message_sock->send(boost::asio::buffer(text));
+	send_message_lock_.lock();
+	if (player_.message_sock!= nullptr)
+	{
+		player_.message_sock->send(boost::asio::buffer(text));
+	}
+	send_message_lock_.unlock();
 }
 
 void Client::startGame()
@@ -207,14 +219,22 @@ void Client::clear()
 				break;
 			}
 		}
+		send_command_lock_.lock();
+		get_command_lock_.lock();
 		player_.sock->close();
 		player_.sock = nullptr;
+		send_command_lock_.unlock();
+		get_command_lock_.unlock();
 		
 	}
 	if (player_.message_sock)
 	{
+		get_message_lock_.lock();
+		send_message_lock_.lock();
 		player_.message_sock->close();
 		player_.message_sock = nullptr;
+		get_message_lock_.unlock();
+		send_message_lock_.unlock();
 	}
 
 	local_command_lock_.lock();

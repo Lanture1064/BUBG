@@ -41,6 +41,10 @@ protected:
 	endpoint message_server_;
 	std::vector<CommandImformation> local_command_buffer_;
 	std::mutex local_command_lock_;
+	std::mutex get_command_lock_;
+	std::mutex send_command_lock_;
+	std::mutex get_message_lock_;
+	std::mutex send_message_lock_;
 	std::string log_;
 };
 

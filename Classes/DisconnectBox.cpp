@@ -8,16 +8,30 @@ DisconnectBox::~DisconnectBox()
 
 }
 
-DisconnectBox * DisconnectBox::createBox()
+DisconnectBox * DisconnectBox::createBox(std::string text)
 {
 	auto box = new DisconnectBox();
 	if (box && box->init())
 	{
+		box->initBox(text);
 		box->autorelease();
 		return box;
 	}
 	CC_SAFE_DELETE(box);
 	return nullptr;
+}
+
+void DisconnectBox::initBox(std::string text)
+{
+	auto visible_size = Director::getInstance()->getVisibleSize();
+	auto label = Label::create(text, "Arial", visible_size.height / 18);
+	label->setColor(Color3B::BLACK);
+	this->addChild(label);
+	label->setPosition(0, visible_size.height / 5);
+	auto button = MenuItemImage::create("menu/ok-up.png", "menu/ok-down.png", CC_CALLBACK_1(DisconnectBox::quitGame, this));
+	auto menu = Menu::create(button, NULL);
+	this->addChild(menu);
+	menu->setPosition(0, 0);
 }
 
 bool DisconnectBox::init()
@@ -26,15 +40,6 @@ bool DisconnectBox::init()
 	{
 		return false;
 	}
-	auto visible_size = Director::getInstance()->getVisibleSize();
-	auto label = Label::create("Disconnect from server", "Arial", visible_size.height / 18);
-	label->setColor(Color3B::BLACK);
-	this->addChild(label);
-	label->setPosition(0, visible_size.height / 5);
-	auto button = MenuItemImage::create("menu/ok-up.png", "menu/ok-down.png", CC_CALLBACK_1(DisconnectBox::quitGame, this));
-	auto menu = Menu::create(button, NULL);
-	this->addChild(menu);
-	menu->setPosition(0, 0);
 	return true;
 }
 

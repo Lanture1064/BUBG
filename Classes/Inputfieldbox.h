@@ -3,7 +3,6 @@
 
 #include "cocos2d.h"
 #include "extensions/cocos-ext.h"  
-#include "Ball/BallTest.h"
 #include "SettingHeader.h"
 
 class Inputfield : public cocos2d::Layer

@@ -15,6 +15,7 @@ bool StartScene::init()
 	{
 		return false;
 	}
+	return true;
 }
 
 StartScene * StartScene::createScene()

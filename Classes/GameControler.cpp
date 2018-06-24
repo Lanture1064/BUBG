@@ -6,8 +6,6 @@
 
 USING_NS_CC;
 
-//it's a suited proportion to eliminate the blank section of the background;
-#define BACKGROUND_WIDTH_PROPORTION 1
 
 const int g_kFoodManagerFlag = 1;
 const int g_kFoodLayerFlag = 2;
@@ -90,7 +88,6 @@ bool GameControler::initWithServer()
 	auto food_number = food_manager->getSize();
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
-	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
 	command.command = NEW_FOOD;
 	for (auto i = 0; i < food_number; ++i)
 	{
@@ -277,7 +274,6 @@ void GameControler::update(float dt)
 	//these codes are used to move the map with the player;
 	auto background = static_cast<Sprite*> (this->getChildByTag(g_kBackgroundFlag));
 	auto background_size = background->getBoundingBox().size;
-	background_size.width *= BACKGROUND_WIDTH_PROPORTION;
 	auto visible_size = Director::getInstance()->getVisibleSize();
 
 	auto manager_position = local_controler_->getManagerPosition();
@@ -290,7 +286,13 @@ void GameControler::update(float dt)
 
 	if(local_controler_->isDead())
 	{
-
+		if (state_ == USE_CLIENT)
+		{
+			Client::getInstance()->clear();
+			auto box = DisconnectBox::createBox("You die");
+			this->addChild(box);
+			state_ = 0;
+		}
 	}
 	else
 	{

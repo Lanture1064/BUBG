@@ -5,13 +5,16 @@
 
 USING_NS_CC;
 using namespace cocos2d::extension;
+using namespace CocosDenshion;
 
 const int g_kbg = 2;
 const int g_kmn = 3;
 const int g_kChatBox=1;
 
-Menu*mn;
-Sprite*bg;
+namespace {
+	Menu*mn;
+	Sprite*bg;
+}
 
 ChatBox::~ChatBox()
 {}
@@ -168,6 +171,9 @@ void ChatBox::update(float dt)
 		mn->setVisible(true);
 		mn->setEnabled(true);
 		bg->setVisible(true);
+		if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+			SimpleAudioEngine::getInstance()->playEffect("sound/end.mp3");
+		}
 	}
 }
 
@@ -202,18 +208,20 @@ void  ChatBox::menuQuitCallback(Ref* pSender)
 	Server::getInstance()->clear();
 	auto scene = HelloWorld::create();
 	Director::getInstance()->replaceScene(scene);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 
 }
-
 
 void ChatBox::menuBackCallback(Ref* pSender)
 {
 	mn->setVisible(false);
 	mn->setEnabled(false);
 	bg->setVisible(false);
-}
-
-void ChatBox::keyPressedDuration(EventKeyboard::KeyCode code) {
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }
 
 bool ChatBox::isKeyPressed(EventKeyboard::KeyCode keyCode) {

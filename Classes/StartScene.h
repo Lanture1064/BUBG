@@ -2,6 +2,7 @@
 #define BUBG_CLASSES_START_SCENE_H_
 
 #include "cocos2d.h"
+#include "SettingHeader.h"
 
 class StartScene : public cocos2d::Scene
 {

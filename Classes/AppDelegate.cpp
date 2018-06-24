@@ -120,7 +120,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
 	SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/music.mp3");
 	//ÒôÐ§³õÊ¼»¯
 	SimpleAudioEngine::getInstance()->preloadEffect("sound/bubble.mp3");
-	SimpleAudioEngine::getInstance()->preloadEffect("sound/click.mp3");
+	SimpleAudioEngine::getInstance()->preloadEffect("sound/click.wav");
+	SimpleAudioEngine::getInstance()->preloadEffect("sound/end.mp3");
     return true;
 }
 

@@ -13,20 +13,13 @@ const int g_kErrorLabelFlag = 1;
 
 Scene* Inputfield::createScene()
 {
-	// 'scene' is an autorelease object
 	auto scene = Scene::create();
-
-	// 'layer' is an autorelease object
 	auto layer = Inputfield::create();
-
-	// add layer as a child to scene
 	scene->addChild(layer);
 
-	// return the scene
 	return scene;
 }
 
-// on "init" you need to initialize your instance
 bool Inputfield::init()
 {
 	//////////////////////////////
@@ -41,12 +34,10 @@ bool Inputfield::init()
 
 	Sprite *bg = Sprite::create("menu/background_box.jpg");
 
-	// position the label on the center of the screen
 	bg->setPosition(Vec2(origin.x + visible_size.width / 2,
 		origin.y + visible_size.height / 2));
 	this->addChild(bg);
 
-	//Ok按钮
 	auto okMenuItem = MenuItemImage::create(
 		"menu/ok-down.png",
 		"menu/ok-up.png",
@@ -54,14 +45,12 @@ bool Inputfield::init()
 
 	okMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(640, 560)));
 
-	//输入框
-	//输入框背景  
 	auto inputBox = Sprite::create("inputfield.jpg");
 	
 	auto visibble_size = Director::getInstance()->getVisibleSize();
-	auto tip_label = Label::create("Please enter the ip address of the server", "Arial", 30);
+	auto tip_label = Label::create("Please enter the ip address of the server", "Arial", 35);
 	tip_label->setPosition(visible_size.width / 2, visibble_size.height / 7 * 4);
-	tip_label->setColor(Color3B::BLACK);
+	tip_label->setColor(Color3B(255, 140, 0));
 	this->addChild(tip_label);
 
 	auto error_label = Label::create("", "Arial", 30);
@@ -70,21 +59,13 @@ bool Inputfield::init()
 	this->addChild(error_label);
 	error_label->setTag(g_kErrorLabelFlag);
 
-    //输入框设置
 	edit_box_ = EditBox::create(Size(inputBox->getContentSize().width, inputBox->getContentSize().height), Scale9Sprite::create("inputfield.png"));
-	//输入框的位置
 	edit_box_->setPosition(Director::getInstance()->convertToGL(Vec2(640, 400)));
-	//输入框所接受字符的最大数 
 	edit_box_->setMaxLength(15);
-	//初始化文字 
-	edit_box_->setText("127.0.0.1");
-	//文字颜色  
+	edit_box_->setText("127.0.0.1"); 
 	edit_box_->setFontColor(Color3B(255, 255, 255)); 
-	//设置文字的大小  
 	edit_box_->setFontSize(27);   
 	bg->addChild(edit_box_);
-
-
 
 	Menu* mn = Menu::create(okMenuItem, NULL);
 	mn->setPosition(Vec2::ZERO);
@@ -110,7 +91,6 @@ void Inputfield::menuOkCallback(Ref* pSender)
 		error->setString("The ip address is illegal");
 	}
 	
-
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
 	}

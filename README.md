@@ -1,5 +1,6 @@
 # BUBG
-Term Terminal
+TongJi SSE C++ Term Terminal Project. A game like agar.io.
  
 Welcome to BUBG project.
-DEADLINE:2018/6/17
+<p></p>
+DEADLINE:2018/6/24

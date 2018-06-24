@@ -29,6 +29,7 @@ bool GameControler::init()
 bool GameControler::initControler(int state)
 {
 	state_ = state;
+	end_flag_ = false;
 	this->setAnchorPoint(Vec2::ZERO);
 
 	auto background = Sprite::create("menu/background_game.png");
@@ -286,12 +287,13 @@ void GameControler::update(float dt)
 
 	if(local_controler_->isDead())
 	{
-		if (state_ == USE_CLIENT)
+
+		if (state_ == USE_CLIENT && end_flag_ == false)
 		{
-			Client::getInstance()->clear();
 			auto box = DisconnectBox::createBox("You die");
-			this->addChild(box);
-			state_ = 0;
+			box->setPosition(visible_size.width / 2, visible_size.height / 2);
+			this->getParent()->addChild(box);
+			end_flag_ = true;
 		}
 	}
 	else

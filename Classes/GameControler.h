@@ -45,6 +45,7 @@ protected:
 	int state_;
 	LocalControler* local_controler_;
 	NetControler* net_controler_;
+	bool end_flag_;
 };
 #endif // !BUBG_CLASSES_GAME_CONTROLER_H_
 

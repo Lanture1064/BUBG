@@ -3,6 +3,7 @@
 #include "../Net/Net.h"
 #include "../ChatBox.h"
 #include "../WaittingRoom.h"
+#include "../Inputfieldbox.h"
 #include <thread>
 USING_NS_CC;
 
@@ -72,7 +73,7 @@ void TestScene::serverButton(cocos2d::Object * pSender)
 
 void TestScene::clientButton(cocos2d::Object * pSender)
 {
-	auto scene = WaittingRoom::createRoom(USE_CLIENT);
+	auto scene = Inputfield::createScene();
 	Director::getInstance()->replaceScene(scene);
 	/*Client::getInstance()->connect();
 	Client::getInstance()->startGame();

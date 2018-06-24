@@ -1,8 +1,9 @@
-#ifndef BUBG_CLASSES_Inputfield_SCENE_H_
-#define BUBG_CLASSES_Inputfield_SCENE_H_
+#ifndef BUBG_CLASSES_INPUTFIELD_BOX_H_
+#define BUBG_CLASSES_INPUTFIELD_BOX_H_
 
 #include "cocos2d.h"
-#include"Ball/BallTest.h"
+#include "extensions/cocos-ext.h"  
+#include "Ball/BallTest.h"
 #include "SettingHeader.h"
 
 class Inputfield : public cocos2d::Layer
@@ -19,6 +20,8 @@ public:
 
 	// implement the "static create()" method manually
 	CREATE_FUNC(Inputfield);
+protected:
+	cocos2d::extension::EditBox* edit_box_;
 };
 
 #endif // __Inputfield_SCENE_H__

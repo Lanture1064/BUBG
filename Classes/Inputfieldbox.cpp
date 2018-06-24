@@ -1,10 +1,15 @@
 #include "Inputfieldbox.h"
 #include "Test/Test.h"
 #include "extensions\cocos-ext.h"  
+#include "Net/Net.h"
+#include "WaittingRoom.h"
+#include <exception>
 USING_NS_CC_EXT;
 USING_NS_CC;
 
 using namespace CocosDenshion;
+
+const int g_kErrorLabelFlag = 1;
 
 Scene* Inputfield::createScene()
 {
@@ -53,20 +58,31 @@ bool Inputfield::init()
 	//输入框背景  
 	auto inputBox = Sprite::create("inputfield.jpg");
 	
+	auto visibble_size = Director::getInstance()->getVisibleSize();
+	auto tip_label = Label::create("Please enter the ip address of the server", "Arial", 30);
+	tip_label->setPosition(visible_size.width / 2, visibble_size.height / 7 * 4);
+	tip_label->setColor(Color3B::BLACK);
+	this->addChild(tip_label);
+
+	auto error_label = Label::create("", "Arial", 30);
+	error_label->setPosition(visibble_size.width / 2, visibble_size.height / 3);
+	error_label->setColor(Color3B::BLACK);
+	this->addChild(error_label);
+	error_label->setTag(g_kErrorLabelFlag);
 
     //输入框设置
-	auto editBox = EditBox::create(Size(inputBox->getContentSize().width, inputBox->getContentSize().height), Scale9Sprite::create("inputfield.png"));
+	edit_box_ = EditBox::create(Size(inputBox->getContentSize().width, inputBox->getContentSize().height), Scale9Sprite::create("inputfield.png"));
 	//输入框的位置
-	editBox->setPosition(Director::getInstance()->convertToGL(Vec2(640, 400)));
+	edit_box_->setPosition(Director::getInstance()->convertToGL(Vec2(640, 400)));
 	//输入框所接受字符的最大数 
-	editBox->setMaxLength(15);  
+	edit_box_->setMaxLength(15);
 	//初始化文字 
-	editBox->setText("Please enter an English name");  
+	edit_box_->setText("127.0.0.1");
 	//文字颜色  
-	editBox->setFontColor(Color3B(255, 255, 255)); 
+	edit_box_->setFontColor(Color3B(255, 255, 255)); 
 	//设置文字的大小  
-	editBox->setFontSize(27);   
-	bg->addChild(editBox);
+	edit_box_->setFontSize(27);   
+	bg->addChild(edit_box_);
 
 
 
@@ -79,9 +95,21 @@ bool Inputfield::init()
 
 void Inputfield::menuOkCallback(Ref* pSender)
 {
-	auto sc = TestScene::createScene();
-	//change Scene from inputfield scene to balltestscene
-	Director::getInstance()->replaceScene(sc);
+	auto ip = edit_box_->getText();
+	try
+	{
+		boost::asio::ip::tcp::resolver::query query(ip);
+		Client::getInstance()->setServerIp(ip);
+		auto sc = WaittingRoom::createRoom(USE_CLIENT);
+		//change Scene from inputfield scene to waittingroom
+		Director::getInstance()->replaceScene(sc);
+	} 
+	catch (std::exception& e)
+	{
+		auto error = static_cast<Label*>(this->getChildByTag(g_kErrorLabelFlag));
+		error->setString("The ip address is illegal");
+	}
+	
 
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");

@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "Net/Net.h"
+#include "SettingHeader.h"
 
 class WaittingRoom : public cocos2d::Scene
 {

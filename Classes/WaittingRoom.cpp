@@ -4,9 +4,7 @@
 #include <thread>
 #include <string>
 USING_NS_CC;
-
-
-
+using namespace CocosDenshion;
 
 WaittingRoom * WaittingRoom::createRoom(int state)
 {
@@ -38,9 +36,9 @@ void WaittingRoom::initRoom(int state)
 	auto position = Director::getInstance()->getVisibleSize();
 	background->setPosition(position.width / 2, position.height / 2);
 	this->addChild(background);
-	message_label_ = Label::create("", "Arial", position.height / 18);
+	message_label_ = Label::create("", "Arial", position.height / 15);
 	message_label_->setPosition(position.width / 2, position.height / 3 * 2);
-	message_label_->setColor(Color3B::BLACK);
+	message_label_->setColor(Color3B(255, 140, 0));
 	this->addChild(message_label_);
 	if (state == USE_SERVER)
 	{
@@ -84,6 +82,9 @@ void WaittingRoom::startGame(Object * pSender)
 	{
 		Director::getInstance()->replaceScene(scene);
 	}
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }
 
 void WaittingRoom::returnStartScene(Object * pSender)
@@ -92,6 +93,9 @@ void WaittingRoom::returnStartScene(Object * pSender)
 	Client::getInstance()->clear();
 	auto scene = HelloWorld::createScene();
 	Director::getInstance()->replaceScene(scene);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }
 
 void WaittingRoom::update(float dt)

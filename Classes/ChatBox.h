@@ -4,6 +4,7 @@
 #include "cocos2d.h"
 #include "cocos-ext.h"
 #include <vector>
+#include "SettingHeader.h"
 
 USING_NS_CC;
 
@@ -21,7 +22,6 @@ public:
 	void displayMessage(const std::string& text);
 	bool isKeyPressed(EventKeyboard::KeyCode keyCode);
 	std::map<cocos2d::EventKeyboard::KeyCode, bool> keys;
-	void keyPressedDuration(EventKeyboard::KeyCode code);
 
 	void menuQuitCallback(cocos2d::Ref* pSender);
 	void menuBackCallback(cocos2d::Ref* pSender);

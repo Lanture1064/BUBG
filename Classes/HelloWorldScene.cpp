@@ -45,15 +45,13 @@ bool HelloWorld::init()
 		CC_CALLBACK_1(HelloWorld::getGameScene, this));
 
 	startMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(400, 550)));
-
-	//create setting button
+  //create setting button
 	MenuItemImage *settingMenuItem = MenuItemImage::create(
 		"menu/setting01.png",
 		"menu/setting02.png",
 		CC_CALLBACK_1(HelloWorld::getSettingScene, this));
 
 	settingMenuItem->setPosition(Director::getInstance()->convertToGL(Vec2(640, 550)));
-
 	//create quit button
 	MenuItemImage *quitMenuItem = MenuItemImage::create(
 		"menu/quit01.png",
@@ -98,15 +96,6 @@ void HelloWorld::quitGame(Object *pSender)
 	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
 		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
 	}
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-	exit(0);
-#endif
-
-	/*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-	//EventCustom customEndEvent("game_scene_close_event");
-	//_eventDispatcher->dispatchEvent(&customEndEvent);
-
 }
 
 
@@ -117,7 +106,6 @@ void HelloWorld::onEnter()
 	log("HelloWorld onEnter");
 
 }
-//开始播放
 void HelloWorld::onEnterTransitionDidFinish()
 {
 	Scene::onEnterTransitionDidFinish();
@@ -138,7 +126,6 @@ void HelloWorld::onExitTransitionDidStart()
 	Scene::onExitTransitionDidStart();
 	log("HelloWorld onExitTransitionDidStart");
 }
-//停止播放
 void HelloWorld::cleanup()
 {
 	Scene::cleanup();

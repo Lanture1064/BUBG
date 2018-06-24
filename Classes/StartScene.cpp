@@ -3,6 +3,7 @@
 #include "Inputfieldbox.h"
 
 USING_NS_CC;
+using namespace CocosDenshion;
 
 StartScene::~StartScene()
 {
@@ -61,10 +62,16 @@ void StartScene::joinGame(cocos2d::Object * pSender)
 {
 	auto scene = Inputfield::createScene();
 	Director::getInstance()->replaceScene(scene);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }
 
 void StartScene::createGame(cocos2d::Object * pSender)
 {
 	auto scene = WaittingRoom::createRoom(USE_SERVER);
 	Director::getInstance()->replaceScene(scene);
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
 }

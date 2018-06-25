@@ -418,6 +418,9 @@ void ControledBallManager::initManager(std::list<ControledBall*> *all_controled_
 
 ControledBallManager::~ControledBallManager()
 {
-	
+	for (auto i = kUsedColor.begin(); i != kUsedColor.end(); ++i)
+	{
+		*i = false;
+	}
 }
 

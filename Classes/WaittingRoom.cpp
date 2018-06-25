@@ -91,10 +91,15 @@ void WaittingRoom::returnStartScene(Object * pSender)
 {
 	Server::getInstance()->clear();
 	Client::getInstance()->clear();
-	auto scene = HelloWorld::createScene();
-	Director::getInstance()->replaceScene(scene);
-	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
 		SimpleAudioEngine::getInstance()->playEffect("sound/click.wav");
+	}
+	auto scene = HelloWorld::createScene();
+	if (scene)
+	{
+		Director::getInstance()->replaceScene(scene);
 	}
 }
 
@@ -121,12 +126,13 @@ void WaittingRoom::update(float dt)
 			}
 			else
 			{
+				Client::getInstance()->clear();
 				auto position = Director::getInstance()->getVisibleSize();
 				message_label_->setString("Server close the socket");
-				auto quit_button = MenuItemImage::create("back01.png", "back02.png", CC_CALLBACK_1(WaittingRoom::returnStartScene, this));
+				auto quit_button = MenuItemImage::create("menu/back01.png", "menu/back02.png", CC_CALLBACK_1(WaittingRoom::returnStartScene, this));
 				auto menu = Menu::create(quit_button, NULL);
 				this->addChild(menu);
-				quit_button->setPosition(position.width / 2, position.height / 4);
+				menu->setPosition(position.width / 2, position.height / 2);
 			}
 		}
 	}

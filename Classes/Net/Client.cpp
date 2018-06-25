@@ -157,7 +157,7 @@ void Client::startGame()
 
 void Client::endGame()
 {
-	is_in_game_ = true;
+	is_in_game_ = false;
 }
 
 void Client::setServerIp(std::string ip)
@@ -196,7 +196,7 @@ bool Client::excuteCommand(CommandImformation command)
 
 void Client::clear()
 {
-	is_in_game_ = false;
+	this->endGame();
 	if (player_.sock)
 	{
 		CommandImformation command;
@@ -275,8 +275,14 @@ bool Client::isStart() const
 
 void Client::closeSocket()
 {
-	player_.message_sock->close();
-	player_.sock->close();
-	player_.message_sock = nullptr;
-	player_.sock = nullptr;
+	if (player_.message_sock)
+	{
+		player_.message_sock->close();
+		player_.message_sock = nullptr;
+	}
+	if (player_.sock)
+	{
+		player_.sock->close();
+		player_.sock = nullptr;
+	}
 }

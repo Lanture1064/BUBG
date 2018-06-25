@@ -117,9 +117,14 @@ unsigned int FoodBallManager::getSize() const
 
 FoodBallManager::~FoodBallManager()
 {
-	/*for (auto i = food_ball_container_.begin(); i != food_ball_container_.end(); ++i)
+	for (auto i = food_ball_container_.begin(); i != food_ball_container_.end(); ++i)
 	{
-		delete *i;
-		*i = nullptr;
-	}*/
+		if ((*i)->getParent())
+		{
+			(*i)->removeFromParent();
+			delete *i;
+			*i = nullptr;
+		}
+	}
+	food_ball_container_.clear();
 }

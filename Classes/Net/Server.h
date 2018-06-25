@@ -49,6 +49,7 @@ protected:
 	io_service service_;
 	endpoint endpoint_;
 	endpoint message_endpoint_;
+	std::shared_ptr<boost::asio::ip::tcp::acceptor> aceptor_;
 };
 
 #endif // !BUBG_CLASSES_NET_SERVER_H_

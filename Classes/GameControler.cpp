@@ -232,7 +232,6 @@ bool GameControler::initWithClient()
 					break;
 				case END_GAME:
 				{
-					Client::getInstance()->closeSocket();
 					return false;
 					break;
 				}

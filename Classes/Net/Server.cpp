@@ -11,8 +11,8 @@ Server * Server::getInstance()
 
 void Server::clear()
 {
-	is_in_game_ = false;
-	is_wait_ = false;
+	this->endGame();
+	this->endWait();
 	new_id = 0x0001;
 	CommandImformation command;
 	command.command = END_GAME;
@@ -46,56 +46,61 @@ void Server::clear()
 
 void Server::connect()
 {
-	boost::asio::ip::tcp::acceptor aceptor(service_, endpoint_);
+	aceptor_=std::make_shared<boost::asio::ip::tcp::acceptor>(service_, endpoint_);
 	std::shared_ptr<Player::socket> sock;
 	std::shared_ptr<Player::socket> message_sock;
 	boost::asio::ip::tcp::acceptor message_aceptor(service_, message_endpoint_);
 	Player new_player;
-	while(is_wait_)
+	while (is_wait_)
 	{
 		sock = std::make_shared<Player::socket>(service_);
-		aceptor.accept(*sock);
-		auto buf = std::vector<CommandImformation>(1);
-		sock->receive(boost::asio::buffer(buf));
-		new_player.id = new_id;
-		new_id++;
-		new_player.sock = sock;
-		if (is_wait_&&buf.begin()->command==NEW_PLAYER)
+		try
 		{
-			buf.clear();
-			CommandImformation temp;
-			temp.command = REPLY_NEW_PLAYER;
-			temp.id = new_player.id;
-			buf.push_back(temp);
-			new_player.sock->send(boost::asio::buffer(buf));
-			buf.clear();
-			temp.command = NEW_PLAYER;
-
-			//send the server player imformation;
-			temp.id = 0x0000;
-			buf.push_back(temp);
-			new_player.sock->send(boost::asio::buffer(buf));
-			buf.clear();
-
-			for (auto player = players_data_.begin(); player != players_data_.end(); ++player)
+			aceptor_->accept(*sock);
+			auto buf = std::vector<CommandImformation>(1);
+			sock->receive(boost::asio::buffer(buf));
+			new_player.id = new_id;
+			new_id++;
+			new_player.sock = sock;
+			if (is_wait_&&buf.begin()->command == NEW_PLAYER)
 			{
-				//send the imformation of the player who was connected;
-				temp.id = player->id;
+				buf.clear();
+				CommandImformation temp;
+				temp.command = REPLY_NEW_PLAYER;
+				temp.id = new_player.id;
 				buf.push_back(temp);
 				new_player.sock->send(boost::asio::buffer(buf));
 				buf.clear();
-				//send the new player imformation;
-				temp.id = new_player.id;
+				temp.command = NEW_PLAYER;
+
+				//send the server player imformation;
+				temp.id = 0x0000;
 				buf.push_back(temp);
-				player->sock->send(boost::asio::buffer(buf));
+				new_player.sock->send(boost::asio::buffer(buf));
 				buf.clear();
+
+				for (auto player = players_data_.begin(); player != players_data_.end(); ++player)
+				{
+					//send the imformation of the player who was connected;
+					temp.id = player->id;
+					buf.push_back(temp);
+					new_player.sock->send(boost::asio::buffer(buf));
+					buf.clear();
+					//send the new player imformation;
+					temp.id = new_player.id;
+					buf.push_back(temp);
+					player->sock->send(boost::asio::buffer(buf));
+					buf.clear();
+				}
+				message_sock = std::make_shared<Player::socket>(service_);
+				message_aceptor.accept(*message_sock);
+				new_player.message_sock = message_sock;
+				players_data_.push_back(new_player);
 			}
-			message_sock = std::make_shared<Player::socket>(service_);
-			message_aceptor.accept(*message_sock);
-			new_player.message_sock = message_sock;
-			players_data_.push_back(new_player);
+
+		} catch (std::exception &e)
+		{
 		}
-		
 	}
 }
 
@@ -187,6 +192,11 @@ void Server::beginWait()
 void Server::endWait()
 {
 	is_wait_ = false;
+	if (aceptor_ != nullptr)
+	{
+		aceptor_->close();
+		aceptor_ = nullptr;
+	}
 }
 
 void Server::startGame()
@@ -310,7 +320,7 @@ Server::Server():is_wait_(false),is_in_game_(false),players_data_(), local_comma
 				 local_command_lock_(), service_(),endpoint_(boost::asio::ip::tcp::v4(),PORT),
 				 message_endpoint_(boost::asio::ip::tcp::v4(),MESSAGE_PORT),log_()
 {
-
+	aceptor_ = nullptr;
 }
 
 Server::~Server()

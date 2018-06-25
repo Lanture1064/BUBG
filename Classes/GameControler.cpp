@@ -67,6 +67,52 @@ bool GameControler::initControler(int state)
 	{
 		return false;
 	}
+
+	auto background_size = background->getBoundingBox().size;
+	auto visible_size = Director::getInstance()->getVisibleSize();
+
+	auto manager_position = local_controler_->getManagerPosition();
+	auto this_position = this->getPosition();
+	cocos2d::Vec2 position, temp_position;
+	temp_position.x = manager_position.x + this_position.x;
+	temp_position.y = manager_position.y + this_position.y;
+	position.x = this_position.x + (visible_size.width / 2 - temp_position.x);
+	position.y = this_position.y + (visible_size.height / 2 - temp_position.y);
+
+	if (local_controler_->isDead())
+	{
+
+		if (state_ == USE_CLIENT && end_flag_ == false)
+		{
+			auto box = DisconnectBox::createBox("You die");
+			box->setPosition(visible_size.width / 2, visible_size.height / 2);
+			this->getParent()->addChild(box);
+			end_flag_ = true;
+		}
+	}
+	else
+	{
+		//border judge;
+		if (position.x > 0)
+		{
+			position.x = 0;
+		}
+		else if (position.x + background_size.width < visible_size.width)
+		{
+			position.x = visible_size.width - background_size.width;
+
+		}
+		if (position.y > 0)
+		{
+			position.y = 0;
+		}
+		else if (position.y + background_size.height < visible_size.height)
+		{
+			position.y = visible_size.height - background_size.height;
+		}
+		this->setPosition(position);
+	}
+
 	this->scheduleUpdate();
 
 	return true;

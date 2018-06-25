@@ -125,6 +125,11 @@ FoodBallManager::~FoodBallManager()
 			delete *i;
 			*i = nullptr;
 		}
+		else
+		{
+			delete *i;
+			*i = nullptr;
+		}
 	}
 	food_ball_container_.clear();
 }

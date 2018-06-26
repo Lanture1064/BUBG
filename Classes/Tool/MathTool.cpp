@@ -1,4 +1,5 @@
 #include "MathTool.h"
+#include "../Ball/ControledBall.h"
 #include <cmath>
 USING_NS_CC;
 
@@ -22,4 +23,9 @@ double getDoubleRand(int range)
 	double x = rand() / static_cast<double>(RAND_MAX);
 	double y = rand() % range;
 	return x + y;
+}
+
+bool compareControledBall(ControledBall* i, ControledBall* j)
+{
+	return i->getScore() > j->getScore();
 }

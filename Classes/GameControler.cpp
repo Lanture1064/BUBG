@@ -374,6 +374,23 @@ void GameControler::updateWithServer()
 
 	CommandImformation command;
 	auto background_size = background->getBoundingBox().size;
+
+	command.command = JUDGE;
+	for (auto i = manager_container_.begin(); i != manager_container_.end(); ++i)
+	{
+		command.id = (*i)->getId();
+		int index = 0;
+		auto ball_list = (*i)->getBallList();
+		for (auto j = ball_list.begin(); j != ball_list.end(); ++j,++index)
+		{
+			auto position = (*j)->getPosition();
+			command.x = position.x;
+			command.y = position.y;
+			command.index = index;
+			Server::getInstance()->sendCommand(command);
+		}
+	}
+
 	command.command = NEW_FOOD;
 
 	auto local_command = Server::getInstance()->getLocalCommand();
@@ -495,6 +512,16 @@ void GameControler::updateWithClient()
 				disconnect_box->setPosition(visible_size.width / 2, visible_size.height / 2);
 				break;
 			}
+			case JUDGE:
+				for (auto manager = manager_container_.begin(); manager != manager_container_.end(); ++manager)
+				{
+					if ((*manager)->getId() == i->id)
+					{
+						(*manager)->judge(*i);
+						break;
+					}
+				}
+				break;
 			case DIRECTION: case DIVIDE:  case DIRECTION_BY_KEY: default:
 				net_controler_->addCommand(*i);
 				break;

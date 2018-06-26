@@ -12,6 +12,8 @@ double ScoreToSpeed(int score);
 
 double getDoubleRand(int range);
 
+class ControledBall;
+bool compareControledBall(ControledBall* i, ControledBall* j);
 
 #endif // !BUBG_CLASSES_TOOL_MATH_TOOL_H_
 

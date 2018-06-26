@@ -4,10 +4,13 @@
 #include "cocos2d.h"
 #include "ControledBall.h"
 #include "FoodBall.h"
+#include "../Net/NetData.h"
 #include <string>
 #include <list>
 #include <vector>
 #include <utility>
+
+
 
 class ControledBallManager : public cocos2d::Node
 {
@@ -22,6 +25,7 @@ protected:
 	std::string name_;
 	cocos2d::Vec2 background_size_;
 public:
+	void judge(const CommandImformation &command);
 	int getId() const;
 	void setId(int id);
 

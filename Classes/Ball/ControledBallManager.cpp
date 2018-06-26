@@ -2,11 +2,29 @@
 #include "../SettingHeader.h"
 #include "ControledBallManager.h"
 #include "../Tool/MathTool.h"
+#include <algorithm>
+
 USING_NS_CC;
 
 using namespace CocosDenshion;
 
 std::vector<bool> ControledBallManager::kUsedColor(kColorNumber, false);
+
+void ControledBallManager::judge(const CommandImformation & command)
+{
+	int index = 0;
+	for (auto i = controled_ball_list_.begin(); i != controled_ball_list_.end(); ++i, ++index)
+	{
+		if (index == command.index)
+		{
+			auto position = (*i)->getPosition();
+			if (position.x != command.x || position.y != command.y)
+			{
+				(*i)->setPosition(command.x, command.y);
+			}
+		}
+	}
+}
 
 int ControledBallManager::getId() const
 {
@@ -77,6 +95,7 @@ void ControledBallManager::updateState()
 	position.y /= count;
 	this->setPosition(position);
 	speed_ /= count;
+	std::stable_sort(controled_ball_list_.begin(), controled_ball_list_.end(), compareControledBall);
 }
 
 void ControledBallManager::moveTo(double time,cocos2d::Vec2 target)
@@ -203,7 +222,8 @@ void ControledBallManager::divideBall(cocos2d::Vec2 target)
 	}
 	controled_ball_list_.insert(controled_ball_list_.end(),append_list.begin(),append_list.end());
 	all_controled_ball_list_->insert(all_controled_ball_list_->end(), append_list.begin(), append_list.end());
-	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY)) {
+	if (UserDefault::getInstance()->getBoolForKey(SOUND_KEY))
+	{
 		SimpleAudioEngine::getInstance()->playEffect("sound/bubble.mp3");
 	}
 }

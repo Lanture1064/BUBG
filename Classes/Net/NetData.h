@@ -39,16 +39,18 @@
 
 #define REPLY_EXIT 0x000B
 #define REPLY_END 0x000C
+#define JUDGE 0x000D
 class Client;
 class Server;
 struct CommandImformation
 {
 public:
-	CommandImformation() :command(-1), id(0), x(0), y(0){ }
+	CommandImformation() :command(-1), id(0), x(0), y(0), index(-1){ }
 	int command;
 	int id;
 	float x;
 	float y;
+	int index;
 };
 
 struct Player

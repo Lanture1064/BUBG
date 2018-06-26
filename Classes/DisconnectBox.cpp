@@ -25,7 +25,7 @@ void DisconnectBox::initBox(std::string text)
 {
 	auto visible_size = Director::getInstance()->getVisibleSize();
 	auto label = Label::create(text, "Arial", visible_size.height / 18);
-	label->setColor(Color3B::BLACK);
+	label->setColor(Color3B(255, 140, 0));
 	this->addChild(label);
 	label->setPosition(0, visible_size.height / 5);
 	auto button = MenuItemImage::create("menu/ok-up.png", "menu/ok-down.png", CC_CALLBACK_1(DisconnectBox::quitGame, this));

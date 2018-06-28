@@ -504,6 +504,7 @@ void GameControler::updateWithClient()
 					new_virus->setPosition(Vec2(i->x, i->y));
 					virus_list_.push_back(new_virus);
 				}
+				break;
 			case END_GAME:
 			{
 				auto visible_size = Director::getInstance()->getVisibleSize();

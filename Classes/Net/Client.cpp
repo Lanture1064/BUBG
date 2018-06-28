@@ -163,6 +163,7 @@ void Client::endGame()
 void Client::setServerIp(std::string ip)
 {
 	server_.address(boost::asio::ip::address::from_string(ip));
+	message_server_.address(boost::asio::ip::address::from_string(ip));
 }
 
 bool Client::excuteCommand(CommandImformation command)

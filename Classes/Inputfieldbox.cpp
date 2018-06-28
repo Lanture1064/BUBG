@@ -1,5 +1,4 @@
 #include "Inputfieldbox.h"
-#include "Test/Test.h"
 #include "extensions\cocos-ext.h"  
 #include "Net/Net.h"
 #include "WaittingRoom.h"
@@ -55,7 +54,7 @@ bool Inputfield::init()
 
 	auto error_label = Label::create("", "Arial", 30);
 	error_label->setPosition(visibble_size.width / 2, visibble_size.height / 3);
-	error_label->setColor(Color3B::BLACK);
+	error_label->setColor(Color3B(255, 140, 0));
 	this->addChild(error_label);
 	error_label->setTag(g_kErrorLabelFlag);
 

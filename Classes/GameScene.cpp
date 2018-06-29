@@ -17,11 +17,8 @@ GameScene* GameScene::createScene(int state)
 	return nullptr;
 }
 
-// on "init" you need to initialize your instance
 bool GameScene::init()
 {
-	//////////////////////////////
-	// 1. super init first
 	if (!Scene::init())
 	{
 		return false;
@@ -57,8 +54,3 @@ bool GameScene::initScene(int state)
 	this->addChild(chat_box);
 	return true;
 }
-
-
-
-
-

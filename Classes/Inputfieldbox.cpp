@@ -21,8 +21,6 @@ Scene* Inputfield::createScene()
 
 bool Inputfield::init()
 {
-	//////////////////////////////
-	// 1. super init first
 	if (!Layer::init())
 	{
 		return false;
